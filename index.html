@@ -166,10 +166,11 @@
   <div id="meaning"></div>
   <button id="randomBtn" onclick="randomWord()">RANDOM</button>
   <div class="controls">
-    <input type="number" id="intervalInput" value="6.5" />
+    <span>Detik:</span>
+    <input type="number" id="intervalInput" value="5.5" />
     <button id="applyBtn" onclick="setIntervalTime()">Apply</button>
     <button id="toggleLangBtn" onclick="toggleLanguageMode()">Indo: OFF</button>
-    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Arti: OFF</button>
+    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Arti: ON</button>
     <button id="togglePickBtn" onclick="togglePickUp()">Pick Up: OFF</button>
     <button id="toggleShowBtn" onclick="toggleShowTable()">Tabel: OFF</button>
   </div>
@@ -201,7 +202,7 @@
 		 { word: "さようなら", meaning: "Selamat tinggal" },
 		 { word: "またあいましょう", meaning: "Sampai jumpa" },
 		 { word: "しつれいします", meaning: "Permisi (sopan)" },
-	     { word: "おさきにしつれいします", meaning: "Permisi duluan" },
+	   { word: "おさきにしつれいします", meaning: "Permisi duluan" },
 		 { word: "おつかれさまです", meaning: "Terima kasih atas kerja kerasnya" },
 		 { word: "いただきます", meaning: "Saya makan/minum" },
 		 { word: "ごちそうさまでした", meaning: "Terima kasih atas hidangannya" },
@@ -651,7 +652,7 @@
 	  { word: "時計（とけい）", meaning: "Jam (tangan atau dinding)" },
 	  { word: "カメラ", meaning: "Kamera" }
 	  ],
-		  
+	  
 	 "Lesson 3": [
 	   { word: "Coming Soon!", meaning: "Coming Soon!" },
 		  ],
@@ -665,14 +666,14 @@
     let categories = Object.keys(vocabulary);
     let currentCategory = "Semua";
     let timer;
-    let interval = "6.5";
+    let interval = "5.5";
     let currentWord = "";
     let currentMeaning = "";
     let reverse = false;
     let pickUpMode = false;
     let usedWords = [];
     let tableShown = false;
-    let autoShowMeaning = false;
+    let autoShowMeaning = true;
     
     function createMenu() {
       const menuDiv = document.getElementById("menu");
