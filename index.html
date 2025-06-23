@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Friendly ノート]</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .category-btn {
+      background-color: #00e5ff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: black;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .category-btn.active {
+      background-color: #0040ff;
+      color: white;
+    }
+
+    #word {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #333;
+      margin: 30px 0 10px;
+      min-height: 60px;
+      cursor: pointer;
+    }
+
+    #meaning {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 30px;
+      min-height: 1.5em;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #randomBtn {
+      background-color: #11a04c;
+      color: white;
+      font-size: 1.1rem;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    #intervalInput {
+      padding: 10px;
+      width: 100px;
+      text-align: center;
+      font-size: 1rem;
+      border: 2px solid #0040ff;
+      border-radius: 6px;
+    }
+
+    #applyBtn, #toggleLangBtn, #togglePickBtn, #toggleShowBtn, #toggleAutoShowBtn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #applyBtn {
+      background-color: #ff0000;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    table, th, td {
+      border: 1px solid #999;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    #searchInput {
+      margin: 10px auto;
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 1rem;
+      border: 2px solid #0040ff;
+      border-radius: 6px;
+      display: none;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #000000;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      #word {
+        font-size: 2rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      table, th, td {
+        font-size: 0.9rem;
+      }
+
+      #searchInput {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>[Friendly ノート]</h1>
+  <div class="menu" id="menu"></div>
+  <div id="word" onclick="showMeaning()"></div>
+  <div id="meaning"></div>
+  <button id="randomBtn" onclick="randomWord()">RANDOM</button>
+  <div class="controls">
+    <input type="number" id="intervalInput" value="6.5" />
+    <button id="applyBtn" onclick="setIntervalTime()">Apply</button>
+    <button id="toggleLangBtn" onclick="toggleLanguageMode()">Indo: OFF</button>
+    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Arti: OFF</button>
+    <button id="togglePickBtn" onclick="togglePickUp()">Pick Up: OFF</button>
+    <button id="toggleShowBtn" onclick="toggleShowTable()">Tabel: OFF</button>
+  </div>
+  <input type="text" id="searchInput" placeholder="Cari kata..." oninput="filterTable()" />
+  <div id="tableContainer"></div>
+  <footer>©Friendly Jihad Taqwana</footer>
+
+  <script>
+    const vocabulary = {
+      "Salam": [
+		 { word: "おはようございます", meaning: "Selamat pagi" },
+		 { word: "こんにちは", meaning: "Selamat siang" },
+		 { word: "こんばんは", meaning: "Selamat malam" },
+		 { word: "おやすみなさい", meaning: "Selamat beristirahat" },
+		 { word: "ありがとう", meaning: "Terima kasih (kasual)" },
+		 { word: "ありがとうございます", meaning: "Terima kasih (formal)" },
+		 { word: "どういたしまして", meaning: "Sama-sama" },
+		 { word: "すみません", meaning: "Permisi / Maaf" },
+		 { word: "ごめんなさい", meaning: "Maaf (kasual)" },
+		 { word: "もうしわけありませんでした", meaning: "Mohon maaf sekali" },
+		 { word: "たのみます", meaning: "Tolong" },
+		 { word: "よろしくおねがいします", meaning: "Mohon bantuannya" },
+		 { word: "いらっしゃいませ", meaning: "Selamat datang" },
+		 { word: "ようこそ／いらっしゃい", meaning: "Selamat datang" },
+		 { word: "いってきます", meaning: "Saya pergi" },
+		 { word: "いってらっしゃい", meaning: "Selamat jalan" },
+		 { word: "ただいま", meaning: "Saya pulang" },
+		 { word: "おかえりなさい", meaning: "Selamat datang kembali" },
+		 { word: "さようなら", meaning: "Selamat tinggal" },
+		 { word: "またあいましょう", meaning: "Sampai jumpa" },
+		 { word: "しつれいします", meaning: "Permisi (sopan)" },
+	     { word: "おさきにしつれいします", meaning: "Permisi duluan" },
+		 { word: "おつかれさまです", meaning: "Terima kasih atas kerja kerasnya" },
+		 { word: "いただきます", meaning: "Saya makan/minum" },
+		 { word: "ごちそうさまでした", meaning: "Terima kasih atas hidangannya" },
+		 { word: "おめでとうございます", meaning: "Selamat" },
+		 { word: "あけましておめでとうございます", meaning: "Selamat tahun baru" },
+		 { word: "きをつけてください", meaning: "Hati-hati ya" },
+		 { word: "おくやみもうしあげます", meaning: "Turut berduka cita" },
+		 { word: "おだいじに", meaning: "Semoga lekas sembuh" },
+		 { word: "どうぞ", meaning: "Silakan" } 
+      ],
+      "Angka": [
+        { word: "れい / ゼロ", meaning: "0" },
+		{ word: "いち", meaning: "1" },
+		{ word: "に", meaning: "2" },
+		{ word: "さん", meaning: "3" },
+		{ word: "し / よん", meaning: "4" },
+		{ word: "ご", meaning: "5" },
+		{ word: "ろく", meaning: "6" },
+		{ word: "しち / なな", meaning: "7" },
+		{ word: "はち", meaning: "8" },
+		{ word: "きゅう / く", meaning: "9" },
+		{ word: "じゅう", meaning: "10" },
+		{ word: "じゅういち", meaning: "11" },
+		{ word: "じゅうに", meaning: "12" },
+		{ word: "にじゅう", meaning: "20" },
+		{ word: "にじゅういち", meaning: "21" },
+		{ word: "にじゅうに", meaning: "22" },
+		{ word: "さんじゅう", meaning: "30" },
+		{ word: "よんじゅう", meaning: "40" },
+		{ word: "ごじゅう", meaning: "50" },
+		{ word: "ひゃく", meaning: "100" },
+		{ word: "にひゃく", meaning: "200" },
+		{ word: "さんびゃく", meaning: "300" },
+		{ word: "よんひゃく", meaning: "400" },
+		{ word: "ごひゃく", meaning: "500" },
+		{ word: "ろっぴゃく", meaning: "600" }, 
+		{ word: "ななひゃく", meaning: "700" },
+		{ word: "はっぴゃく", meaning: "800" }, 
+		{ word: "きゅうひゃく", meaning: "900" },
+		{ word: "せん", meaning: "1.000" },
+		{ word: "いちまん", meaning: "10.000" },
+		{ word: "ひゃくまん", meaning: "1.000.000" },
+		{ word: "いっせんまん", meaning: "10.000.000" },
+		{ word: "いちおく", meaning: "100.000.000" }
+      ],
+	  "Hitung": [
+        { word: "ひとつ", meaning: "1 buah" },
+		{ word: "ふたつ", meaning: "2 buah" },
+		{ word: "みっつ", meaning: "3 buah" },
+		{ word: "よっつ", meaning: "4 buah" },
+		{ word: "いつつ", meaning: "5 buah" },
+		{ word: "むっつ", meaning: "6 buah" },
+		{ word: "ななつ", meaning: "7 buah" },
+		{ word: "やっつ", meaning: "8 buah" },
+		{ word: "ここのつ", meaning: "9 buah" },
+		{ word: "とお", meaning: "10 buah" },
+		{ word: "いっぽん", meaning: "1 batang" },
+		{ word: "にほん", meaning: "2 batang" },
+		{ word: "さんぼん", meaning: "3 batang" },
+		{ word: "よんほん", meaning: "4 batang" },
+		{ word: "ごほん", meaning: "5 batang" },
+		{ word: "ろっぽん", meaning: "6 batang" },
+		{ word: "ななほん", meaning: "7 batang" },
+		{ word: "はっぽん", meaning: "8 batang" },
+		{ word: "きゅうほん", meaning: "9 batang" },
+		{ word: "じゅっぽん", meaning: "10 batang" },
+		{ word: "ひとり", meaning: "1 orang" },
+		{ word: "ふたり", meaning: "2 orang" },
+		{ word: "さんにん", meaning: "3 orang" },
+		{ word: "よにん", meaning: "4 orang" },
+		{ word: "ごにん", meaning: "5 orang" },
+		{ word: "ろくにん", meaning: "6 orang" },
+		{ word: "しちにん / ななにん", meaning: "7 orang" },
+		{ word: "はちにん", meaning: "8 orang" },
+		{ word: "きゅうにん", meaning: "9 orang" },
+		{ word: "じゅうにん", meaning: "10 orang" }
+      ],
+	"Hari": [
+        { word: "げつようび", meaning: "Senin" },
+		{ word: "かようび", meaning: "Selasa" },
+		{ word: "すいようび", meaning: "Rabu" },
+		{ word: "もくようび", meaning: "Kamis" },
+		{ word: "きんようび", meaning: "Jumat" },
+		{ word: "どようび", meaning: "Sabtu" },
+		{ word: "にちようび", meaning: "Minggu" }
+      ],
+	"Bulan": [
+        { word: "いちがつ", meaning: "Januari" },
+		{ word: "にがつ", meaning: "Februari" },
+		{ word: "さんがつ", meaning: "Maret" },
+		{ word: "しがつ", meaning: "April" },
+		{ word: "ごがつ", meaning: "Mei" },
+		{ word: "ろくがつ", meaning: "Juni" },
+		{ word: "しちがつ", meaning: "Juli" },
+		{ word: "はちがつ", meaning: "Agustus" },
+		{ word: "くがつ", meaning: "September" },
+		{ word: "じゅうがつ", meaning: "Oktober" },
+		{ word: "じゅういちがつ", meaning: "November" },
+		{ word: "じゅうにがつ", meaning: "Desember" }
+      ],
+	  "Tanggal": [
+        { word: "ついたち", meaning: "Tanggal 1" },
+		{ word: "ふつか", meaning: "Tanggal 2" },
+		{ word: "みっか", meaning: "Tanggal 3" },
+		{ word: "よっか", meaning: "Tanggal 4" },
+		{ word: "いつか", meaning: "Tanggal 5" },
+		{ word: "むいか", meaning: "Tanggal 6" },
+		{ word: "なのか", meaning: "Tanggal 7" },
+		{ word: "ようか", meaning: "Tanggal 8" },
+		{ word: "ここのか", meaning: "Tanggal 9" },
+		{ word: "とおか", meaning: "Tanggal 10" },
+		{ word: "じゅうよっか", meaning: "Tanggal 14" },
+		{ word: "じゅうしちにち", meaning: "Tanggal 17" },
+		{ word: "じゅうくにち", meaning: "Tanggal 19" },
+		{ word: "はつか", meaning: "Tanggal 20" },
+		{ word: "にじゅうよっか", meaning: "Tanggal 24" },
+		{ word: "にじゅうしちにち", meaning: "Tanggal 27" },
+		{ word: "にじゅうくにち", meaning: "Tanggal 29" },
+		{ word: "さんじゅうにち", meaning: "Tanggal 30" },
+		{ word: "さんじゅういちにち", meaning: "Tanggal 31" }
+      ],
+	  "Waktu": [
+        { word: "いちじ", meaning: "Jam 1" },
+		{ word: "にじ", meaning: "Jam 2" },
+		{ word: "さんじ", meaning: "Jam 3" },
+		{ word: "よじ", meaning: "Jam 4" },
+		{ word: "ごじ", meaning: "Jam 5" },
+		{ word: "ろくじ", meaning: "Jam 6" },
+		{ word: "しちじ / ななじ", meaning: "Jam 7" },
+		{ word: "はちじ", meaning: "Jam 8" },
+		{ word: "くじ", meaning: "Jam 9" },
+		{ word: "じゅうじ", meaning: "Jam 10" },
+		{ word: "じゅういちじ", meaning: "Jam 11" },
+		{ word: "じゅうにじ", meaning: "Jam 12" },
+		{ word: "いっぷん", meaning: "1 menit" },
+		{ word: "にふん", meaning: "2 menit" },
+		{ word: "さんぷん", meaning: "3 menit" },
+		{ word: "よんぷん", meaning: "4 menit" },
+		{ word: "ごふん", meaning: "5 menit" },
+		{ word: "ろっぷん", meaning: "6 menit" },
+		{ word: "ななふん", meaning: "7 menit" },
+		{ word: "はっぷん / はちふん", meaning: "8 menit" },
+		{ word: "きゅうふん", meaning: "9 menit" },
+		{ word: "じゅっぷん / じっぷん", meaning: "10 menit" },
+		{ word: "さんじゅっぷん / はん", meaning: "30 menit / setengah jam" }
+      ],
+	  "Tubuh": [
+        { word: "からだ", meaning: "Tubuh / Badan (Keseluruhan)" },
+		{ word: "せ", meaning: "Badan (Tinggi / Pendek)" },
+		{ word: "あたま", meaning: "Kepala" },
+		{ word: "かみ", meaning: "Rambut" },
+		{ word: "かお", meaning: "Wajah / Muka" },
+		{ word: "おでこ / ひたい", meaning: "Dahi" },
+		{ word: "め", meaning: "Mata" },
+		{ word: "みみ", meaning: "Telinga" },
+		{ word: "はな", meaning: "Hidung" },
+		{ word: "ほお / ほほ", meaning: "Pipi" },
+		{ word: "くち", meaning: "Mulut" },
+		{ word: "くちびる", meaning: "Bibir" },
+		{ word: "した", meaning: "Lidah" },
+		{ word: "は", meaning: "Gigi" },
+		{ word: "あご", meaning: "Dagu" },
+		{ word: "ひげ", meaning: "Jenggot / Kumis" },
+		{ word: "くび", meaning: "Leher" },
+		{ word: "のど", meaning: "Tenggorokan" },
+		{ word: "せなか", meaning: "Punggung" },
+		{ word: "かた", meaning: "Bahu" },
+		{ word: "うで", meaning: "Lengan" },
+		{ word: "ひじ", meaning: "Siku" },
+		{ word: "て", meaning: "Tangan" },
+		{ word: "ゆび", meaning: "Jari" },
+		{ word: "つめ", meaning: "Kuku" },
+		{ word: "むね", meaning: "Dada" },
+		{ word: "こし", meaning: "Pinggang" },
+		{ word: "おなか", meaning: "Perut" },
+		{ word: "ひざ", meaning: "Lutut" },
+		{ word: "あし", meaning: "Kaki" }
+      ],
+      "Warna": [
+        { word: "あか", meaning: "Merah" },
+		{ word: "あお", meaning: "Biru" },
+		{ word: "くろ", meaning: "Hitam" },
+		{ word: "しろ", meaning: "Putih" },
+		{ word: "きいろ", meaning: "Kuning" },
+		{ word: "みどり", meaning: "Hijau" },
+		{ word: "むらさき", meaning: "Ungu" },
+		{ word: "ちゃいろ", meaning: "Coklat" },
+		{ word: "はいいろ", meaning: "Abu-abu" },
+		{ word: "ももいろ", meaning: "Merah Muda (Pink)" },
+		{ word: "だいだいいろ", meaning: "Oranye" },
+		{ word: "オレンジ", meaning: "Oranye" },
+		{ word: "きんいろ", meaning: "Emas" },
+		{ word: "ぎんいろ", meaning: "Perak" }
+      ],
+	  "Rasa": [
+        { word: "うまみ", meaning: "Rasa Gurih" },
+		{ word: "うまい", meaning: "Enak" },
+		{ word: "おいしい", meaning: "Enak/Sedap" },
+		{ word: "まずい", meaning: "Tidak Enak" },
+		{ word: "あまみ", meaning: "Rasa Manis" },
+		{ word: "あまい", meaning: "Manis" },
+		{ word: "しおけ", meaning: "Rasa Asin" },
+		{ word: "しょっぱい", meaning: "Asin" },
+		{ word: "にがみ", meaning: "Rasa Pahit" },
+		{ word: "にがい", meaning: "Pahit" },
+		{ word: "からい", meaning: "Pedas" },
+		{ word: "こい", meaning: "Rasa Pekat/Kental" },
+		{ word: "うすい", meaning: "Rasa Tawar" }
+      ],
+	  "Ruang Kelas": [
+        { word: "きょうしつ", meaning: "Ruang Kelas" },
+		{ word: "クラス", meaning: "Kelas" },
+		{ word: "じゅぎょう", meaning: "Pelajaran" },
+		{ word: "きゅうけい", meaning: "Istirahat" },
+		{ word: "クラスメイト", meaning: "Teman Kelas" },
+		{ word: "しゃちょう", meaning: "Direktur Utama" },
+		{ word: "きょうし", meaning: "Guru (Profesi)" },
+		{ word: "せんせい", meaning: "Guru" },
+		{ word: "がくせい", meaning: "Pelajar" },
+		{ word: "せんぱい", meaning: "Senior" },
+		{ word: "こうはい", meaning: "Junior" },
+		{ word: "ともだち", meaning: "Teman" },
+		{ word: "ドア", meaning: "Pintu" },
+		{ word: "まど", meaning: "Jendela" },
+		{ word: "エアコン", meaning: "AC" },
+		{ word: "せんぷうき", meaning: "Kipas Angin" },
+		{ word: "でんき", meaning: "Listrik / Lampu" },
+		{ word: "スピーカー", meaning: "Speaker" },
+		{ word: "つくえ", meaning: "Meja" },
+		{ word: "てぶる", meaning: "Meja Makan" },
+		{ word: "いす", meaning: "Kursi" },
+		{ word: "カレンダー", meaning: "Kalender" },
+		{ word: "とけい", meaning: "Jam" },
+		{ word: "こくばん", meaning: "Papan Tulis Hitam" },
+		{ word: "ホワイトボード", meaning: "Papan Tulis Putih (Whiteboard)" },
+		{ word: "こくばんけし", meaning: "Penghapus Papan Tulis" },
+		{ word: "マーカー", meaning: "Spidol" },
+		{ word: "パソコン", meaning: "Laptop" },
+		{ word: "きょうかしょ", meaning: "Buku Pelajaran" },
+		{ word: "じしょ", meaning: "Kamus" },
+		{ word: "ほん", meaning: "Buku" },
+		{ word: "ノート", meaning: "Buku Catatan" },
+		{ word: "てちょう", meaning: "Buku Agenda / Catatan Kecil" },
+		{ word: "ペン", meaning: "Pulpen" },
+		{ word: "えんぴつ", meaning: "Pensil" },
+		{ word: "シャプペンシル", meaning: "Pensil Mekanik" },
+		{ word: "けしゴム", meaning: "Penghapus" },
+		{ word: "しゅせいえき", meaning: "Tipe-X (Penghapus Tinta)" },
+		{ word: "かばん", meaning: "Tas" },
+		{ word: "くつ", meaning: "Sepatu" },
+		{ word: "くつした", meaning: "Kaos Kaki" },
+		{ word: "スマホ", meaning: "Smartphone" }
+      ],
+      "Dapur": [
+        { word: "だいどころ", meaning: "Dapur" },
+		{ word: "キッチン", meaning: "Dapur" },
+		{ word: "ガスレンジ", meaning: "Kompor Gas" },
+		{ word: "フライパン", meaning: "Penggorengan / Wajan" },
+		{ word: "なべ", meaning: "Panci" },
+		{ word: "ヘラ", meaning: "Spatula" },
+		{ word: "おたま", meaning: "Centong Sayur" },
+		{ word: "やかん", meaning: "Ceret / Ketel" },
+		{ word: "ほうちょう", meaning: "Pisau Dapur" },
+		{ word: "まないた", meaning: "Talenan" },
+		{ word: "ふきん", meaning: "Lap Dapur" },
+		{ word: "ざる", meaning: "Saringan" },
+		{ word: "しょっき", meaning: "Perabot Makan" },
+		{ word: "さら", meaning: "Piring" },
+		{ word: "コップ", meaning: "Gelas / Cangkir" },
+		{ word: "ガラス", meaning: "Gelas" },
+		{ word: "カップ", meaning: "Cangkir" },
+		{ word: "スプーン", meaning: "Sendok" },
+		{ word: "はし", meaning: "Sumpit" },
+		{ word: "フォーク", meaning: "Garpu" },
+		{ word: "ナイフ", meaning: "Pisau" },
+		{ word: "れいぞうこ", meaning: "Kulkas" },
+		{ word: "すいはんき", meaning: "Rice Cooker / Penanak Nasi" },
+		{ word: "でんしレンジ", meaning: "Microwave" },
+		{ word: "オーブン", meaning: "Oven" },
+		{ word: "すいどう", meaning: "Saluran air keran" },
+		{ word: "じゃぐち", meaning: "Keran" }
+      ],
+	  "Lainnya 1": [
+        { word: "きょう", meaning: "Hari ini" },
+		{ word: "いま", meaning: "Sekarang" },
+		{ word: "あした", meaning: "Besok" },
+		{ word: "あさって", meaning: "Lusa" },
+		{ word: "きのう", meaning: "Kemarin" },
+		{ word: "おととい", meaning: "Kemarin lusa" },
+		{ word: "こんしゅう", meaning: "Minggu ini" },
+		{ word: "せんしゅう", meaning: "Minggu lalu" },
+		{ word: "らいしゅう", meaning: "Minggu depan" }
+	   ],
+	   "Lesson 1": [
+	   { word: "にほん (Nihon)", meaning: "Jepang" },
+	   { word: "アメリカ (Amerika)", meaning: "Amerika" },
+	   { word: "イタリア (Itaria)", meaning: "Italia" },
+	   { word: "オーストラリア (Ōsutoria)", meaning: "Australia" },
+	   { word: "かんこく (Kankoku)", meaning: "Korea" },
+	   { word: "ちゅうごく (Chūgoku)", meaning: "Cina / Tiongkok" },
+	   { word: "タイ (Tai)", meaning: "Thailand" },
+	   { word: "ロシア (Roshia)", meaning: "Rusia" },
+	   { word: "～じん (~jin)", meaning: "Orang" },
+	   { word: "どちら (dochira)", meaning: "Yang mana / Di mana" },
+	   { word: "国（くに）(kuni)", meaning: "Negara" },
+	   { word: "お国（くに）は (okuni wa)", meaning: "Dari negara mana?" },
+	   { word: "どちらですか (dochira desu ka)", meaning: "Yang mana? " },
+       { word: "(お)仕事（しごと）", meaning: "(Pekerjaan) kerja" },
+	   { word: "学生（がくせい）", meaning: "Siswa / Mahasiswa" },
+	   { word: "先生（せんせい）", meaning: "Guru / Dosen (sapaan)" },
+	   { word: "教師（きょうし）", meaning: "Guru (profesi, formal)" },
+	   { word: "会社員（かいしゃいん）", meaning: "Pegawai perusahaan" },
+	   { word: "社員（しゃいん）", meaning: "Pegawai perusahaan " },
+	   { word: "～さん", meaning: "Tuan/Nyonya/Nona" },
+	   { word: "そうですか", meaning: "Oh begitu ya?" },
+	   { word: "高校（こうこう）", meaning: "SMA)" },
+	   { word: "大学（だいがく）", meaning: "Universitas" },
+	   { word: "日本語学校（にほんご がっこう）", meaning: "Sekolah Bahasa Jepang" },
+	   { word: "誕生日（たんじょうび）", meaning: "Ulang tahun" },
+	   { word: "～月（～がつ）", meaning: "Bulan " },
+	   { word: "～日（～にち／か）", meaning: "Tanggal" },
+	   { word: "いつ", meaning: "Kapan" },
+	   { word: "趣味（しゅみ）", meaning: "Hobi" },
+	   { word: "スポーツ", meaning: "Olahraga" },
+	   { word: "サッカー", meaning: "Sepak bola" },
+	   { word: "テニス", meaning: "Tenis" },
+	   { word: "水泳（すいえい）", meaning: "Berenang" },
+	   { word: "映画（えいが）", meaning: "Film" },
+	   { word: "音楽（おんがく）", meaning: "Musik" },
+	   { word: "読書（どくしょ）", meaning: "Membaca" },
+	   { word: "旅行（りょこう）", meaning: "Jalan-jalan / Bepergian" },
+	   { word: "料理（りょうり）", meaning: "Memasak" },
+	   { word: "何（なん）", meaning: "Apa" }
+	   
+	   ],
+	  "Lesson 2": [
+	  { word: "喫煙所（きつえんじょ）", meaning: "Tempat merokok" },
+	  { word: "トイレ", meaning: "Toilet" },
+	  { word: "喫茶店（きっさてん）", meaning: "Cafe" },
+	  { word: "スーパー", meaning: "Supermarket" },
+	  { word: "１００円ショップ", meaning: "Toko serba 100 yen" },
+	  { word: "レストラン", meaning: "Restoran" },
+	  { word: "地下（ちか）", meaning: "Lantai bawah" },
+	  { word: "くつ", meaning: "Sepatu" },
+	  { word: "本（ほん）", meaning: "Buku" },
+	  { word: "ケーキ", meaning: "Kue" },
+	  { word: "パン", meaning: "Roti" },
+	  { word: "店員（てんいん）", meaning: "Pegawai toko" },
+	  { word: "～階（～かい）", meaning: "Lantai" },
+	  { word: "～屋（～や）", meaning: "Toko" },
+	  { word: "くつ屋（くつや）", meaning: "Toko sepatu" },
+	  { word: "いっかい", meaning: "Lantai 1" },
+	  { word: "にかい", meaning: "Lantai 2" },
+	  { word: "さんがい", meaning: "Lantai 3" },
+	  { word: "よんかい", meaning: "Lantai 4" },
+	  { word: "ごかい", meaning: "Lantai 5" },
+	  { word: "ろっかい", meaning: "Lantai 6" },
+	  { word: "ななかい", meaning: "Lantai 7" },
+	  { word: "はっかい", meaning: "Lantai 8" },
+	  { word: "きゅうかい", meaning: "Lantai 9" },
+	  { word: "じゅっかい", meaning: "Lantai 10" },
+	  { word: "なんかい", meaning: "Lantai berapa? (pertanyaan)" },
+	  { word: "ここ", meaning: "Di sini" },
+	  { word: "そこ", meaning: "Di situ" },
+	  { word: "あそこ", meaning: "Di sana" },
+	  { word: "どこ", meaning: "Di mana" },
+	  { word: "インフォメーション", meaning: "Informasi" },
+	  { word: "エスカレーター", meaning: "Eskalator" },
+	  { word: "エレベーター", meaning: "Lift" },
+	  { word: "レジ", meaning: "Kasir" },
+	  { word: "ATM（エーティーエム）", meaning: "ATM" },
+	  { word: "（どうも）ありがとうございます", meaning: "Terima kasih banyak" },
+	  { word: "カメラ", meaning: "Kamera" },
+	  { word: "携帯電話（けいたいでんわ）", meaning: "Telepon" },
+	  { word: "電子辞書（でんしじしょ）", meaning: "Kamus elektronik" },
+	  { word: "パソコン", meaning: "Laptop" },
+	  { word: "けしゴム", meaning: "Penghapus karet" },
+	  { word: "ペン", meaning: "Pena" },
+	  { word: "トイレットペーパー", meaning: "Tisu toilet" },
+	  { word: "油（あぶら）", meaning: "Minyak" },
+	  { word: "米（こめ）", meaning: "Beras" },
+	  { word: "卵（たまご）", meaning: "Telur" },
+	  { word: "水（みず）", meaning: "Air" },
+	  { word: "いらっしゃいませ", meaning: "Selamat datang" },
+	  { word: "これ", meaning: "Ini" },
+	  { word: "それ", meaning: "Itu" },
+	  { word: "あれ", meaning: "Itu" },
+	  { word: "～円（えん）", meaning: "Yen" },
+	  { word: "いくら", meaning: "Berapa" },
+	  { word: "この", meaning: "Ini" },
+	  { word: "その", meaning: "Itu" },
+	  { word: "あの", meaning: "Itu" },
+	  { word: "Tシャツ", meaning: "Kaos / T-shirt" },
+	  { word: "肉（にく）", meaning: "Daging" },
+	  { word: "鶏肉（とりにく）", meaning: "Daging ayam" },
+	  { word: "牛肉（ぎゅうにく）", meaning: "Daging sapi" },
+	  { word: "豚肉（ぶたにく）", meaning: "Daging babi" },
+	  { word: "魚（さかな）", meaning: "Ikan" },
+	  { word: "スープ", meaning: "Sup" },
+	  { word: "卵（たまご）", meaning: "Telur" },
+	  { word: "ケーキ", meaning: "Kue" },
+	  { word: "ジュース", meaning: "Jus" },
+	  { word: "いちご", meaning: "Stroberi" },
+	  { word: "りんご", meaning: "Apel" },
+	  { word: "料理（りょうり）", meaning: "Memasak" },
+	  { word: "～語（ご）", meaning: "Bahasa" },
+	  { word: "英語（えいご）", meaning: "Bahasa Inggris" },
+	  { word: "お茶（ちゃ）", meaning: "Teh (hijau)" },
+	  { word: "紅茶（こうちゃ）", meaning: "Teh hitam" },
+	  { word: "ワイン", meaning: "Anggur (minuman beralkohol)" },
+	  { word: "ビール", meaning: "Bir" },
+	  { word: "アメリカ", meaning: "Amerika" },
+	  { word: "ドイツ", meaning: "Jerman" },
+	  { word: "フランス", meaning: "Prancis" },
+	  { word: "インド", meaning: "India" },
+	  { word: "日本（にほん）", meaning: "Jepang" },
+	  { word: "インドネシア", meaning: "Indonesia" },
+	  { word: "韓国（かんこく）", meaning: "Korea Selatan" },
+	  { word: "パソコン", meaning: "Komputer (PC)" },
+	  { word: "ケーキ", meaning: "Kue" },
+	  { word: "紅茶（こうちゃ）", meaning: "Teh hitam" },
+	  { word: "カレー", meaning: "Kare (kari)" },
+	  { word: "ビール", meaning: "Bir" },
+	  { word: "とんかつ", meaning: "Babi goreng tepung" },
+	  { word: "コーヒー", meaning: "Kopi" },
+	  { word: "ハンバーグ", meaning: "Hamburger steak" },
+	  { word: "ごはん／ライス", meaning: "Nasi" },
+	  { word: "パン", meaning: "Roti" },
+	  { word: "ジュース", meaning: "Jus" },
+	  { word: "～つ", meaning: "Satuan benda (penghitung)" },
+	  { word: "注文（ちゅうもん）", meaning: "Pesanan" },
+	  { word: "ひとつ", meaning: "1 buah" },
+	  { word: "ふたつ", meaning: "2 buah" },
+	  { word: "みっつ", meaning: "3 buah" },
+	  { word: "よっつ", meaning: "4 buah" },
+	  { word: "いつつ", meaning: "5 buah" },
+	  { word: "むっつ", meaning: "6 buah" },
+	  { word: "ななつ", meaning: "7 buah" },
+	  { word: "やっつ", meaning: "8 buah" },
+	  { word: "ここのつ", meaning: "9 buah" },
+	  { word: "とお", meaning: "10 buah" },
+	  { word: "私（わたし）", meaning: "Saya" },
+	  { word: "ご馳走さまでした（ごちそうさまでした）", meaning: "Terima kasih atas makanannya" },
+	  { word: "鞄（かばん）", meaning: "Tas" },
+	  { word: "パソコン", meaning: "Laptop / Komputer pribadi" },
+	  { word: "携帯電話（けいたいでんわ）", meaning: "HP / Telepon genggam" },
+	  { word: "時計（とけい）", meaning: "Jam (tangan atau dinding)" },
+	  { word: "カメラ", meaning: "Kamera" }
+	  ],
+		  
+	 "Lesson 3": [
+	   { word: "Coming Soon!", meaning: "Coming Soon!" },
+		  ],
+		  
+		};
+
+    vocabulary["Semua"] = Object.values(vocabulary).flat().filter((item, index, self) =>
+      self.findIndex(i => i.word === item.word) === index
+    );
+
+    let categories = Object.keys(vocabulary);
+    let currentCategory = "Semua";
+    let timer;
+    let interval = "6.5";
+    let currentWord = "";
+    let currentMeaning = "";
+    let reverse = false;
+    let pickUpMode = false;
+    let usedWords = [];
+    let tableShown = false;
+    let autoShowMeaning = false;
+    
+    function createMenu() {
+      const menuDiv = document.getElementById("menu");
+      menuDiv.innerHTML = "";
+      categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.innerText = cat;
+        btn.classList.add("category-btn");
+        if (cat === currentCategory) btn.classList.add("active");
+        btn.onclick = () => {
+          currentCategory = cat;
+          updateActiveCategory();
+          usedWords = [];
+          randomWord();
+          if (tableShown) showAllWords();
+        };
+        menuDiv.appendChild(btn);
+      });
+    }
+
+    function updateActiveCategory() {
+      document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.innerText === currentCategory) btn.classList.add("active");
+      });
+    }
+
+    function randomWord() {
+      const words = vocabulary[currentCategory].filter(entry => !usedWords.includes(entry.word));
+      if (pickUpMode && words.length === 0) {
+        document.getElementById("word").innerText = "Semua sudah tampil...";
+        document.getElementById("meaning").innerText = "";
+        return;
+      }
+      const entry = words[Math.floor(Math.random() * words.length)];
+      if (entry) {
+        currentWord = reverse ? entry.meaning : entry.word;
+        currentMeaning = reverse ? entry.word : entry.meaning;
+        document.getElementById("word").innerText = currentWord;
+        document.getElementById("meaning").innerText = "";
+        let meaningDelay = Number(interval) / 2;
+
+        if (autoShowMeaning) {
+          setTimeout(() => {
+            document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
+          }, meaningDelay);
+        }
+
+        if (pickUpMode) usedWords.push(entry.word);
+      }
+    }
+
+    function showMeaning() {
+      document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
+    }
+
+    function setIntervalTime() {
+      clearInterval(timer);
+      interval = parseInt(document.getElementById("intervalInput").value);
+      interval = Number(interval) * 1000;
+      timer = setInterval(randomWord, interval);
+    }
+
+    function toggleLanguageMode() {
+      reverse = !reverse;
+      document.getElementById("toggleLangBtn").innerText = `Indo: ${reverse ? "ON" : "OFF"}`;
+      randomWord();
+      if (tableShown) showAllWords();
+    }
+
+    function togglePickUp() {
+      pickUpMode = !pickUpMode;
+      usedWords = [];
+      document.getElementById("togglePickBtn").innerText = `Pick Up: ${pickUpMode ? "ON" : "OFF"}`;
+      randomWord();
+    }
+
+    function toggleAutoShow() {
+      autoShowMeaning = !autoShowMeaning;
+      document.getElementById("toggleAutoShowBtn").innerText = `Arti: ${autoShowMeaning ? "ON" : "OFF"}`;
+      randomWord();
+    }
+
+    function showAllWords() {
+      const container = document.getElementById("tableContainer");
+      const list = vocabulary[currentCategory];
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const filteredList = list.filter(entry => {
+        const text = (entry.word + " " + entry.meaning).toLowerCase();
+        return text.includes(input);
+      });
+
+      const chunkSize = 20;
+      const totalPages = Math.ceil(filteredList.length / chunkSize);
+
+      function renderTable(page = 1) {
+        const start = (page - 1) * chunkSize;
+        const chunk = filteredList.slice(start, start + chunkSize);
+        let html = `<table id="dataTable"><thead><tr><th>No</th><th>${reverse ? "Indonesia" : "Jepang"}</th><th>${reverse ? "Jepang" : "Indonesia"}</th></tr></thead><tbody>`;
+        chunk.forEach((entry, index) => {
+          html += `<tr><td>${start + index + 1}</td><td>${reverse ? entry.meaning : entry.word}</td><td>${reverse ? entry.word : entry.meaning}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+
+        if (!input) {
+          html += `<div style="margin-top: 10px;">`;
+          for (let i = 1; i <= totalPages; i++) {
+            html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0040ff;color:white;' : ''}">${i}</button>`;
+          }
+          html += `</div>`;
+        }
+
+        container.innerHTML = html;
+      }
+
+      window.renderTable = renderTable;
+      renderTable(1);
+    }
+
+    function toggleShowTable() {
+      tableShown = !tableShown;
+      document.getElementById("toggleShowBtn").innerText = `Tabel: ${tableShown ? "ON" : "OFF"}`;
+      const searchInput = document.getElementById("searchInput");
+      if (tableShown) {
+        showAllWords();
+        searchInput.style.display = "block";
+      } else {
+        document.getElementById("tableContainer").innerHTML = "";
+        searchInput.style.display = "none";
+        searchInput.value = "";
+      }
+    }
+
+    function filterTable() {
+      showAllWords();
+    }
+
+    createMenu();
+    randomWord();
+    setIntervalTime();
+  </script>
+</body>
+</html>
