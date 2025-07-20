@@ -36,12 +36,36 @@
       color: black;
       cursor: pointer;
       transition: 0.3s;
+      min-width: 70px;
     }
 
     .category-btn.active {
-      background-color: #0040ff;
+      background-color: #de2923;
       color: white;
     }
+
+    /* Tombol navigasi panah */
+    .category-btn.nav-arrow {
+  background-color: #0040ff;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  transition: background-color 0.3s;
+  border: none;
+}
+
+.category-btn.nav-arrow:hover {
+  background-color: #002a99;
+  cursor: pointer;
+}
 
     #word {
       font-size: 3rem;
@@ -99,7 +123,7 @@
     }
 
     #applyBtn {
-      background-color: #ff0000;
+      background-color: #de2923;
     }
 
     table {
@@ -164,15 +188,15 @@
   <div class="menu" id="menu"></div>
   <div id="word" onclick="showMeaning()"></div>
   <div id="meaning"></div>
-  <button id="randomBtn" onclick="randomWord()">RANDOM</button>
+  <button id="randomBtn" onclick="randomWord()">NEXT</button>
   <div class="controls">
     <span>Detik:</span>
     <input type="number" id="intervalInput" value="6.5" />
     <button id="applyBtn" onclick="setIntervalTime()">Apply</button>
-    <button id="toggleLangBtn" onclick="toggleLanguageMode()">Indo: OFF</button>
-    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Arti: ON</button>
-    <button id="togglePickBtn" onclick="togglePickUp()">Pick Up: OFF</button>
-    <button id="toggleShowBtn" onclick="toggleShowTable()">Tabel: OFF</button>
+    <button id="toggleLangBtn" onclick="toggleLanguageMode()">ID: OFF</button>
+    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Spoiler: ON</button>
+    <button id="togglePickBtn" onclick="togglePickUp()">Looping: ON</button>
+    <button id="toggleShowBtn" onclick="toggleShowTable()">Table: OFF</button>
   </div>
   <input type="text" id="searchInput" placeholder="Cari kata..." oninput="filterTable()" />
   <div id="tableContainer"></div>
@@ -214,140 +238,241 @@
 		 { word: "どうぞ", meaning: "Silakan" } 
       ],
       "Angka": [
-        { word: "れい / ゼロ", meaning: "0" },
-		{ word: "いち", meaning: "1" },
-		{ word: "に", meaning: "2" },
-		{ word: "さん", meaning: "3" },
-		{ word: "し / よん", meaning: "4" },
-		{ word: "ご", meaning: "5" },
-		{ word: "ろく", meaning: "6" },
-		{ word: "しち / なな", meaning: "7" },
-		{ word: "はち", meaning: "8" },
-		{ word: "きゅう / く", meaning: "9" },
-		{ word: "じゅう", meaning: "10" },
-		{ word: "じゅういち", meaning: "11" },
-		{ word: "じゅうに", meaning: "12" },
-		{ word: "にじゅう", meaning: "20" },
-		{ word: "にじゅういち", meaning: "21" },
-		{ word: "にじゅうに", meaning: "22" },
-		{ word: "さんじゅう", meaning: "30" },
-		{ word: "よんじゅう", meaning: "40" },
-		{ word: "ごじゅう", meaning: "50" },
-		{ word: "ひゃく", meaning: "100" },
-		{ word: "にひゃく", meaning: "200" },
-		{ word: "さんびゃく", meaning: "300" },
-		{ word: "よんひゃく", meaning: "400" },
-		{ word: "ごひゃく", meaning: "500" },
-		{ word: "ろっぴゃく", meaning: "600" }, 
-		{ word: "ななひゃく", meaning: "700" },
-		{ word: "はっぴゃく", meaning: "800" }, 
-		{ word: "きゅうひゃく", meaning: "900" },
-		{ word: "せん", meaning: "1.000" },
-		{ word: "いちまん", meaning: "10.000" },
-		{ word: "ひゃくまん", meaning: "1.000.000" },
-		{ word: "いっせんまん", meaning: "10.000.000" },
-		{ word: "いちおく", meaning: "100.000.000" }
+        { "word": "一（いち）", "meaning": "1" },
+		  { "word": "二（に）", "meaning": "2" },
+		  { "word": "三（さん）", "meaning": "3" },
+		  { "word": "四（よん / し）", "meaning": "4" },
+		  { "word": "五（ご）", "meaning": "5" },
+		  { "word": "六（ろく）", "meaning": "6" },
+		  { "word": "七（なな / しち）", "meaning": "7" },
+		  { "word": "八（はち）", "meaning": "8" },
+		  { "word": "九（きゅう / く）", "meaning": "9" },
+		  { "word": "十（じゅう）", "meaning": "10" },
+		{ "word": "十一（じゅういち）", "meaning": "11" },
+  { "word": "十二（じゅうに）", "meaning": "12" },
+  { "word": "二十（にじゅう）", "meaning": "20" },
+  { "word": "二十一（にじゅういち）", "meaning": "21" },
+  { "word": "二十二（にじゅうに）", "meaning": "22" },
+  { "word": "三十（さんじゅう）", "meaning": "30" },
+  { "word": "四十（よんじゅう）", "meaning": "40" },
+  { "word": "五十（ごじゅう）", "meaning": "50" },
+  { "word": "百（ひゃく）", "meaning": "100" },
+  { "word": "二百（にひゃく）", "meaning": "200" },
+  { "word": "三百（さんびゃく）", "meaning": "300" },
+  { "word": "四百（よんひゃく）", "meaning": "400" },
+  { "word": "五百（ごひゃく）", "meaning": "500" },
+  { "word": "六百（ろっぴゃく）", "meaning": "600" },
+  { "word": "七百（ななひゃく）", "meaning": "700" },
+  { "word": "八百（はっぴゃく）", "meaning": "800" },
+  { "word": "九百（きゅうひゃく）", "meaning": "900" },
+  { "word": "千（せん）", "meaning": "1.000" },
+  { "word": "一万（いちまん）", "meaning": "10.000" },
+  { "word": "百万（ひゃくまん）", "meaning": "1.000.000" },
+  { "word": "一千万（いっせんまん）", "meaning": "10.000.000" },
+  { "word": "一億（いちおく）", "meaning": "100.000.000" }
       ],
 	  "Hitung": [
-        { word: "ひとつ", meaning: "1 buah" },
-		{ word: "ふたつ", meaning: "2 buah" },
-		{ word: "みっつ", meaning: "3 buah" },
-		{ word: "よっつ", meaning: "4 buah" },
-		{ word: "いつつ", meaning: "5 buah" },
-		{ word: "むっつ", meaning: "6 buah" },
-		{ word: "ななつ", meaning: "7 buah" },
-		{ word: "やっつ", meaning: "8 buah" },
-		{ word: "ここのつ", meaning: "9 buah" },
-		{ word: "とお", meaning: "10 buah" },
-		{ word: "いっぽん", meaning: "1 batang" },
-		{ word: "にほん", meaning: "2 batang" },
-		{ word: "さんぼん", meaning: "3 batang" },
-		{ word: "よんほん", meaning: "4 batang" },
-		{ word: "ごほん", meaning: "5 batang" },
-		{ word: "ろっぽん", meaning: "6 batang" },
-		{ word: "ななほん", meaning: "7 batang" },
-		{ word: "はっぽん", meaning: "8 batang" },
-		{ word: "きゅうほん", meaning: "9 batang" },
-		{ word: "じゅっぽん", meaning: "10 batang" },
-		{ word: "ひとり", meaning: "1 orang" },
-		{ word: "ふたり", meaning: "2 orang" },
-		{ word: "さんにん", meaning: "3 orang" },
-		{ word: "よにん", meaning: "4 orang" },
-		{ word: "ごにん", meaning: "5 orang" },
-		{ word: "ろくにん", meaning: "6 orang" },
-		{ word: "しちにん / ななにん", meaning: "7 orang" },
-		{ word: "はちにん", meaning: "8 orang" },
-		{ word: "きゅうにん", meaning: "9 orang" },
-		{ word: "じゅうにん", meaning: "10 orang" }
+	  { "word": "一台（いちだい）", "meaning": "1 unit" },
+  { "word": "二台（にだい）", "meaning": "2 unit" },
+  { "word": "三台（さんだい）", "meaning": "3 unit" },
+  { "word": "四台（よんだい）", "meaning": "4 unit" },
+  { "word": "五台（ごだい）", "meaning": "5 unit" },
+  { "word": "六台（ろくだい）", "meaning": "6 unit" },
+  { "word": "七台（ななだい）", "meaning": "7 unit" },
+  { "word": "八台（はちだい）", "meaning": "8 unit" },
+  { "word": "九台（きゅうだい）", "meaning": "9 unit" },
+  { "word": "十台（じゅうだい）", "meaning": "10 unit" },
+	  { "word": "一杯（いっぱい）", "meaning": "1 gelas" },
+  { "word": "二杯（にはい）", "meaning": "2 gelas" },
+  { "word": "三杯（さんばい）", "meaning": "3 gelas" },
+  { "word": "四杯（よんはい）", "meaning": "4 gelas" },
+  { "word": "五杯（ごはい）", "meaning": "5 gelas" },
+  { "word": "六杯（ろっぱい）", "meaning": "6 gelas" },
+  { "word": "七杯（ななはい）", "meaning": "7 gelas" },
+  { "word": "八杯（はっぱい）", "meaning": "8 gelas" },
+  { "word": "九杯（きゅうはい）", "meaning": "9 gelas" },
+  { "word": "十杯（じゅっぱい / じっぱい）", "meaning": "10 gelas" },
+	   { "word": "一冊（いっさつ）", "meaning": "1 buku" },
+  { "word": "二冊（にさつ）", "meaning": "2 buku" },
+  { "word": "三冊（さんさつ）", "meaning": "3 buku" },
+  { "word": "四冊（よんさつ）", "meaning": "4 buku" },
+  { "word": "五冊（ごさつ）", "meaning": "5 buku" },
+  { "word": "六冊（ろくさつ）", "meaning": "6 buku" },
+  { "word": "七冊（ななさつ）", "meaning": "7 buku" },
+  { "word": "八冊（はっさつ）", "meaning": "8 buku" },
+  { "word": "九冊（きゅうさつ）", "meaning": "9 buku" },
+  { "word": "十冊（じゅっさつ / じっさつ）", "meaning": "10 buku" },
+  { "word": "一枚（いちまい）", "meaning": "1 lembar" },
+  { "word": "二枚（にまい）", "meaning": "2 lembar" },
+  { "word": "三枚（さんまい）", "meaning": "3 lembar" },
+  { "word": "四枚（よんまい）", "meaning": "4 lembar" },
+  { "word": "五枚（ごまい）", "meaning": "5 lembar" },
+  { "word": "六枚（ろくまい）", "meaning": "6 lembar" },
+  { "word": "七枚（ななまい）", "meaning": "7 lembar" },
+  { "word": "八枚（はちまい）", "meaning": "8 lembar" },
+  { "word": "九枚（きゅうまい）", "meaning": "9 lembar" },
+  { "word": "十枚（じゅうまい）", "meaning": "10 lembar" },
+  { "word": "一つ（ひとつ）", "meaning": "1 buah" },
+  { "word": "二つ（ふたつ）", "meaning": "2 buah" },
+  { "word": "三つ（みっつ）", "meaning": "3 buah" },
+  { "word": "四つ（よっつ）", "meaning": "4 buah" },
+  { "word": "五つ（いつつ）", "meaning": "5 buah" },
+  { "word": "六つ（むっつ）", "meaning": "6 buah" },
+  { "word": "七つ（ななつ）", "meaning": "7 buah" },
+  { "word": "八つ（やっつ）", "meaning": "8 buah" },
+  { "word": "九つ（ここのつ）", "meaning": "9 buah" },
+  { "word": "十（とお）", "meaning": "10 buah" },
+  { "word": "一本（いっぽん）", "meaning": "1 batang" },
+  { "word": "二本（にほん）", "meaning": "2 batang" },
+  { "word": "三本（さんぼん）", "meaning": "3 batang" },
+  { "word": "四本（よんほん）", "meaning": "4 batang" },
+  { "word": "五本（ごほん）", "meaning": "5 batang" },
+  { "word": "六本（ろっぽん）", "meaning": "6 batang" },
+  { "word": "七本（ななほん）", "meaning": "7 batang" },
+  { "word": "八本（はっぽん）", "meaning": "8 batang" },
+  { "word": "九本（きゅうほん）", "meaning": "9 batang" },
+  { "word": "十本（じゅっぽん）", "meaning": "10 batang" },
+  { "word": "一回（いっかい）", "meaning": "1 kali" },
+  { "word": "二回（にかい）", "meaning": "2 kali" },
+  { "word": "三回（さんかい）", "meaning": "3 kali" },
+  { "word": "四回（よんかい）", "meaning": "4 kali" },
+  { "word": "五回（ごかい）", "meaning": "5 kali" },
+  { "word": "六回（ろっかい）", "meaning": "6 kali" },
+  { "word": "七回（ななかい）", "meaning": "7 kali" },
+  { "word": "八回（はっかい）", "meaning": "8 kali" },
+  { "word": "九回（きゅうかい）", "meaning": "9 kali" },
+  { "word": "十回（じゅっかい / じっかい）", "meaning": "10 kali" },
+  { "word": "一人（ひとり）", "meaning": "1 orang" },
+  { "word": "二人（ふたり）", "meaning": "2 orang" },
+  { "word": "三人（さんにん）", "meaning": "3 orang" },
+  { "word": "四人（よにん）", "meaning": "4 orang" },
+  { "word": "五人（ごにん）", "meaning": "5 orang" },
+  { "word": "六人（ろくにん）", "meaning": "6 orang" },
+  { "word": "七人（しちにん / ななにん）", "meaning": "7 orang" },
+  { "word": "八人（はちにん）", "meaning": "8 orang" },
+  { "word": "九人（きゅうにん）", "meaning": "9 orang" },
+  { "word": "十人（じゅうにん）", "meaning": "10 orang" },
+  { "word": "一匹（いっぴき）", "meaning": "1 ekor (Hewan Kecil)" },
+  { "word": "二匹（にひき）", "meaning": "2 ekor" },
+  { "word": "三匹（さんびき）", "meaning": "3 ekor" },
+  { "word": "四匹（よんひき）", "meaning": "4 ekor" },
+  { "word": "五匹（ごひき）", "meaning": "5 ekor" },
+  { "word": "六匹（ろっぴき）", "meaning": "6 ekor" },
+  { "word": "七匹（ななひき）", "meaning": "7 ekor" },
+  { "word": "八匹（はっぴき）", "meaning": "8 ekor" },
+  { "word": "九匹（きゅうひき）", "meaning": "9 ekor" },
+  { "word": "十匹（じゅっぴき / じっぴき）", "meaning": "10 ekor" },
+  { "word": "一頭（いっとう）", "meaning": "1 ekor (Hewan Besar)" },
+  { "word": "二頭（にとう）", "meaning": "2 ekor" },
+  { "word": "三頭（さんとう）", "meaning": "3 ekor" },
+  { "word": "四頭（よんとう）", "meaning": "4 ekor" },
+  { "word": "五頭（ごとう）", "meaning": "5 ekor" },
+  { "word": "六頭（ろくとう）", "meaning": "6 ekor" },
+  { "word": "七頭（ななとう）", "meaning": "7 ekor" },
+  { "word": "八頭（はっとう）", "meaning": "8 ekor" },
+  { "word": "九頭（きゅうとう）", "meaning": "9 ekor" },
+  { "word": "十頭（じゅっとう / じっとう）", "meaning": "10 ekor" },
+  { "word": "一羽（いちわ）", "meaning": "1 ekor (Burung/Kelinci)" },
+  { "word": "二羽（にわ）", "meaning": "2 ekor" },
+  { "word": "三羽（さんわ）", "meaning": "3 ekor" },
+  { "word": "四羽（よんわ）", "meaning": "4 ekor" },
+  { "word": "五羽（ごわ）", "meaning": "5 ekor" },
+  { "word": "六羽（ろくわ）", "meaning": "6 ekor" },
+  { "word": "七羽（ななわ）", "meaning": "7 ekor" },
+  { "word": "八羽（はちわ）", "meaning": "8 ekor" },
+  { "word": "九羽（きゅうわ）", "meaning": "9 ekor" },
+  { "word": "十羽（じゅうわ）", "meaning": "10 ekor" },
+  { "word": "一階（いっかい）", "meaning": "Lantai 1" },
+  { "word": "二階（にかい）", "meaning": "Lantai 2" },
+  { "word": "三階（さんがい）", "meaning": "Lantai 3" },
+  { "word": "四階（よんかい）", "meaning": "Lantai 4" },
+  { "word": "五階（ごかい）", "meaning": "Lantai 5" },
+  { "word": "六階（ろっかい）", "meaning": "Lantai 6" },
+  { "word": "七階（ななかい）", "meaning": "Lantai 7" },
+  { "word": "八階（はっかい）", "meaning": "Lantai 8" },
+  { "word": "九階（きゅうかい）", "meaning": "Lantai 9" },
+  { "word": "十階（じゅっかい / じっかい）", "meaning": "Lantai 10" }
       ],
 	"Hari": [
-        { word: "げつようび", meaning: "Senin" },
-		{ word: "かようび", meaning: "Selasa" },
-		{ word: "すいようび", meaning: "Rabu" },
-		{ word: "もくようび", meaning: "Kamis" },
-		{ word: "きんようび", meaning: "Jumat" },
-		{ word: "どようび", meaning: "Sabtu" },
-		{ word: "にちようび", meaning: "Minggu" }
+         { "word": "月曜日（げつようび）", "meaning": "Senin" },
+		  { "word": "火曜日（かようび）", "meaning": "Selasa" },
+		  { "word": "水曜日（すいようび）", "meaning": "Rabu" },
+		  { "word": "木曜日（もくようび）", "meaning": "Kamis" },
+		  { "word": "金曜日（きんようび）", "meaning": "Jumat" },
+		  { "word": "土曜日（どようび）", "meaning": "Sabtu" },
+		  { "word": "日曜日（にちようび）", "meaning": "Minggu" }
       ],
 	"Bulan": [
-        { word: "いちがつ", meaning: "Januari" },
-		{ word: "にがつ", meaning: "Februari" },
-		{ word: "さんがつ", meaning: "Maret" },
-		{ word: "しがつ", meaning: "April" },
-		{ word: "ごがつ", meaning: "Mei" },
-		{ word: "ろくがつ", meaning: "Juni" },
-		{ word: "しちがつ", meaning: "Juli" },
-		{ word: "はちがつ", meaning: "Agustus" },
-		{ word: "くがつ", meaning: "September" },
-		{ word: "じゅうがつ", meaning: "Oktober" },
-		{ word: "じゅういちがつ", meaning: "November" },
-		{ word: "じゅうにがつ", meaning: "Desember" }
+        { "word": "一月（いちがつ）", "meaning": "Januari" },
+	    { "word": "二月（にがつ）", "meaning": "Februari" },
+	    { "word": "三月（さんがつ）", "meaning": "Maret" },
+	    { "word": "四月（しがつ）", "meaning": "April" },
+	    { "word": "五月（ごがつ）", "meaning": "Mei" },
+	    { "word": "六月（ろくがつ）", "meaning": "Juni" },
+	    { "word": "七月（しちがつ）", "meaning": "Juli" },
+	    { "word": "八月（はちがつ）", "meaning": "Agustus" },
+	    { "word": "九月（くがつ）", "meaning": "September" },
+	    { "word": "十月（じゅうがつ）", "meaning": "Oktober" },
+	    { "word": "十一月（じゅういちがつ）", "meaning": "November" },
+	    { "word": "十二月（じゅうにがつ）", "meaning": "Desember" }
       ],
 	  "Tanggal": [
-        { word: "ついたち", meaning: "Tanggal 1" },
-		{ word: "ふつか", meaning: "Tanggal 2" },
-		{ word: "みっか", meaning: "Tanggal 3" },
-		{ word: "よっか", meaning: "Tanggal 4" },
-		{ word: "いつか", meaning: "Tanggal 5" },
-		{ word: "むいか", meaning: "Tanggal 6" },
-		{ word: "なのか", meaning: "Tanggal 7" },
-		{ word: "ようか", meaning: "Tanggal 8" },
-		{ word: "ここのか", meaning: "Tanggal 9" },
-		{ word: "とおか", meaning: "Tanggal 10" },
-		{ word: "じゅうよっか", meaning: "Tanggal 14" },
-		{ word: "じゅうしちにち", meaning: "Tanggal 17" },
-		{ word: "じゅうくにち", meaning: "Tanggal 19" },
-		{ word: "はつか", meaning: "Tanggal 20" },
-		{ word: "にじゅうよっか", meaning: "Tanggal 24" },
-		{ word: "にじゅうしちにち", meaning: "Tanggal 27" },
-		{ word: "にじゅうくにち", meaning: "Tanggal 29" },
-		{ word: "さんじゅうにち", meaning: "Tanggal 30" },
-		{ word: "さんじゅういちにち", meaning: "Tanggal 31" }
+        { word: " 一日（ついたち）", meaning: "Tanggal 1" },
+		{ "word": "二日（ふつか）", "meaning": "Tanggal 2" },
+  { "word": "三日（みっか）", "meaning": "Tanggal 3" },
+  { "word": "四日（よっか）", "meaning": "Tanggal 4" },
+  { "word": "五日（いつか）", "meaning": "Tanggal 5" },
+  { "word": "六日（むいか）", "meaning": "Tanggal 6" },
+  { "word": "七日（なのか）", "meaning": "Tanggal 7" },
+  { "word": "八日（ようか）", "meaning": "Tanggal 8" },
+  { "word": "九日（ここのか）", "meaning": "Tanggal 9" },
+  { "word": "十日（とおか）", "meaning": "Tanggal 10" },
+  { "word": "十一日（じゅういちにち）", "meaning": "Tanggal 11" },
+  { "word": "十二日（じゅうににち）", "meaning": "Tanggal 12" },
+  { "word": "十三日（じゅうさんにち）", "meaning": "Tanggal 13" },
+  { "word": "十四日（じゅうよっか）", "meaning": "Tanggal 14" },
+  { "word": "十五日（じゅうごにち）", "meaning": "Tanggal 15" },
+  { "word": "十六日（じゅうろくにち）", "meaning": "Tanggal 16" },
+  { "word": "十七日（じゅうしちにち / じゅうななにち）", "meaning": "Tanggal 17" },
+  { "word": "十八日（じゅうはちにち）", "meaning": "Tanggal 18" },
+  { "word": "十九日（じゅうくにち）", "meaning": "Tanggal 19" },
+  { "word": "二十日（はつか）", "meaning": "Tanggal 20" },
+  { "word": "二十一日（にじゅういちにち）", "meaning": "Tanggal 21" },
+  { "word": "二十二日（にじゅうににち）", "meaning": "Tanggal 22" },
+  { "word": "二十三日（にじゅうさんにち）", "meaning": "Tanggal 23" },
+  { "word": "二十四日（にじゅうよっか）", "meaning": "Tanggal 24" },
+  { "word": "二十五日（にじゅうごにち）", "meaning": "Tanggal 25" },
+  { "word": "二十六日（にじゅうろくにち）", "meaning": "Tanggal 26" },
+  { "word": "二十七日（にじゅうしちにち / にじゅうななにち）", "meaning": "Tanggal 27" },
+  { "word": "二十八日（にじゅうはちにち）", "meaning": "Tanggal 28" },
+  { "word": "二十九日（にじゅうくにち）", "meaning": "Tanggal 29" },
+  { "word": "三十日（さんじゅうにち）", "meaning": "Tanggal 30" },
+  { "word": "三十一日（さんじゅういちにち）", "meaning": "Tanggal 31" }
       ],
 	  "Waktu": [
-        { word: "いちじ", meaning: "Jam 1" },
-		{ word: "にじ", meaning: "Jam 2" },
-		{ word: "さんじ", meaning: "Jam 3" },
-		{ word: "よじ", meaning: "Jam 4" },
-		{ word: "ごじ", meaning: "Jam 5" },
-		{ word: "ろくじ", meaning: "Jam 6" },
-		{ word: "しちじ / ななじ", meaning: "Jam 7" },
-		{ word: "はちじ", meaning: "Jam 8" },
-		{ word: "くじ", meaning: "Jam 9" },
-		{ word: "じゅうじ", meaning: "Jam 10" },
-		{ word: "じゅういちじ", meaning: "Jam 11" },
-		{ word: "じゅうにじ", meaning: "Jam 12" },
-		{ word: "いっぷん", meaning: "1 menit" },
-		{ word: "にふん", meaning: "2 menit" },
-		{ word: "さんぷん", meaning: "3 menit" },
-		{ word: "よんぷん", meaning: "4 menit" },
-		{ word: "ごふん", meaning: "5 menit" },
-		{ word: "ろっぷん", meaning: "6 menit" },
-		{ word: "ななふん", meaning: "7 menit" },
-		{ word: "はっぷん / はちふん", meaning: "8 menit" },
-		{ word: "きゅうふん", meaning: "9 menit" },
-		{ word: "じゅっぷん / じっぷん", meaning: "10 menit" },
-		{ word: "さんじゅっぷん / はん", meaning: "30 menit / setengah jam" }
+        { "word": "一時（いちじ）", "meaning": "Jam 1" },
+	  { "word": "二時（にじ）", "meaning": "Jam 2" },
+	  { "word": "三時（さんじ）", "meaning": "Jam 3" },
+	  { "word": "四時（よじ）", "meaning": "Jam 4" },
+	  { "word": "五時（ごじ）", "meaning": "Jam 5" },
+	  { "word": "六時（ろくじ）", "meaning": "Jam 6" },
+	  { "word": "七時（しちじ / ななじ）", "meaning": "Jam 7" },
+	  { "word": "八時（はちじ）", "meaning": "Jam 8" },
+	  { "word": "九時（くじ）", "meaning": "Jam 9" },
+	  { "word": "十時（じゅうじ）", "meaning": "Jam 10" },
+	  { "word": "十一時（じゅういちじ）", "meaning": "Jam 11" },
+	  { "word": "十二時（じゅうにじ）", "meaning": "Jam 12" },
+	  { "word": "一分（いっぷん）", "meaning": "1 menit" },
+	  { "word": "二分（にふん）", "meaning": "2 menit" },
+	  { "word": "三分（さんぷん）", "meaning": "3 menit" },
+	  { "word": "四分（よんぷん）", "meaning": "4 menit" },
+	  { "word": "五分（ごふん）", "meaning": "5 menit" },
+	  { "word": "六分（ろっぷん）", "meaning": "6 menit" },
+	  { "word": "七分（ななふん）", "meaning": "7 menit" },
+	  { "word": "八分（はっぷん / はちふん）", "meaning": "8 menit" },
+	  { "word": "九分（きゅうふん）", "meaning": "9 menit" },
+	  { "word": "十分（じゅっぷん / じっぷん）", "meaning": "10 menit" },
+	  { "word": "三十分（さんじゅっぷん） / 半（はん）", "meaning": "30 menit / setengah jam" }
       ],
 	  "Tubuh": [
         { word: "からだ", meaning: "Tubuh / Badan (Keseluruhan)" },
@@ -486,30 +611,173 @@
 		{ word: "じゃぐち", meaning: "Keran" }
       ],
 	  "Kata Kerja": [
-  { word: "たべます", meaning: "Makan" },
-  { word: "のみます", meaning: "Minum" },
-  { word: "いきます", meaning: "Pergi" },
-  { word: "きます", meaning: "Datang" },
-  { word: "かえります", meaning: "Pulang / Kembali" },
-  { word: "みます", meaning: "Melihat / Menonton" },
-  { word: "ききます", meaning: "Mendengar / Mendengarkan" },
-  { word: "よみます", meaning: "Membaca" },
-  { word: "かきます", meaning: "Menulis / Menggambar" },
-  { word: "はなします", meaning: "Berbicara / Bicara" },
-  { word: "かいます", meaning: "Membeli" },
-  { word: "べんきょうします", meaning: "Belajar" },
-  { word: "ねます", meaning: "Tidur" },
-  { word: "おきます", meaning: "Bangun" },
-  { word: "はたらきます", meaning: "Bekerja" },
-  { word: "やすみます", meaning: "Istirahat" },
-  { word: "あそびます", meaning: "Vermain" },
-  { word: "つくります", meaning: "Membuat" },
-  { word: "つかいます", meaning: "Menggunakan" },
-  { word: "あけます", meaning: "Membuka (pintu/toko)" },
-  { word: "しめます", meaning: "Menutup (pintu/toko)" },
-  { word: "はいります", meaning: "Masuk" },
-  { word: "でます", meaning: "Keluar" }
+  { "word": "飲む, のむ, のみます, のんで", "meaning": "Minum" },
+{ "word": "食べる, たべる, たべます, たべて", "meaning": "Makan" },
+{ "word": "する, します, して", "meaning": "Melakukan / melakukan" },
+{ "word": "見る, みる, みます, みて", "meaning": "Melihat" },
+{ "word": "帰る, かえる, かえります, かえって", "meaning": "Pulang" },
+{ "word": "行く, いく, いきます, いって", "meaning": "Pergi ke" },
+{ "word": "来る, くる, きます, きて", "meaning": "Datang" },
+{ "word": "スキーをする, スキーをします, スキーをして", "meaning": "Bermain ski" },
+{ "word": "読む, よむ, よみます, よんで", "meaning": "Membaca" },
+{ "word": "勉強する, べんきょうする, べんきょうします, べんきょうして", "meaning": "Belajar" },
+{ "word": "聞く, きく, ききます, きいて", "meaning": "Mendengar / Bertanya" },
+{ "word": "買う, かう, かいます, かって", "meaning": "Membeli" },
+{ "word": "寝る, ねる, ねます, ねて", "meaning": "Tidur" },
+{ "word": "起きる, おきる, おきます, おきて", "meaning": "Bangun (dari tidur)" },
+{ "word": "働く, はたらく, はたらきます, はたらいて", "meaning": "Bekerja" },
+{ "word": "歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
+{ "word": "ある, あります, あって", "meaning": "Ada (untuk benda mati)" },
+{ "word": "会う, あう, あいます, あって", "meaning": "Bertemu" },
+{ "word": "買い物する, かいものする, かいものします, かいものして", "meaning": "Berbelanja" },
+{ "word": "洗濯する, せんたくする, せんたくします, せんたくして", "meaning": "Mencuci (pakaian)" },
+{ "word": "掃除する, そうじする, そうじします, そうじして", "meaning": "Membersihkan" },
+{ "word": "作る, つくる, つくります, つくって", "meaning": "Membuat" },
+{ "word": "食事する, しょくじする, しょくじします, しょくじして", "meaning": "Makan / melakukan makan" },
+{ "word": "登る, のぼる, のぼります, のぼって", "meaning": "Mendaki (ke tempat tinggi)" },
+{ "word": "入る, はいる, はいります, はいって", "meaning": "Masuk ke〜" },
+{ "word": "撮る, とる, とります, とって", "meaning": "Mengambil (foto)" },
+{ "word": "借りる, かりる, かります, かりて", "meaning": "Meminjam" },
+{ "word": "遊ぶ, あそぶ, あそびます, あそんで", "meaning": "Bermain" },
+{ "word": "開ける, あける, あけます, あけて", "meaning": "Membuka" },
+{ "word": "閉める, しめる, しめます, しめて", "meaning": "Menutup" },
+{ "word": "持つ, もつ, もちます, もって", "meaning": "Membawa" },
+{ "word": "持ってくる, もってくる, もってきます, もってきて", "meaning": "Membawa ke sini" },
+{ "word": "吸う, すう, すいます, すって", "meaning": "Menghirup / Merokok" },
+{ "word": "歌う, うたう, うたいます, うたって", "meaning": "Menyanyi" },
+{ "word": "弾く, ひく, ひきます, ひいて", "meaning": "Memainkan (alat musik)" },
+{ "word": "かける, かけます, かけて", "meaning": "Menelepon" },
+{ "word": "話す, はなす, はなします, はなして", "meaning": "Berbicara" },
+{ "word": "教える, おしえる, おしえます, おしえて", "meaning": "Mengajarkan / Memberi tahu" },
+{ "word": "切る, きる, きります, きって", "meaning": "Memotong" },
+{ "word": "手伝う, てつだう, てつだいます, てつだって", "meaning": "Membantu" },
+{ "word": "洗う, あらう, あらいます, あらって", "meaning": "Mencuci" },
+{ "word": "書く, かく, かきます, かいて", "meaning": "Menulis" },
+{ "word": "入れる, いれる, いれます, いれて", "meaning": "Memasukkan" },
+{ "word": "出す, だす, だします, だして", "meaning": "Mengeluarkan" },
+{ "word": "貸す, かす, かします, かして", "meaning": "Meminjamkan" },
+{ "word": "取る, とる, とります, とって", "meaning": "Mengambil" },
+{ "word": "置く, おく, おきます, おいて", "meaning": "Meletakkan" },
+{ "word": "使う, つかう, つかいます, つかって", "meaning": "Menggunakan" },
+{ "word": "持って行く, もっていく, もっていきます, もっていって", "meaning": "Membawa pergi" },
+{ "word": "死ぬ, しぬ, しにます, しんで", "meaning": "Mati" },
+{ "word": "住む, すむ, すみます, すんで", "meaning": "Tinggal" },
+{ "word": "いる, います, いて", "meaning": "Ada (makhluk hidup)" },
+{ "word": "電話をする, でんわをする, でんわをします, でんわをして", "meaning": "Menelepon" },
+{ "word": "送る, おくる, おくります, おくって", "meaning": "Mengirim" },
+{ "word": "あげる, あげます, あげて", "meaning": "Memberi (kepada orang lain)" },
+{ "word": "もらう, もらいます, もらって", "meaning": "Menerima" },
+{ "word": "くれる, くれます, くれて", "meaning": "Memberi (kepada saya)" },
+{ "word": "できる, できます, できて", "meaning": "Bisa" },
+{ "word": "参加する, さんかする, さんかします, さんかして", "meaning": "Ikut serta dalam〜" },
+{ "word": "習う, ならう, ならいます, ならって", "meaning": "Belajar〜" },
+{ "word": "乗る, のる, のります, のって", "meaning": "Naik〜" },
+{ "word": "申し込む, もうしこむ, もうしこみます, もうしこんで", "meaning": "Mendaftar" },
+{ "word": "絵をかく, えをかく, えをかきます, えをかいて", "meaning": "Melukis / Menggambar" },
+{ "word": "泳ぐ, およぐ, およぎます, およいで", "meaning": "Berenang" },
+{ "word": "言う, いう, いいます, いって", "meaning": "Mengatakan" },
+{ "word": "払う, はらう, はらいます, はらって", "meaning": "Membayar" },
+{ "word": "降りる, おりる, おります, おりて", "meaning": "Turun dari〜" },
+{ "word": "見せる, みせる, みせます, みせて", "meaning": "Memperlihatkan" },
+{ "word": "予約する, よやくする, よやくします, よやくして", "meaning": "Memesan / Reservasi" },
+{ "word": "運転する, うんてんする, うんてんします, うんてんして", "meaning": "Menyetir" },
+{ "word": "集める, あつめる, あつめます, あつめて", "meaning": "Mengumpulkan" },
+{ "word": "探す, さがす, さがします, さがして", "meaning": "Mencari" },
+{ "word": "見える, みえる, みえます, みえて", "meaning": "Terlihat" },
+{ "word": "聞こえる, きこえる, きこえます, きこえて", "meaning": "Terdengar" },
+{ "word": "渡る, わたる, わたります, わたって", "meaning": "Menyeberang" },
+{ "word": "曲がる, まがる, まがります, まがって", "meaning": "Belok" },
+{ "word": "座る, すわる, すわります, すわって", "meaning": "Duduk di" },
+{ "word": "押す, おす, おします, おして", "meaning": "Mendorong" },
+{ "word": "立つ, たつ, たちます, たって", "meaning": "Berdiri" },
+{ "word": "なくす, なくします, なくして", "meaning": "Kehilangan" },
+{ "word": "遅れる, おくれる, おくれます, おくれて", "meaning": "Terlambat" },
+{ "word": "集合する, しゅうごうする, しゅうごうします, しゅうごうして", "meaning": "Berkumpul (bentuk sopan)" },
+{ "word": "持って帰る, もってかえる, もってかえります, もってかえって", "meaning": "Membawa pulang" },
+{ "word": "飛ぶ, とぶ, とびます, とんで", "meaning": "Terbang" },
+{ "word": "歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
+{ "word": "休む, やすむ, やすみます, やすんで", "meaning": "Istirahat" },
+{ "word": "お腹がすく, おなかがすく, おなかがすきます, おなかがすいて", "meaning": "Lapar" },
+{ "word": "喉が渇く, のどがかわく, のどがかわきます, のどがかわいて", "meaning": "Haus" },
+{ "word": "疲れる, つかれる, つかれます, つかれて", "meaning": "Lelah" },
+{ "word": "やる, やります, やって", "meaning": "Melakukan (bentuk informal)" },
+{ "word": "なる, なります, なって", "meaning": "Menjadi" },
+{ "word": "慣れる, なれる, なれます, なれて", "meaning": "Terbiasa" },
+{ "word": "終わる, おわる, おわります, おわって", "meaning": "Selesai" },
+{ "word": "通う, かよう, かよいます, かよって", "meaning": "Pergi (rutin)" },
+{ "word": "散歩する, さんぽする, さんぽします, さんぽして", "meaning": "Jalan-jalan" },
+{ "word": "風をひく, かぜをひく, かぜをひきます, かぜをひいて", "meaning": "Masuk angin" },
+{ "word": "学校を休む, がっこうをやすむ, がっこうをやすみます, がっこうをやすんで", "meaning": "Tidak masuk sekolah" },
+{ "word": "忘れる, わすれる, わすれます, わすれて", "meaning": "Lupa" },
+{ "word": "卒業する, そつぎょうする, そつぎょうします, そつぎょうして", "meaning": "Lulus" },
+{ "word": "入学する, にゅうがくする, にゅうがくします, にゅうがくして", "meaning": "Masuk sekolah/perguruan tinggi" },
+{ "word": "別れる, わかれる, わかれます, わかれて", "meaning": "Berpisah" },
+{ "word": "始める, はじめる, はじめます, はじめて", "meaning": "Memulai" },
+{ "word": "消す, けす, けします, けして", "meaning": "Mematikan (alat listrik)" },
+{ "word": "つける, つけます, つけて", "meaning": "Menyalakan" },
+{ "word": "引っ越しする, ひっこしする, ひっこしします, ひっこしして", "meaning": "Pindah rumah" }
       ],
+	    "Kata Sifat-i": [
+	     { "word": "新しい（あたらしい）", "meaning": "Baru" },
+  { "word": "古い（ふるい）", "meaning": "Lama / tua (benda)" },
+  { "word": "大きい（おおきい）", "meaning": "Besar" },
+  { "word": "小さい（ちいさい）", "meaning": "Kecil" },
+  { "word": "高い（たかい）", "meaning": "Tinggi / mahal" },
+  { "word": "低い（ひくい）", "meaning": "Rendah" },
+  { "word": "多い（おおい）", "meaning": "Banyak" },
+  { "word": "少ない（すくない）", "meaning": "Sedikit" },
+  { "word": "暑い（あつい）", "meaning": "Panas (cuaca)" },
+  { "word": "寒い（さむい）", "meaning": "Dingin (cuaca)" },
+  { "word": "暖かい（あたたかい）", "meaning": "Hangat" },
+  { "word": "涼しい（すずしい）", "meaning": "Sejuk" },
+  { "word": "熱い（あつい）", "meaning": "Panas (untuk benda/minuman)" },
+  { "word": "冷たい（つめたい）", "meaning": "Dingin (untuk benda/minuman)" },
+  { "word": "おいしい", "meaning": "Enak / Lezat" },
+  { "word": "甘い（あまい）", "meaning": "Manis" },
+  { "word": "辛い（からい）", "meaning": "Pedas" },
+  { "word": "苦い（にがい）", "meaning": "Pahit" },
+  { "word": "すっぱい", "meaning": "Asam" },
+  { "word": "楽しい（たのしい）", "meaning": "Menyenangkan / seru" },
+  { "word": "忙しい（いそがしい）", "meaning": "Sibuk" },
+  { "word": "難しい（むずかしい）", "meaning": "Sulit / susah" },
+  { "word": "近い（ちかい）", "meaning": "Dekat" },
+  { "word": "遠い（とおい）", "meaning": "Jauh" },
+  { "word": "早い（はやい）", "meaning": "Cepat / Awal" },
+  { "word": "広い（ひろい）", "meaning": "Luas" },
+  { "word": "少し（すこし）", "meaning": "Sedikit" },
+  { "word": "かわいい", "meaning": "Lucu / imut" },
+  { "word": "かっこいい", "meaning": "Keren" },
+  { "word": "背が低い（せがひくい）", "meaning": "Bertubuh pendek" },
+  { "word": "背が高い（せがたかい）", "meaning": "Bertubuh tinggi" },
+  { "word": "短い（みじかい）", "meaning": "Pendek" },
+  { "word": "長い（ながい）", "meaning": "Panjang" },
+  { "word": "茶色い（ちゃいろい）", "meaning": "Cokelat" },
+  { "word": "白い（しろい）", "meaning": "Putih" },
+  { "word": "黒い（くろい）", "meaning": "Hitam" },
+  { "word": "優しい（やさしい）", "meaning": "Baik hati / ramah" },
+  { "word": "すごい", "meaning": "Hebat" },
+  { "word": "痛い（いたい）", "meaning": "Sakit (rasa sakit)" },
+  { "word": "暗い（くらい）", "meaning": "Gelap" },
+  { "word": "寂しい（さびしい）", "meaning": "Kesepian" }
+		  ],
+		    "Kata Sifat-na": [
+	    { "word": "静か（しずか）", "meaning": "Tenang" },
+	   { "word": "にぎやか", "meaning": "Ramai" },
+	   { "word": "きれい", "meaning": "Indah / bersih / cantik" },
+	   { "word": "有名（ゆうめい）", "meaning": "Terkenal" },
+	   { "word": "ひま", "meaning": "Senggang / waktu luang" },
+	   { "word": "大変（たいへん）", "meaning": "Berat / sulit / parah" },
+	   { "word": "簡単（かんたん）", "meaning": "Mudah / gampang" },
+	   { "word": "好き（すき）", "meaning": "Suka" },
+	   { "word": "嫌い（きらい）", "meaning": "Tidak suka / benci" },
+	   { "word": "残念（ざんねん）", "meaning": "Sayang sekali / menyesal" },
+	   { "word": "まじめ", "meaning": "Serius / rajin" },
+	   { "word": "親切（しんせつ）", "meaning": "Baik hati / ramah" },
+	   { "word": "元気（げんき）", "meaning": "Sehat / semangat" },
+	   { "word": "いろいろ", "meaning": "Berbagai macam" },
+	   { "word": "大切（たいせつ）", "meaning": "Penting" },
+	   { "word": "迷惑（めいわく）", "meaning": "Gangguan / merepotkan" }
+		  ],
 	  "Lainnya 1": [
         { word: "きょう", meaning: "Hari ini" },
 		{ word: "いま", meaning: "Sekarang" },
@@ -1342,17 +1610,14 @@
 	   { word: "カミングスーン!", meaning: "Coming Soon!" },
 		  ],
 		  
-		};
-		  
-		  
-
-	
+    };
 
     vocabulary["Semua"] = Object.values(vocabulary).flat().filter((item, index, self) =>
       self.findIndex(i => i.word === item.word) === index
     );
 
-    let categories = Object.keys(vocabulary);
+    let categories = Object.keys(vocabulary).filter(c => c !== "Semua");
+categories.unshift("Semua");
     let currentCategory = "Semua";
     let timer;
     let interval = "6.5";
@@ -1363,11 +1628,30 @@
     let usedWords = [];
     let tableShown = false;
     let autoShowMeaning = true;
-    
+
+    let menuPage = 0;
+    const menuPerPage = 10;
+
     function createMenu() {
       const menuDiv = document.getElementById("menu");
       menuDiv.innerHTML = "";
-      categories.forEach(cat => {
+
+      const start = menuPage * menuPerPage;
+      const end = start + menuPerPage;
+      const visibleCategories = categories.slice(start, end);
+
+      if (menuPage > 0) {
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = "&larr;";
+        prevBtn.classList.add("category-btn", "nav-arrow");
+        prevBtn.onclick = () => {
+          menuPage--;
+          createMenu();
+        };
+        menuDiv.appendChild(prevBtn);
+      }
+
+      visibleCategories.forEach(cat => {
         const btn = document.createElement("button");
         btn.innerText = cat;
         btn.classList.add("category-btn");
@@ -1381,6 +1665,17 @@
         };
         menuDiv.appendChild(btn);
       });
+
+      if (end < categories.length) {
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = "&rarr;";
+        nextBtn.classList.add("category-btn", "nav-arrow");
+        nextBtn.onclick = () => {
+          menuPage++;
+          createMenu();
+        };
+        menuDiv.appendChild(nextBtn);
+      }
     }
 
     function updateActiveCategory() {
@@ -1408,7 +1703,7 @@
         if (autoShowMeaning) {
           setTimeout(() => {
             document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-          }, meaningDelay);
+          }, meaningDelay * 1000);
         }
 
         if (pickUpMode) usedWords.push(entry.word);
@@ -1428,7 +1723,7 @@
 
     function toggleLanguageMode() {
       reverse = !reverse;
-      document.getElementById("toggleLangBtn").innerText = `Indo: ${reverse ? "ON" : "OFF"}`;
+      document.getElementById("toggleLangBtn").innerText = `ID: ${reverse ? "ON" : "OFF"}`;
       randomWord();
       if (tableShown) showAllWords();
     }
@@ -1436,13 +1731,13 @@
     function togglePickUp() {
       pickUpMode = !pickUpMode;
       usedWords = [];
-      document.getElementById("togglePickBtn").innerText = `Pick Up: ${pickUpMode ? "ON" : "OFF"}`;
+      document.getElementById("togglePickBtn").innerText = `Looping: ${pickUpMode ? "OFF" : "ON"}`;
       randomWord();
     }
 
     function toggleAutoShow() {
       autoShowMeaning = !autoShowMeaning;
-      document.getElementById("toggleAutoShowBtn").innerText = `Arti: ${autoShowMeaning ? "ON" : "OFF"}`;
+      document.getElementById("toggleAutoShowBtn").innerText = `Spoiler: ${autoShowMeaning ? "ON" : "OFF"}`;
       randomWord();
     }
 
@@ -1484,7 +1779,7 @@
 
     function toggleShowTable() {
       tableShown = !tableShown;
-      document.getElementById("toggleShowBtn").innerText = `Tabel: ${tableShown ? "ON" : "OFF"}`;
+      document.getElementById("toggleShowBtn").innerText = `Table: ${tableShown ? "ON" : "OFF"}`;
       const searchInput = document.getElementById("searchInput");
       if (tableShown) {
         showAllWords();
