@@ -1703,7 +1703,7 @@ categories.unshift("Semua");
         if (autoShowMeaning) {
           setTimeout(() => {
             document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-          }, meaningDelay * 1000);
+          }, meaningDelay);
         }
 
         if (pickUpMode) usedWords.push(entry.word);
