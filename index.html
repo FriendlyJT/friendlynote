@@ -15,6 +15,12 @@
 
     h1 {
       font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .menu-info {
+      font-size: 0.9rem;
+      color: #444;
       margin-bottom: 20px;
     }
 
@@ -44,28 +50,26 @@
       color: white;
     }
 
-    /* Tombol navigasi panah */
     .category-btn.nav-arrow {
-  background-color: #0040ff;
-  color: white;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border-radius: 4px;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;
-  transition: background-color 0.3s;
-  border: none;
-}
+      background-color: #0040ff;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+      transition: background-color 0.3s;
+      border: none;
+    }
 
-.category-btn.nav-arrow:hover {
-  background-color: #002a99;
-  cursor: pointer;
-}
+    .category-btn.nav-arrow:hover {
+      background-color: #002a99;
+    }
 
     #word {
       font-size: 3rem;
@@ -181,19 +185,116 @@
         width: 95%;
       }
     }
+	  #quizContainer {
+    background: #f9fafe;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 64, 255, 0.1);
+    padding: 25px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 1rem;
+    color: #222;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  #quizContainer h3 {
+    text-align: center;
+    color: #0040ff;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+  }
+
+  #quizContainer ol {
+    padding-left: 20px;
+  }
+
+  #quizContainer li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    background: #f0f4ff;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .quiz-option {
+    background: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 6px 0;
+    transition: 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .quiz-option:hover {
+    background: #e6f0ff;
+    border-color: #0040ff;
+  }
+
+  .quiz-option input[type="radio"] {
+    margin-right: 10px;
+  }
+
+  #quizContainer button {
+    background-color: #0040ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin: 12px 6px 0 0;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  #quizContainer button:hover {
+    background-color: #002a99;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   </style>
 </head>
 <body>
   <h1>[Friendly ノート]</h1>
+  <div style="margin-bottom: 10px;">
+  <label>
+    <input type="checkbox" id="multiSelectToggle" onchange="handleMultiSelectToggle()" />
+    Select Multi Category
+  </label>
+</div>
+
+<div style="margin-bottom: 10px;">
+  <label>
+    <input type="checkbox" id="quizModeToggle" onchange="handleQuizModeToggle()" />
+    Quiz Mode
+</div>
   <div class="menu" id="menu"></div>
+<div id="quizLengthOptions" style="margin: 10px 0; display: none;">
+  <strong>Jumlah Soal:</strong><br />
+  <label><input type="radio" name="quizLength" value="10" checked /> 10 Soal</label>
+  <label><input type="radio" name="quizLength" value="20" /> 20 Soal</label>
+  <label><input type="radio" name="quizLength" value="30" /> 30 Soal</label>
+</div>
+  <div id="quizContainer" style="display:none; max-width:600px; margin:20px auto; padding:20px; background:#ffffff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); font-size:1rem;"></div>
+  
+
+
   <div id="word" onclick="showMeaning()"></div>
   <div id="meaning"></div>
   <button id="randomBtn" onclick="randomWord()">NEXT</button>
   <div class="controls">
-    <span>Detik:</span>
+    <span>Seconds:</span>
     <input type="number" id="intervalInput" value="6.5" />
+	<label style="margin-top:10px;">
+  <input type="checkbox" id="autoTimeToggle" onchange="toggleAutoTime()" checked />
+</label>
     <button id="applyBtn" onclick="setIntervalTime()">Apply</button>
-    <button id="toggleLangBtn" onclick="toggleLanguageMode()">ID: OFF</button>
+	
+    <button id="toggleLangBtn" onclick="toggleLanguageMode()">Reverse: OFF</button>
     <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Spoiler: ON</button>
     <button id="togglePickBtn" onclick="togglePickUp()">Looping: ON</button>
     <button id="toggleShowBtn" onclick="toggleShowTable()">Table: OFF</button>
@@ -1612,13 +1713,15 @@
 		  
     };
 
-    vocabulary["Semua"] = Object.values(vocabulary).flat().filter((item, index, self) =>
+    vocabulary["All"] = Object.values(vocabulary).flat().filter((item, index, self) =>
       self.findIndex(i => i.word === item.word) === index
     );
 
-    let categories = Object.keys(vocabulary).filter(c => c !== "Semua");
-categories.unshift("Semua");
-    let currentCategory = "Semua";
+	let multiSelectMode = false;
+    let categories = Object.keys(vocabulary).filter(c => c !== "All");
+    categories.unshift("All");
+
+    let selectedCategories = ["All"];
     let timer;
     let interval = "6.5";
     let currentWord = "";
@@ -1628,9 +1731,179 @@ categories.unshift("Semua");
     let usedWords = [];
     let tableShown = false;
     let autoShowMeaning = true;
-
     let menuPage = 0;
-    const menuPerPage = 10;
+    const menuPerPage = 12;
+	let autoTimeEnabled = true;
+	
+	function handleMultiSelectToggle() {
+  multiSelectMode = document.getElementById("multiSelectToggle").checked;
+  if (!multiSelectMode && selectedCategories.length > 1) {
+    selectedCategories = [selectedCategories[0] || "All"];
+    usedWords = [];
+    randomWord();
+    if (tableShown) showAllWords();
+  }
+  updateActiveCategory();
+}
+
+let quizMode = false;
+let quizQuestions = [];
+let quizAnswers = [];
+let currentQuizIndex = 0;
+let currentResultPage = 1;
+const resultsPerPage = 10;
+
+function handleQuizModeToggle() {
+  quizMode = document.getElementById("quizModeToggle").checked;
+  const mainElements = [
+    "word", "meaning", "randomBtn", "intervalInput", "applyBtn",
+    "toggleLangBtn", "togglePickBtn", "toggleShowBtn",
+    "toggleAutoShowBtn", "searchInput", "tableContainer", "autoTimeToggle"
+  ];
+
+  mainElements.forEach(id => document.getElementById(id).style.display = quizMode ? "none" : "");
+  document.getElementById("menu").style.display = "flex";
+  document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
+
+  const timeLabel = document.querySelector(".controls span");
+  if (timeLabel) timeLabel.style.display = quizMode ? "none" : "inline";
+
+  if (quizMode) {
+    startQuiz();
+  } else {
+    document.getElementById("quizContainer").style.display = "none";
+  }
+}
+
+function startQuiz() {
+  const selectedWords = shuffleArray(selectedCategories.flatMap(cat => vocabulary[cat] || []));
+  const quizLengthInput = document.querySelector('input[name="quizLength"]:checked');
+  const totalQuestions = quizLengthInput ? parseInt(quizLengthInput.value) : 20;
+
+  const half = Math.floor(totalQuestions / 2);
+  const questionsIDtoJP = selectedWords.slice(0, half).map(q => ({ ...q, reverse: true }));  // Indonesia → Jepang
+  const questionsJPtoID = selectedWords.slice(half, half * 2).map(q => ({ ...q, reverse: false })); // Jepang → Indonesia
+
+  quizQuestions = shuffleArray([...questionsIDtoJP, ...questionsJPtoID]);
+  quizAnswers = [];
+  currentQuizIndex = 0;
+
+  document.getElementById("quizContainer").style.display = "block";
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  const container = document.getElementById("quizContainer");
+  if (currentQuizIndex >= quizQuestions.length) return showQuizResult();
+
+  const q = quizQuestions[currentQuizIndex];
+  const correct = q.reverse ? q.word : q.meaning;
+  const questionText = `Apa kosakata dari "<strong>${q.reverse ? q.meaning : q.word}</strong>" dalam bahasa ${q.reverse ? "Jepang" : "Indonesia"}?`;
+
+  const sameCategoryWords = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+const correctAnswer = q.reverse ? q.word : q.meaning;
+
+const allOptions = new Set();
+allOptions.add(correctAnswer);
+
+for (let item of shuffleArray(sameCategoryWords)) {
+  const opt = q.reverse ? item.word : item.meaning;
+  if (!allOptions.has(opt)) {
+    allOptions.add(opt);
+    if (allOptions.size >= 4) break;
+  }
+}
+
+const options = shuffleArray([...allOptions]);
+
+  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0040ff">Soal ${currentQuizIndex + 1} dari ${quizQuestions.length}</div>`;
+  html += `<div style="margin-bottom:10px;">${questionText}</div>`;
+  options.forEach((opt, idx) => {
+    html += `<label class="quiz-option"><input type="radio" name="quizOption" value="${opt}"/> ${String.fromCharCode(65 + idx)}. ${opt}</label>`;
+  });
+  html += `<div id="quizWarning" style="color:red; margin-top:10px;"></div>`;
+  html += `<button onclick="submitQuizAnswer()">Jawab</button>`;
+  container.innerHTML = html;
+}
+
+function submitQuizAnswer() {
+  const selected = document.querySelector("input[name='quizOption']:checked");
+  if (!selected) {
+  const warningDiv = document.getElementById("quizWarning");
+  if (warningDiv) warningDiv.textContent = "Jawaban tidak boleh kosong!";
+  return;
+} else {
+  const warningDiv = document.getElementById("quizWarning");
+  if (warningDiv) warningDiv.textContent = "";
+}
+  const answer = selected.value;
+  const q = quizQuestions[currentQuizIndex];
+  const correct = q.reverse ? q.word : q.meaning;
+  quizAnswers.push({
+    question: q.reverse ? q.meaning : q.word,
+    correct,
+    answer
+  });
+  currentQuizIndex++;
+  showQuizQuestion();
+}
+
+function showQuizResult(page = 1) {
+  currentResultPage = page;
+  const start = (page - 1) * resultsPerPage;
+  const end = start + resultsPerPage;
+  const visibleAnswers = quizAnswers.slice(start, end);
+
+  let score = quizAnswers.filter(q => q.answer === q.correct).length;
+
+  let html = `<h3>Hasil Quiz</h3><ol start="${start + 1}">`;
+  visibleAnswers.forEach((q, i) => {
+    const isCorrect = q.answer === q.correct;
+    html += `<li style="margin-bottom:8px;">${q.question}<br />
+      Jawaban kamu: <strong>${q.answer}</strong> ${isCorrect ? "✅" : "❌"}<br />
+      Jawaban benar: <strong>${q.correct}</strong>
+    </li>`;
+  });
+  html += `</ol><h4>Jawaban Benar: ${score} dari ${quizAnswers.length}</h4>`;
+const nilai = Math.round((score / quizAnswers.length) * 100);
+let warna = nilai >= 80 ? "green" : nilai >= 60 ? "orange" : "red";
+html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</span></div>`;
+
+  const totalPages = Math.ceil(quizAnswers.length / resultsPerPage);
+  if (totalPages > 1) {
+    html += `<div style="margin:10px 0;">`;
+    if (page > 1) {
+      html += `<button onclick="showQuizResult(${page - 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Prev</button> `;
+
+    }
+
+    for (let p = 1; p <= totalPages; p++) {
+      html += `<button onclick="showQuizResult(${p})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">${p}</button>`;
+
+    }
+
+    if (page < totalPages) {
+      html += `<button onclick="showQuizResult(${page + 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Next</button>`;
+
+    }
+    html += `</div>`;
+  }
+
+  html += `<button onclick="startQuiz()">Ulangi</button> `;
+  html += `<button onclick="document.getElementById('quizModeToggle').click()">Keluar</button>`;
+
+  document.getElementById("quizContainer").innerHTML = html;
+}
+
+document.querySelectorAll('input[name="quizLength"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (quizMode) startQuiz();
+  });
+});
+
+function shuffleArray(arr) {
+  return arr.map(v => [Math.random(), v]).sort().map(v => v[1]);
+}
 
     function createMenu() {
       const menuDiv = document.getElementById("menu");
@@ -1655,14 +1928,34 @@ categories.unshift("Semua");
         const btn = document.createElement("button");
         btn.innerText = cat;
         btn.classList.add("category-btn");
-        if (cat === currentCategory) btn.classList.add("active");
+        if (selectedCategories.includes(cat)) btn.classList.add("active");
         btn.onclick = () => {
-          currentCategory = cat;
-          updateActiveCategory();
-          usedWords = [];
-          randomWord();
-          if (tableShown) showAllWords();
-        };
+  if (!multiSelectMode) {
+    selectedCategories = [cat];
+  } else {
+    if (cat === "All") {
+      selectedCategories = ["All"];
+    } else {
+      if (selectedCategories.includes("All")) selectedCategories = [];
+      if (selectedCategories.includes(cat)) {
+        selectedCategories = selectedCategories.filter(c => c !== cat);
+      } else {
+        selectedCategories.push(cat);
+      }
+      if (selectedCategories.length === 0) selectedCategories = ["All"];
+    }
+  }
+
+  updateActiveCategory();
+  usedWords = [];
+
+  if (quizMode) {
+    startQuiz(); 
+  } else {
+    randomWord();
+    if (tableShown) showAllWords();
+  }
+};
         menuDiv.appendChild(btn);
       });
 
@@ -1681,17 +1974,55 @@ categories.unshift("Semua");
     function updateActiveCategory() {
       document.querySelectorAll(".category-btn").forEach(btn => {
         btn.classList.remove("active");
-        if (btn.innerText === currentCategory) btn.classList.add("active");
+        if (selectedCategories.includes(btn.innerText)) {
+          btn.classList.add("active");
+        }
       });
     }
 
     function randomWord() {
-      const words = vocabulary[currentCategory].filter(entry => !usedWords.includes(entry.word));
+      let words = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+      words = words.filter(entry => !usedWords.includes(entry.word));
+
       if (pickUpMode && words.length === 0) {
-        document.getElementById("word").innerText = "Semua sudah tampil...";
-        document.getElementById("meaning").innerText = "";
-        return;
-      }
+  const wordDiv = document.getElementById("word");
+  const meaningDiv = document.getElementById("meaning");
+  let countdown = 3;
+
+  clearInterval(timer);
+
+  document.getElementById("randomBtn").disabled = true;
+  document.getElementById("toggleAutoShowBtn").disabled = true;
+  document.getElementById("toggleLangBtn").disabled = true;
+  document.getElementById("meaning").style.visibility = "hidden";
+  
+  
+  
+
+  wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+  meaningDiv.innerText = "";
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    if (countdown > 0) {
+     wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+    } else {
+      clearInterval(countdownInterval);
+
+      usedWords = [];
+      randomWord(); 
+      setIntervalTime();
+
+      document.getElementById("randomBtn").disabled = false;
+      document.getElementById("toggleAutoShowBtn").disabled = false;
+	  document.getElementById("toggleLangBtn").disabled = false;
+	  document.getElementById("meaning").style.visibility = "visible";
+    }
+  }, 1000);
+
+  return;
+}
+
       const entry = words[Math.floor(Math.random() * words.length)];
       if (entry) {
         currentWord = reverse ? entry.meaning : entry.word;
@@ -1715,15 +2046,35 @@ categories.unshift("Semua");
     }
 
     function setIntervalTime() {
-      clearInterval(timer);
-      interval = parseInt(document.getElementById("intervalInput").value);
-      interval = Number(interval) * 1000;
-      timer = setInterval(randomWord, interval);
-    }
+  clearInterval(timer);
+  const inputVal = parseFloat(document.getElementById("intervalInput").value);
+
+  if (isNaN(inputVal) || inputVal < 0.5) {
+    alert("Minimum 0.5 seconds!");
+    document.getElementById("intervalInput").value = 0.5;
+    interval = 500;
+  } else {
+    interval = inputVal * 1000;
+  }
+
+  if (autoTimeEnabled) {
+    timer = setInterval(randomWord, interval);
+  }
+}
+
+function toggleAutoTime() {
+  autoTimeEnabled = document.getElementById("autoTimeToggle").checked;
+
+  if (autoTimeEnabled) {
+    setIntervalTime(); 
+  } else {
+    clearInterval(timer);
+  }
+}
 
     function toggleLanguageMode() {
       reverse = !reverse;
-      document.getElementById("toggleLangBtn").innerText = `ID: ${reverse ? "ON" : "OFF"}`;
+      document.getElementById("toggleLangBtn").innerText = `Reverse: ${reverse ? "ON" : "OFF"}`;
       randomWord();
       if (tableShown) showAllWords();
     }
@@ -1743,8 +2094,8 @@ categories.unshift("Semua");
 
     function showAllWords() {
       const container = document.getElementById("tableContainer");
-      const list = vocabulary[currentCategory];
       const input = document.getElementById("searchInput").value.toLowerCase();
+      const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
       const filteredList = list.filter(entry => {
         const text = (entry.word + " " + entry.meaning).toLowerCase();
         return text.includes(input);
