@@ -1844,6 +1844,18 @@ let hideIDText = false;
 let showIndividualJP = new Set();
 let showIndividualID = new Set();
 
+function showJP(key, text) {
+  showIndividualJP.add(key);
+  const span = document.getElementById(key);
+  if (span) span.innerHTML = text;
+}
+
+function showID(key, text) {
+  showIndividualID.add(key);
+  const span = document.getElementById(key);
+  if (span) span.innerHTML = text;
+}
+
 function shuffleTable() {
   const table = document.getElementById("dataTable");
   if (!table) return;
@@ -2335,16 +2347,16 @@ const jpKey = entry.meaning + "_jp";
 const idKey = entry.meaning + "_id";
 
   if (hideJPText && !showIndividualJP.has(jpKey)) {
-    html += `<td><button onclick="showOneJP('${jpKey}')" class="mini-show-btn">👁️ Show</button></td>`;
-  } else {
-    html += `<td>${jpText}</td>`;
-  }
+  html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">👁️ Show</button></span></td>`;
+} else {
+  html += `<td>${jpText}</td>`;
+}
 
   if (hideIDText && !showIndividualID.has(idKey)) {
-    html += `<td><button onclick="showOneID('${idKey}')" class="mini-show-btn">👁️ Show</button></td>`;
-  } else {
-    html += `<td>${idText}</td>`;
-  }
+  html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">👁️ Show</button></span></td>`;
+} else {
+  html += `<td>${idText}</td>`;
+}
 
   html += `</tr>`;
 });
