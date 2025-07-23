@@ -2331,8 +2331,8 @@ function toggleAutoTime() {
   const jpText = reverse ? entry.meaning : entry.word;
   const idText = reverse ? entry.word : entry.meaning;
 
-  const jpKey = entry.word + "_jp";
-  const idKey = entry.word + "_id";
+const jpKey = entry.meaning + "_jp";
+const idKey = entry.meaning + "_id";
 
   if (hideJPText && !showIndividualJP.has(jpKey)) {
     html += `<td><button onclick="showOneJP('${jpKey}')" class="mini-show-btn">👁️ Show</button></td>`;
