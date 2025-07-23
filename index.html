@@ -256,6 +256,35 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  
+  .hide-btn {
+  background-color: #e8f0fe;
+  border: 1px solid #90caf9;
+  color: #0040ff;
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hide-btn:hover {
+  background-color: #d2e3fc;
+}
+
+.mini-show-btn {
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #e8f0fe;
+  border: 1px solid #90caf9;
+  cursor: pointer;
+}
+.mini-show-btn:hover {
+  background: #d2e3fc;
+}
+
   </style>
 </head>
 <body>
@@ -278,6 +307,7 @@
   <label><input type="radio" name="quizLength" value="10" checked /> 10 Soal</label>
   <label><input type="radio" name="quizLength" value="20" /> 20 Soal</label>
   <label><input type="radio" name="quizLength" value="30" /> 30 Soal</label>
+    <label><input type="radio" name="quizLength" value="50" /> 50 Soal</label>
 </div>
   <div id="quizContainer" style="display:none; max-width:600px; margin:20px auto; padding:20px; background:#ffffff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); font-size:1rem;"></div>
   
@@ -296,10 +326,63 @@
 	
     <button id="toggleLangBtn" onclick="toggleLanguageMode()">Reverse: OFF</button>
     <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Spoiler: ON</button>
-    <button id="togglePickBtn" onclick="togglePickUp()">Looping: ON</button>
+    <button id="togglePickBtn" onclick="togglePickUp()">Looping: OFF</button>
     <button id="toggleShowBtn" onclick="toggleShowTable()">Table: OFF</button>
   </div>
   <input type="text" id="searchInput" placeholder="Cari kata..." oninput="filterTable()" />
+  <div id="hideControls" style="margin-top: 10px; display: none;">
+  <button id="toggleJP" onclick="toggleColumnText('jp')" class="hide-btn">Hide JP</button>
+  <button id="toggleID" onclick="toggleColumnText('id')" class="hide-btn">Hide ID</button>
+  <button id="shuffleTableBtn" onclick="shuffleTable()" class="hide-btn">Random</button>
+</div>
+
+ <button id="toggleDrawBtn" onclick="toggleDrawingPad()" style="
+  display: none;
+  position: fixed;
+  bottom: 8px;
+  right: 10px;
+  z-index: 10000;
+  padding: 10px 14px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">
+✏️ Draw
+</button>
+
+<div id="drawingContainer" style="
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 200px;
+  background: white;
+  z-index: 9999;
+  touch-action: none;
+  border-top: 1px solid #ccc;
+">
+  <canvas id="drawingCanvas" width="1000" height="200" style="width: 100vw; height: 200px;"></canvas>
+
+  <button onclick="clearCanvas()" style="
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+  ">🗑️</button>
+</div>
+
+</div>
+
+</div>
   <div id="tableContainer"></div>
   <footer>©Friendly Jihad Taqwana</footer>
 
@@ -712,111 +795,114 @@
 		{ word: "じゃぐち", meaning: "Keran" }
       ],
 	  "Kata Kerja": [
-  { "word": "飲む, のむ, のみます, のんで", "meaning": "Minum" },
-{ "word": "食べる, たべる, たべます, たべて", "meaning": "Makan" },
-{ "word": "する, します, して", "meaning": "Melakukan / melakukan" },
-{ "word": "見る, みる, みます, みて", "meaning": "Melihat" },
-{ "word": "帰る, かえる, かえります, かえって", "meaning": "Pulang" },
-{ "word": "行く, いく, いきます, いって", "meaning": "Pergi ke" },
-{ "word": "来る, くる, きます, きて", "meaning": "Datang" },
-{ "word": "スキーをする, スキーをします, スキーをして", "meaning": "Bermain ski" },
-{ "word": "読む, よむ, よみます, よんで", "meaning": "Membaca" },
-{ "word": "勉強する, べんきょうする, べんきょうします, べんきょうして", "meaning": "Belajar" },
-{ "word": "聞く, きく, ききます, きいて", "meaning": "Mendengar / Bertanya" },
-{ "word": "買う, かう, かいます, かって", "meaning": "Membeli" },
-{ "word": "寝る, ねる, ねます, ねて", "meaning": "Tidur" },
-{ "word": "起きる, おきる, おきます, おきて", "meaning": "Bangun (dari tidur)" },
-{ "word": "働く, はたらく, はたらきます, はたらいて", "meaning": "Bekerja" },
-{ "word": "歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
-{ "word": "ある, あります, あって", "meaning": "Ada (untuk benda mati)" },
-{ "word": "会う, あう, あいます, あって", "meaning": "Bertemu" },
-{ "word": "買い物する, かいものする, かいものします, かいものして", "meaning": "Berbelanja" },
-{ "word": "洗濯する, せんたくする, せんたくします, せんたくして", "meaning": "Mencuci (pakaian)" },
-{ "word": "掃除する, そうじする, そうじします, そうじして", "meaning": "Membersihkan" },
-{ "word": "作る, つくる, つくります, つくって", "meaning": "Membuat" },
-{ "word": "食事する, しょくじする, しょくじします, しょくじして", "meaning": "Makan / melakukan makan" },
-{ "word": "登る, のぼる, のぼります, のぼって", "meaning": "Mendaki (ke tempat tinggi)" },
-{ "word": "入る, はいる, はいります, はいって", "meaning": "Masuk ke〜" },
-{ "word": "撮る, とる, とります, とって", "meaning": "Mengambil (foto)" },
-{ "word": "借りる, かりる, かります, かりて", "meaning": "Meminjam" },
-{ "word": "遊ぶ, あそぶ, あそびます, あそんで", "meaning": "Bermain" },
-{ "word": "開ける, あける, あけます, あけて", "meaning": "Membuka" },
-{ "word": "閉める, しめる, しめます, しめて", "meaning": "Menutup" },
-{ "word": "持つ, もつ, もちます, もって", "meaning": "Membawa" },
-{ "word": "持ってくる, もってくる, もってきます, もってきて", "meaning": "Membawa ke sini" },
-{ "word": "吸う, すう, すいます, すって", "meaning": "Menghirup / Merokok" },
-{ "word": "歌う, うたう, うたいます, うたって", "meaning": "Menyanyi" },
-{ "word": "弾く, ひく, ひきます, ひいて", "meaning": "Memainkan (alat musik)" },
-{ "word": "かける, かけます, かけて", "meaning": "Menelepon" },
-{ "word": "話す, はなす, はなします, はなして", "meaning": "Berbicara" },
-{ "word": "教える, おしえる, おしえます, おしえて", "meaning": "Mengajarkan / Memberi tahu" },
-{ "word": "切る, きる, きります, きって", "meaning": "Memotong" },
-{ "word": "手伝う, てつだう, てつだいます, てつだって", "meaning": "Membantu" },
-{ "word": "洗う, あらう, あらいます, あらって", "meaning": "Mencuci" },
-{ "word": "書く, かく, かきます, かいて", "meaning": "Menulis" },
-{ "word": "入れる, いれる, いれます, いれて", "meaning": "Memasukkan" },
-{ "word": "出す, だす, だします, だして", "meaning": "Mengeluarkan" },
-{ "word": "貸す, かす, かします, かして", "meaning": "Meminjamkan" },
-{ "word": "取る, とる, とります, とって", "meaning": "Mengambil" },
-{ "word": "置く, おく, おきます, おいて", "meaning": "Meletakkan" },
-{ "word": "使う, つかう, つかいます, つかって", "meaning": "Menggunakan" },
-{ "word": "持って行く, もっていく, もっていきます, もっていって", "meaning": "Membawa pergi" },
-{ "word": "死ぬ, しぬ, しにます, しんで", "meaning": "Mati" },
-{ "word": "住む, すむ, すみます, すんで", "meaning": "Tinggal" },
-{ "word": "いる, います, いて", "meaning": "Ada (makhluk hidup)" },
-{ "word": "電話をする, でんわをする, でんわをします, でんわをして", "meaning": "Menelepon" },
-{ "word": "送る, おくる, おくります, おくって", "meaning": "Mengirim" },
-{ "word": "あげる, あげます, あげて", "meaning": "Memberi (kepada orang lain)" },
-{ "word": "もらう, もらいます, もらって", "meaning": "Menerima" },
-{ "word": "くれる, くれます, くれて", "meaning": "Memberi (kepada saya)" },
-{ "word": "できる, できます, できて", "meaning": "Bisa" },
-{ "word": "参加する, さんかする, さんかします, さんかして", "meaning": "Ikut serta dalam〜" },
-{ "word": "習う, ならう, ならいます, ならって", "meaning": "Belajar〜" },
-{ "word": "乗る, のる, のります, のって", "meaning": "Naik〜" },
-{ "word": "申し込む, もうしこむ, もうしこみます, もうしこんで", "meaning": "Mendaftar" },
-{ "word": "絵をかく, えをかく, えをかきます, えをかいて", "meaning": "Melukis / Menggambar" },
-{ "word": "泳ぐ, およぐ, およぎます, およいで", "meaning": "Berenang" },
-{ "word": "言う, いう, いいます, いって", "meaning": "Mengatakan" },
-{ "word": "払う, はらう, はらいます, はらって", "meaning": "Membayar" },
-{ "word": "降りる, おりる, おります, おりて", "meaning": "Turun dari〜" },
-{ "word": "見せる, みせる, みせます, みせて", "meaning": "Memperlihatkan" },
-{ "word": "予約する, よやくする, よやくします, よやくして", "meaning": "Memesan / Reservasi" },
-{ "word": "運転する, うんてんする, うんてんします, うんてんして", "meaning": "Menyetir" },
-{ "word": "集める, あつめる, あつめます, あつめて", "meaning": "Mengumpulkan" },
-{ "word": "探す, さがす, さがします, さがして", "meaning": "Mencari" },
-{ "word": "見える, みえる, みえます, みえて", "meaning": "Terlihat" },
-{ "word": "聞こえる, きこえる, きこえます, きこえて", "meaning": "Terdengar" },
-{ "word": "渡る, わたる, わたります, わたって", "meaning": "Menyeberang" },
-{ "word": "曲がる, まがる, まがります, まがって", "meaning": "Belok" },
-{ "word": "座る, すわる, すわります, すわって", "meaning": "Duduk di" },
-{ "word": "押す, おす, おします, おして", "meaning": "Mendorong" },
-{ "word": "立つ, たつ, たちます, たって", "meaning": "Berdiri" },
-{ "word": "なくす, なくします, なくして", "meaning": "Kehilangan" },
-{ "word": "遅れる, おくれる, おくれます, おくれて", "meaning": "Terlambat" },
-{ "word": "集合する, しゅうごうする, しゅうごうします, しゅうごうして", "meaning": "Berkumpul (bentuk sopan)" },
-{ "word": "持って帰る, もってかえる, もってかえります, もってかえって", "meaning": "Membawa pulang" },
-{ "word": "飛ぶ, とぶ, とびます, とんで", "meaning": "Terbang" },
-{ "word": "歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
-{ "word": "休む, やすむ, やすみます, やすんで", "meaning": "Istirahat" },
-{ "word": "お腹がすく, おなかがすく, おなかがすきます, おなかがすいて", "meaning": "Lapar" },
-{ "word": "喉が渇く, のどがかわく, のどがかわきます, のどがかわいて", "meaning": "Haus" },
-{ "word": "疲れる, つかれる, つかれます, つかれて", "meaning": "Lelah" },
-{ "word": "やる, やります, やって", "meaning": "Melakukan (bentuk informal)" },
-{ "word": "なる, なります, なって", "meaning": "Menjadi" },
-{ "word": "慣れる, なれる, なれます, なれて", "meaning": "Terbiasa" },
-{ "word": "終わる, おわる, おわります, おわって", "meaning": "Selesai" },
-{ "word": "通う, かよう, かよいます, かよって", "meaning": "Pergi (rutin)" },
-{ "word": "散歩する, さんぽする, さんぽします, さんぽして", "meaning": "Jalan-jalan" },
-{ "word": "風をひく, かぜをひく, かぜをひきます, かぜをひいて", "meaning": "Masuk angin" },
-{ "word": "学校を休む, がっこうをやすむ, がっこうをやすみます, がっこうをやすんで", "meaning": "Tidak masuk sekolah" },
-{ "word": "忘れる, わすれる, わすれます, わすれて", "meaning": "Lupa" },
-{ "word": "卒業する, そつぎょうする, そつぎょうします, そつぎょうして", "meaning": "Lulus" },
-{ "word": "入学する, にゅうがくする, にゅうがくします, にゅうがくして", "meaning": "Masuk sekolah/perguruan tinggi" },
-{ "word": "別れる, わかれる, わかれます, わかれて", "meaning": "Berpisah" },
-{ "word": "始める, はじめる, はじめます, はじめて", "meaning": "Memulai" },
-{ "word": "消す, けす, けします, けして", "meaning": "Mematikan (alat listrik)" },
-{ "word": "つける, つけます, つけて", "meaning": "Menyalakan" },
-{ "word": "引っ越しする, ひっこしする, ひっこしします, ひっこしして", "meaning": "Pindah rumah" }
+{ "word": "<span style='color:red'>[1]</span> 飲む, のむ, のみます, のんで", "meaning": "Minum" },
+{ "word": "<span style='color:red'>[2]</span> 食べる, たべる, たべます, たべて", "meaning": "Makan" },
+{ "word": "<span style='color:red'>[3]</span> する, します, して", "meaning": "Melakukan / melakukan" },
+{ "word": "<span style='color:red'>[2]</span> 見る, みる, みます, みて", "meaning": "Melihat" },
+{ "word": "<span style='color:red'>[1]</span> 帰る, かえる, かえります, かえって", "meaning": "Pulang" },
+{ "word": "<span style='color:red'>[1]</span> 行く, いく, いきます, いって", "meaning": "Pergi ke" },
+{ "word": "<span style='color:red'>[3]</span> 来る, くる, きます, きて", "meaning": "Datang" },
+{ "word": "<span style='color:red'>[3]</span> スキーをする, スキーをします, スキーをして", "meaning": "Bermain ski" },
+{ "word": "<span style='color:red'>[1]</span> 読む, よむ, よみます, よんで", "meaning": "Membaca" },
+{ "word": "<span style='color:red'>[3]</span> 勉強する, べんきょうする, べんきょうします, べんきょうして", "meaning": "Belajar" },
+{ "word": "<span style='color:red'>[1]</span> 聞く, きく, ききます, きいて", "meaning": "Mendengar / Bertanya" },
+{ "word": "<span style='color:red'>[1]</span> 買う, かう, かいます, かって", "meaning": "Membeli" },
+{ "word": "<span style='color:red'>[2]</span> 寝る, ねる, ねます, ねて", "meaning": "Tidur" },
+{ "word": "<span style='color:red'>[2]</span> 起きる, おきる, おきます, おきて", "meaning": "Bangun (dari tidur)" },
+{ "word": "<span style='color:red'>[1]</span> 働く, はたらく, はたらきます, はたらいて", "meaning": "Bekerja" },
+{ "word": "<span style='color:red'>[1]</span> 歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
+{ "word": "<span style='color:red'>[1]</span> ある, あります, あって", "meaning": "Ada (untuk benda mati)" },
+{ "word": "<span style='color:red'>[1]</span> 会う, あう, あいます, あって", "meaning": "Bertemu" },
+{ "word": "<span style='color:red'>[3]</span> 買い物する, かいものする, かいものします, かいものして", "meaning": "Berbelanja" },
+{ "word": "<span style='color:red'>[3]</span> 洗濯する, せんたくする, せんたくします, せんたくして", "meaning": "Mencuci (pakaian)" },
+{ "word": "<span style='color:red'>[3]</span> 掃除する, そうじする, そうじします, そうじして", "meaning": "Membersihkan" },
+{ "word": "<span style='color:red'>[1]</span> 作る, つくる, つくります, つくって", "meaning": "Membuat" },
+{ "word": "<span style='color:red'>[3]</span> 食事する, しょくじする, しょくじします, しょくじして", "meaning": "Makan / melakukan makan" },
+{ "word": "<span style='color:red'>[1]</span> 登る, のぼる, のぼります, のぼって", "meaning": "Mendaki (ke tempat tinggi)" },
+{ "word": "<span style='color:red'>[1]</span> 入る, はいる, はいります, はいって", "meaning": "Masuk ke〜" },
+{ "word": "<span style='color:red'>[1]</span> 撮る, とる, とります, とって", "meaning": "Mengambil (foto)" },
+{ "word": "<span style='color:red'>[2]</span> 借りる, かりる, かります, かりて", "meaning": "Meminjam" },
+{ "word": "<span style='color:red'>[1]</span> 遊ぶ, あそぶ, あそびます, あそんで", "meaning": "Bermain" },
+{ "word": "<span style='color:red'>[2]</span> 開ける, あける, あけます, あけて", "meaning": "Membuka" },
+{ "word": "<span style='color:red'>[2]</span> 閉める, しめる, しめます, しめて", "meaning": "Menutup" },
+{ "word": "<span style='color:red'>[1]</span> 持つ, もつ, もちます, もって", "meaning": "Membawa" },
+{ "word": "<span style='color:red'>[3]</span> 持ってくる, もってくる, もってきます, もってきて", "meaning": "Membawa ke sini" },
+{ "word": "<span style='color:red'>[1]</span> 吸う, すう, すいます, すって", "meaning": "Menghirup / Merokok" },
+{ "word": "<span style='color:red'>[1]</span> 歌う, うたう, うたいます, うたって", "meaning": "Menyanyi" },
+{ "word": "<span style='color:red'>[1]</span> 弾く, ひく, ひきます, ひいて", "meaning": "Memainkan (alat musik)" },
+{ "word": "<span style='color:red'>[2]</span> かける, かけます, かけて", "meaning": "Menelepon" },
+{ "word": "<span style='color:red'>[1]</span> 話す, はなす, はなします, はなして", "meaning": "Berbicara" },
+{ "word": "<span style='color:red'>[2]</span> 教える, おしえる, おしえます, おしえて", "meaning": "Mengajarkan / Memberi tahu" },
+{ "word": "<span style='color:red'>[1]</span> 切る, きる, きります, きって", "meaning": "Memotong" },
+{ "word": "<span style='color:red'>[1]</span> 手伝う, てつだう, てつだいます, てつだって", "meaning": "Membantu" },
+{ "word": "<span style='color:red'>[1]</span> 洗う, あらう, あらいます, あらって", "meaning": "Mencuci" },
+{ "word": "<span style='color:red'>[1]</span> 書く, かく, かきます, かいて", "meaning": "Menulis" },
+{ "word": "<span style='color:red'>[2]</span> 入れる, いれる, いれます, いれて", "meaning": "Memasukkan" },
+{ "word": "<span style='color:red'>[1]</span> 出す, だす, だします, だして", "meaning": "Mengeluarkan" },
+{ "word": "<span style='color:red'>[1]</span> 貸す, かす, かします, かして", "meaning": "Meminjamkan" },
+{ "word": "<span style='color:red'>[1]</span> 取る, とる, とります, とって", "meaning": "Mengambil" },
+{ "word": "<span style='color:red'>[1]</span> 置く, おく, おきます, おいて", "meaning": "Meletakkan" },
+{ "word": "<span style='color:red'>[1]</span> 使う, つかう, つかいます, つかって", "meaning": "Menggunakan" },
+{ "word": "<span style='color:red'>[1]</span> 持って行く, もっていく, もっていきます, もっていって", "meaning": "Membawa pergi" },
+{ "word": "<span style='color:red'>[1]</span> 死ぬ, しぬ, しにます, しんで", "meaning": "Mati" },
+{ "word": "<span style='color:red'>[1]</span> 住む, すむ, すみます, すんで", "meaning": "Tinggal" },
+{ "word": "<span style='color:red'>[2]</span> いる, います, いて", "meaning": "Ada (makhluk hidup)" },
+{ "word": "<span style='color:red'>[3]</span> 電話をする, でんわをする, でんわをします, でんわをして", "meaning": "Menelepon" },
+{ "word": "<span style='color:red'>[1]</span> 送る, おくる, おくります, おくって", "meaning": "Mengirim" },
+{ "word": "<span style='color:red'>[2]</span> あげる, あげます, あげて", "meaning": "Memberi (kepada orang lain)" },
+{ "word": "<span style='color:red'>[1]</span> もらう, もらいます, もらって", "meaning": "Menerima" },
+{ "word": "<span style='color:red'>[2]</span> くれる, くれます, くれて", "meaning": "Memberi (kepada saya)" },
+{ "word": "<span style='color:red'>[2]</span> できる, できます, できて", "meaning": "Bisa" },
+{ "word": "<span style='color:red'>[3]</span> 参加する, さんかする, さんかします, さんかして", "meaning": "Ikut serta dalam〜" },
+{ "word": "<span style='color:red'>[1]</span> 習う, ならう, ならいます, ならって", "meaning": "Belajar〜" },
+{ "word": "<span style='color:red'>[1]</span> 乗る, のる, のります, のって", "meaning": "Naik〜" },
+{ "word": "<span style='color:red'>[1]</span> 申し込む, もうしこむ, もうしこみます, もうしこんで", "meaning": "Mendaftar" },
+{ "word": "<span style='color:red'>[1]</span> 絵をかく, えをかく, えをかきます, えをかいて", "meaning": "Melukis / Menggambar" },
+{ "word": "<span style='color:red'>[1]</span> 泳ぐ, およぐ, およぎます, およいで", "meaning": "Berenang" },
+{ "word": "<span style='color:red'>[1]</span> 言う, いう, いいます, いって", "meaning": "Mengatakan" },
+{ "word": "<span style='color:red'>[1]</span> 払う, はらう, はらいます, はらって", "meaning": "Membayar" },
+{ "word": "<span style='color:red'>[2]</span> 降りる, おりる, おります, おりて", "meaning": "Turun dari〜" },
+{ "word": "<span style='color:red'>[2]</span> 見せる, みせる, みせます, みせて", "meaning": "Memperlihatkan" },
+{ "word": "<span style='color:red'>[3]</span> 予約する, よやくする, よやくします, よやくして", "meaning": "Memesan / Reservasi" },
+{ "word": "<span style='color:red'>[3]</span> 運転する, うんてんする, うんてんします, うんてんして", "meaning": "Menyetir" },
+{ "word": "<span style='color:red'>[2]</span> 集める, あつめる, あつめます, あつめて", "meaning": "Mengumpulkan" },
+{ "word": "<span style='color:red'>[1]</span> 探す, さがす, さがします, さがして", "meaning": "Mencari" },
+{ "word": "<span style='color:red'>[2]</span> 見える, みえる, みえます, みえて", "meaning": "Terlihat" },
+{ "word": "<span style='color:red'>[2]</span> 聞こえる, きこえる, きこえます, きこえて", "meaning": "Terdengar" },
+{ "word": "<span style='color:red'>[1]</span> 渡る, わたる, わたります, わたって", "meaning": "Menyeberang" },
+{ "word": "<span style='color:red'>[1]</span> 曲がる, まがる, まがります, まがって", "meaning": "Belok" },
+{ "word": "<span style='color:red'>[1]</span> 座る, すわる, すわります, すわって", "meaning": "Duduk di" },
+{ "word": "<span style='color:red'>[1]</span> 押す, おす, おします, おして", "meaning": "Mendorong" },
+{ "word": "<span style='color:red'>[1]</span> 立つ, たつ, たちます, たって", "meaning": "Berdiri" },
+{ "word": "<span style='color:red'>[1]</span> なくす, なくします, なくして", "meaning": "Kehilangan" },
+{ "word": "<span style='color:red'>[2]</span> 遅れる, おくれる, おくれます, おくれて", "meaning": "Terlambat" },
+{ "word": "<span style='color:red'>[3]</span> 集合する, しゅうごうする, しゅうごうします, しゅうごうして", "meaning": "Berkumpul (bentuk sopan)" },
+{ "word": "<span style='color:red'>[1]</span> 持って帰る, もってかえる, もってかえります, もってかえって", "meaning": "Membawa pulang" },
+{ "word": "<span style='color:red'>[1]</span> 飛ぶ, とぶ, とびます, とんで", "meaning": "Terbang" },
+{ "word": "<span style='color:red'>[1]</span> 歩く, あるく, あるきます, あるいて", "meaning": "Berjalan kaki" },
+{ "word": "<span style='color:red'>[1]</span> 休む, やすむ, やすみます, やすんで", "meaning": "Istirahat" },
+{ "word": "<span style='color:red'>[1]</span> お腹がすく, おなかがすく, おなかがすきます, おなかがすいて", "meaning": "Lapar" },
+{ "word": "<span style='color:red'>[1]</span> 喉が渇く, のどがかわく, のどがかわきます, のどがかわいて", "meaning": "Haus" },
+{ "word": "<span style='color:red'>[2]</span> 疲れる, つかれる, つかれます, つかれて", "meaning": "Lelah" },
+{ "word": "<span style='color:red'>[1]</span> やる, やります, やって", "meaning": "Melakukan (bentuk informal)" },
+{ "word": "<span style='color:red'>[1]</span> なる, なります, なって", "meaning": "Menjadi" },
+{ "word": "<span style='color:red'>[2]</span> 慣れる, なれる, なれます, なれて", "meaning": "Terbiasa" },
+{ "word": "<span style='color:red'>[1]</span> 終わる, おわる, おわります, おわって", "meaning": "Selesai" },
+{ "word": "<span style='color:red'>[1]</span> 通う, かよう, かよいます, かよって", "meaning": "Pergi (rutin)" },
+{ "word": "<span style='color:red'>[3]</span> 散歩する, さんぽする, さんぽします, さんぽして", "meaning": "Jalan-jalan" },
+{ "word": "<span style='color:red'>[1]</span> 風をひく, かぜをひく, かぜをひきます, かぜをひいて", "meaning": "Masuk angin" },
+{ "word": "<span style='color:red'>[1]</span> 学校を休む, がっこうをやすむ, がっこうをやすみます, がっこうをやすんで", "meaning": "Tidak masuk sekolah" },
+{ "word": "<span style='color:red'>[2]</span> 忘れる, わすれる, わすれます, わすれて", "meaning": "Lupa" },
+{ "word": "<span style='color:red'>[3]</span> 卒業する, そつぎょうする, そつぎょうします, そつぎょうして", "meaning": "Lulus" },
+{ "word": "<span style='color:red'>[3]</span> 入学する, にゅうがくする, にゅうがくします, にゅうがくして", "meaning": "Masuk sekolah/perguruan tinggi" },
+{ "word": "<span style='color:red'>[2]</span> 別れる, わかれる, わかれます, わかれて", "meaning": "Berpisah" },
+{ "word": "<span style='color:red'>[2]</span> 始める, はじめる, はじめます, はじめて", "meaning": "Memulai" },
+{ "word": "<span style='color:red'>[1]</span> 消す, けす, けします, けして", "meaning": "Mematikan (alat listrik)" },
+{ "word": "<span style='color:red'>[2]</span> つける, つけます, つけて", "meaning": "Menyalakan" },
+{ "word": "<span style='color:red'>[3]</span> 引っ越しする, ひっこしする, ひっこしします, ひっこしして", "meaning": "Pindah rumah" }
+
+
+
       ],
 	    "Kata Sifat-i": [
 	     { "word": "新しい（あたらしい）", "meaning": "Baru" },
@@ -1727,7 +1813,7 @@
     let currentWord = "";
     let currentMeaning = "";
     let reverse = false;
-    let pickUpMode = false;
+    let pickUpMode = true;
     let usedWords = [];
     let tableShown = false;
     let autoShowMeaning = true;
@@ -1753,6 +1839,126 @@ let currentQuizIndex = 0;
 let currentResultPage = 1;
 const resultsPerPage = 10;
 
+let hideJPText = false;
+let hideIDText = false;
+let showIndividualJP = new Set();
+let showIndividualID = new Set();
+
+function shuffleTable() {
+  const table = document.getElementById("dataTable");
+  if (!table) return;
+
+  const tbody = table.querySelector("tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const shuffled = shuffleArray(rows);
+
+  tbody.innerHTML = "";
+  shuffled.forEach((row, index) => {
+    row.querySelector("td").innerText = index + 1;
+    tbody.appendChild(row);
+  });
+}
+
+function toggleColumnText(type) {
+  if (type === 'jp') {
+    hideJPText = !hideJPText;
+    showIndividualJP.clear(); 
+    document.getElementById('toggleJP').innerText = `${hideJPText ? "Unhide JP" : "Hide JP"}`;
+  } else if (type === 'id') {
+    hideIDText = !hideIDText;
+    showIndividualID.clear(); 
+    document.getElementById('toggleID').innerText = `${hideIDText ? "Unhide ID" : "Hide ID"}`;
+  }
+
+  showAllWords();
+}
+
+function showOneJP(key) {
+  showIndividualJP.add(key);
+  showAllWords();
+}
+
+function showOneID(key) {
+  showIndividualID.add(key);
+  showAllWords();
+}
+
+function isMobileDevice() {
+  return window.innerWidth <= 768;
+}
+
+function showDrawingPadToggleButton() {
+  const toggleBtn = document.getElementById("toggleDrawBtn");
+  if (isMobileDevice()) {
+    toggleBtn.style.display = "block";
+  } else {
+    toggleBtn.style.display = "none";
+    document.getElementById("drawingContainer").style.display = "none";
+  }
+}
+
+showDrawingPadToggleButton();
+
+function toggleDrawingPad() {
+  const drawDiv = document.getElementById("drawingContainer");
+  const toggleBtn = document.getElementById("toggleDrawBtn");
+
+  if (drawDiv.style.display === "none") {
+    drawDiv.style.display = "block";
+    toggleBtn.innerText = "Hide";
+    initDrawingCanvas();
+  } else {
+    drawDiv.style.display = "none";
+    toggleBtn.innerText = "✏️ Draw";
+  }
+}
+
+
+function initDrawingCanvas() {
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  let isDrawing = false;
+
+  function getTouchPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    return {
+      x: t.clientX - rect.left,
+      y: t.clientY - rect.top
+    };
+  }
+
+  canvas.addEventListener("touchstart", function (e) {
+    e.preventDefault();
+    const pos = getTouchPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    isDrawing = true;
+  });
+
+  canvas.addEventListener("touchmove", function (e) {
+    if (!isDrawing) return;
+    const pos = getTouchPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  });
+
+  canvas.addEventListener("touchend", function () {
+    isDrawing = false;
+  });
+}
+
+
+function clearCanvas() {
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function handleQuizModeToggle() {
   quizMode = document.getElementById("quizModeToggle").checked;
   const mainElements = [
@@ -1767,12 +1973,16 @@ function handleQuizModeToggle() {
 
   const timeLabel = document.querySelector(".controls span");
   if (timeLabel) timeLabel.style.display = quizMode ? "none" : "inline";
+  
+  const hideControls = document.getElementById("hideControls");
+  if (hideControls) hideControls.style.display = quizMode ? "none" : (tableShown ? "block" : "none");
+
 
     if (quizMode) {
   startQuiz();
 } else {
   document.getElementById("quizContainer").style.display = "none";
-  document.getElementById("searchInput").style.display = tableShown ? "block" : "none"; // ← tambahkan ini
+  document.getElementById("searchInput").style.display = tableShown ? "block" : "none"; 
 }
 }
 
@@ -1782,8 +1992,8 @@ function startQuiz() {
   const totalQuestions = quizLengthInput ? parseInt(quizLengthInput.value) : 20;
 
   const half = Math.floor(totalQuestions / 2);
-  const questionsIDtoJP = selectedWords.slice(0, half).map(q => ({ ...q, reverse: true }));  // Indonesia → Jepang
-  const questionsJPtoID = selectedWords.slice(half, half * 2).map(q => ({ ...q, reverse: false })); // Jepang → Indonesia
+  const questionsIDtoJP = selectedWords.slice(0, half).map(q => ({ ...q, reverse: true })); 
+  const questionsJPtoID = selectedWords.slice(half, half * 2).map(q => ({ ...q, reverse: false }));
 
   quizQuestions = shuffleArray([...questionsIDtoJP, ...questionsJPtoID]);
   quizAnswers = [];
@@ -1878,9 +2088,15 @@ html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</sp
 
     }
 
-    for (let p = 1; p <= totalPages; p++) {
-      html += `<button onclick="showQuizResult(${p})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">${p}</button>`;
-
+     for (let p = 1; p <= totalPages; p++) {
+      const isActive = p === page;
+      html += `<button onclick="showQuizResult(${p})" style="
+        margin:2px;
+        padding:4px 8px;
+        font-size:0.85rem;
+        border-radius:5px;
+        ${isActive ? 'background-color:#d40000; color:white; font-weight:bold;' : ''}
+      ">${p}</button>`;
     }
 
     if (page < totalPages) {
@@ -2028,8 +2244,8 @@ function shuffleArray(arr) {
       if (entry) {
         currentWord = reverse ? entry.meaning : entry.word;
         currentMeaning = reverse ? entry.word : entry.meaning;
-        document.getElementById("word").innerText = currentWord;
-        document.getElementById("meaning").innerText = "";
+        document.getElementById("word").innerHTML = currentWord;
+        document.getElementById("meaning").innerHTML = "";
         let meaningDelay = Number(interval) / 2;
 
         if (autoShowMeaning) {
@@ -2110,8 +2326,28 @@ function toggleAutoTime() {
         const chunk = filteredList.slice(start, start + chunkSize);
         let html = `<table id="dataTable"><thead><tr><th>No</th><th>${reverse ? "Indonesia" : "Jepang"}</th><th>${reverse ? "Jepang" : "Indonesia"}</th></tr></thead><tbody>`;
         chunk.forEach((entry, index) => {
-          html += `<tr><td>${start + index + 1}</td><td>${reverse ? entry.meaning : entry.word}</td><td>${reverse ? entry.word : entry.meaning}</td></tr>`;
-        });
+  html += `<tr><td>${start + index + 1}</td>`;
+
+  const jpText = reverse ? entry.meaning : entry.word;
+  const idText = reverse ? entry.word : entry.meaning;
+
+  const jpKey = entry.word + "_jp";
+  const idKey = entry.word + "_id";
+
+  if (hideJPText && !showIndividualJP.has(jpKey)) {
+    html += `<td><button onclick="showOneJP('${jpKey}')" class="mini-show-btn">👁️ Show</button></td>`;
+  } else {
+    html += `<td>${jpText}</td>`;
+  }
+
+  if (hideIDText && !showIndividualID.has(idKey)) {
+    html += `<td><button onclick="showOneID('${idKey}')" class="mini-show-btn">👁️ Show</button></td>`;
+  } else {
+    html += `<td>${idText}</td>`;
+  }
+
+  html += `</tr>`;
+});
         html += `</tbody></table>`;
 
         if (!input) {
@@ -2129,19 +2365,25 @@ function toggleAutoTime() {
       renderTable(1);
     }
 
-    function toggleShowTable() {
-      tableShown = !tableShown;
-      document.getElementById("toggleShowBtn").innerText = `Table: ${tableShown ? "ON" : "OFF"}`;
-      const searchInput = document.getElementById("searchInput");
-      if (tableShown) {
-        showAllWords();
-        searchInput.style.display = "block";
-      } else {
-        document.getElementById("tableContainer").innerHTML = "";
-        searchInput.style.display = "none";
-        searchInput.value = "";
-      }
-    }
+function toggleShowTable() {
+  tableShown = !tableShown;
+  document.getElementById("toggleShowBtn").innerText = `Table: ${tableShown ? "ON" : "OFF"}`;
+  const searchInput = document.getElementById("searchInput");
+  const hideControls = document.getElementById("hideControls");
+
+  if (tableShown) {
+    showAllWords();
+    searchInput.style.display = "block";
+    if (hideControls) hideControls.style.display = "block"; 
+  } else {
+    document.getElementById("tableContainer").innerHTML = "";
+    searchInput.style.display = "none";
+    searchInput.value = "";
+    if (hideControls) hideControls.style.display = "none"; 
+  }
+}
+
+
 
     function filterTable() {
       showAllWords();
