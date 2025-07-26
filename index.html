@@ -384,7 +384,7 @@
 
 </div>
   <div id="tableContainer"></div>
-  <footer style="margin:18%">©Friendly Jihad Taqwana</footer>
+  <footer style="margin-top:20%">App platform by Friendly Jihad Taqwana® ©2025 FriendlyApp.</footer>
 
   <script>
     const vocabulary = {
@@ -2045,7 +2045,7 @@ const options = shuffleArray([...allOptions]);
     html += `<label class="quiz-option"><input type="radio" name="quizOption" value="${opt}"/> ${String.fromCharCode(65 + idx)}. ${opt}</label>`;
   });
   html += `<div id="quizWarning" style="color:red; margin-top:10px;"></div>`;
-  html += `<button onclick="submitQuizAnswer()">Jawab</button>`;
+  html += `<button onclick="submitQuizAnswer()">Answer</button>`;
   container.innerHTML = html;
 }
 
@@ -2053,7 +2053,7 @@ function submitQuizAnswer() {
   const selected = document.querySelector("input[name='quizOption']:checked");
   if (!selected) {
   const warningDiv = document.getElementById("quizWarning");
-  if (warningDiv) warningDiv.textContent = "Jawaban tidak boleh kosong!";
+  if (warningDiv) warningDiv.textContent = "Answers cannot be blank!";
   return;
 } else {
   const warningDiv = document.getElementById("quizWarning");
@@ -2079,7 +2079,7 @@ function showQuizResult(page = 1) {
 
   let score = quizAnswers.filter(q => q.answer === q.correct).length;
 
-  let html = `<h3>Hasil Quiz</h3><ol start="${start + 1}">`;
+  let html = `<h3>Quiz Results :</h3><ol start="${start + 1}">`;
   visibleAnswers.forEach((q, i) => {
     const isCorrect = q.answer === q.correct;
     html += `<li style="margin-bottom:8px;">${q.question}<br />
@@ -2118,8 +2118,8 @@ html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</sp
     html += `</div>`;
   }
 
-  html += `<button onclick="startQuiz()">Ulangi</button> `;
-  html += `<button onclick="document.getElementById('quizModeToggle').click()">Keluar</button>`;
+  html += `<button onclick="startQuiz()">Try again</button> `;
+  html += `<button onclick="document.getElementById('quizModeToggle').click()">Exit</button>`;
 
   document.getElementById("quizContainer").innerHTML = html;
 }
@@ -2321,61 +2321,145 @@ function toggleAutoTime() {
       randomWord();
     }
 
-    function showAllWords() {
-      const container = document.getElementById("tableContainer");
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
-      const filteredList = list.filter(entry => {
-        const text = (entry.word + " " + entry.meaning).toLowerCase();
-        return text.includes(input);
-      });
+    let sortBy = null;
+let sortAsc = true;
 
-      const chunkSize = 20;
-      const totalPages = Math.ceil(filteredList.length / chunkSize);
 
-      function renderTable(page = 1) {
-        const start = (page - 1) * chunkSize;
-        const chunk = filteredList.slice(start, start + chunkSize);
-        let html = `<table id="dataTable"><thead><tr><th>No</th><th>${reverse ? "Indonesia" : "Jepang"}</th><th>${reverse ? "Jepang" : "Indonesia"}</th></tr></thead><tbody>`;
-        chunk.forEach((entry, index) => {
-  html += `<tr><td>${start + index + 1}</td>`;
+function showJP(key, text) {
+  showIndividualJP.add(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <span id="${key}_text">${text}</span>
+      <button onclick="hideJP('${key}', \`${text.replace(/`/g, '\\`')}\`)">🙈 Hide</button>
+    `;
+  }
+}
 
-  const jpText = reverse ? entry.meaning : entry.word;
-  const idText = reverse ? entry.word : entry.meaning;
+function hideJP(key, text) {
+  showIndividualJP.delete(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <button onclick="showJP('${key}', \`${text.replace(/`/g, '\\`')}\`)">Show</button>
+    `;
+  }
+}
 
-const jpKey = entry.meaning + "_jp";
-const idKey = entry.meaning + "_id";
+function showID(key, text) {
+  showIndividualID.add(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <span id="${key}_text">${text}</span>
+      <button onclick="hideID('${key}', \`${text.replace(/`/g, '\\`')}\`)">Hide</button>
+    `;
+  }
+}
 
-  if (hideJPText && !showIndividualJP.has(jpKey)) {
-  html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">👁️ Show</button></span></td>`;
+function hideID(key, text) {
+  showIndividualID.delete(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <button onclick="showID('${key}', \`${text.replace(/`/g, '\\`')}\`)">Show</button>
+    `;
+  }
+}
+
+
+function showAllWords() {
+  const container = document.getElementById("tableContainer");
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+  let filteredList = list.filter(entry => {
+    const text = (entry.word + " " + entry.meaning).toLowerCase();
+    return text.includes(input);
+  });
+
+  const chunkSize = 20;
+  const totalPages = Math.ceil(filteredList.length / chunkSize);
+
+  function sortEntries() {
+    if (!sortBy) return;
+    filteredList.sort((a, b) => {
+      const aVal = sortBy === "jp" ? (reverse ? a.meaning : a.word) : (reverse ? a.word : a.meaning);
+      const bVal = sortBy === "jp" ? (reverse ? b.meaning : b.word) : (reverse ? b.word : b.meaning);
+      return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    });
+  }
+
+  function renderTable(page = 1) {
+    sortEntries();
+    const start = (page - 1) * chunkSize;
+    const chunk = filteredList.slice(start, start + chunkSize);
+    let html = `<table id="dataTable"><thead><tr><th>No</th>`;
+
+const jpArrow = sortBy === "jp" ? (sortAsc ? "↑" : "↓") : "↕";
+const idArrow = sortBy === "id" ? (sortAsc ? "↑" : "↓") : "↕";
+
+html += `<th onclick="toggleSort('jp')" style="cursor:pointer;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
+html += `<th onclick="toggleSort('id')" style="cursor:pointer;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
+
+    html += `</tr></thead><tbody>`;
+
+    chunk.forEach((entry, index) => {
+      html += `<tr><td>${start + index + 1}</td>`;
+
+      const jpText = reverse ? entry.meaning : entry.word;
+      const idText = reverse ? entry.word : entry.meaning;
+
+      const jpKey = entry.meaning + "_jp";
+      const idKey = entry.meaning + "_id";
+
+      if (hideJPText) {
+  if (showIndividualJP.has(jpKey)) {
+    html += `<td><span id="${jpKey}">${jpText} <button onclick="hideJP('${jpKey}')">Hide</button></span></td>`;
+  } else {
+    html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
+  }
 } else {
   html += `<td>${jpText}</td>`;
 }
 
-  if (hideIDText && !showIndividualID.has(idKey)) {
-  html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">👁️ Show</button></span></td>`;
+      if (hideIDText) {
+  if (showIndividualID.has(idKey)) {
+    html += `<td><span id="${idKey}">${idText} <button onclick="hideID('${idKey}')">Hide</button></span></td>`;
+  } else {
+    html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
+  }
 } else {
   html += `<td>${idText}</td>`;
 }
 
-  html += `</tr>`;
-});
-        html += `</tbody></table>`;
+    });
 
-        if (!input) {
-          html += `<div style="margin-top: 10px;">`;
-          for (let i = 1; i <= totalPages; i++) {
-            html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0040ff;color:white;' : ''}">${i}</button>`;
-          }
-          html += `</div>`;
-        }
+    html += `</tbody></table>`;
 
-        container.innerHTML = html;
+    if (!input) {
+      html += `<div style="margin-top: 10px;">`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0040ff;color:white;' : ''}">${i}</button>`;
       }
-
-      window.renderTable = renderTable;
-      renderTable(1);
+      html += `</div>`;
     }
+
+    container.innerHTML = html;
+  }
+
+  window.renderTable = renderTable;
+  renderTable(1);
+}
+
+function toggleSort(column) {
+  if (sortBy === column) {
+    sortAsc = !sortAsc;
+  } else {
+    sortBy = column;
+    sortAsc = true;
+  }
+  showAllWords();
+}
 
 function toggleShowTable() {
   tableShown = !tableShown;
