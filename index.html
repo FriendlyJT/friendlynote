@@ -461,16 +461,29 @@ function shuffleTable() {
 function toggleColumnText(type) {
   if (type === 'jp') {
     hideJPText = !hideJPText;
-    showIndividualJP.clear(); 
-    document.getElementById('toggleJP').innerText = `${hideJPText ? "Unhide JP" : "Hide JP"}`;
+
+    if (hideJPText) hideIDText = false;
+
+    showIndividualJP.clear();
+    showIndividualID.clear(); 
+
+    document.getElementById('toggleJP').innerText = hideJPText ? "Unhide JP" : "Hide JP";
+    document.getElementById('toggleID').innerText = "Hide ID";
   } else if (type === 'id') {
     hideIDText = !hideIDText;
-    showIndividualID.clear(); 
-    document.getElementById('toggleID').innerText = `${hideIDText ? "Unhide ID" : "Hide ID"}`;
+
+    if (hideIDText) hideJPText = false;
+
+    showIndividualID.clear();
+    showIndividualJP.clear();
+
+    document.getElementById('toggleID').innerText = hideIDText ? "Unhide ID" : "Hide ID";
+    document.getElementById('toggleJP').innerText = "Hide JP";
   }
 
   showAllWords();
 }
+
 
 function showOneJP(key) {
   showIndividualJP.add(key);
