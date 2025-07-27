@@ -33,25 +33,25 @@
     }
 
     .category-btn {
-      background-color: #00e5ff;
+      background-color: #025c70;
       border: none;
       padding: 10px 16px;
       border-radius: 6px;
       font-size: 1rem;
       font-weight: bold;
-      color: black;
+      color: white;
       cursor: pointer;
       transition: 0.3s;
       min-width: 70px;
     }
 
     .category-btn.active {
-      background-color: #de2923;
+      background-color: #c21111;
       color: white;
     }
 
     .category-btn.nav-arrow {
-      background-color: #0040ff;
+      background-color: #0b38a4;
       color: white;
       font-size: 1.3rem;
       font-weight: bold;
@@ -100,7 +100,7 @@
     }
 
     #randomBtn {
-      background-color: #11a04c;
+      background-color: #087445;
       color: white;
       font-size: 1.1rem;
       padding: 10px 30px;
@@ -127,7 +127,7 @@
     }
 
     #applyBtn {
-      background-color: #de2923;
+      background-color: #c21111;
     }
 
     table {
@@ -198,7 +198,7 @@
 
   #quizContainer h3 {
     text-align: center;
-    color: #0040ff;
+    color: #0b38a4;
     margin-bottom: 20px;
     font-size: 1.6rem;
   }
@@ -229,7 +229,7 @@
 
   .quiz-option:hover {
     background: #e6f0ff;
-    border-color: #0040ff;
+    border-color: #0b38a4;
   }
 
   .quiz-option input[type="radio"] {
@@ -237,7 +237,7 @@
   }
 
   #quizContainer button {
-    background-color: #0040ff;
+    background-color: #0b38a4;
     color: white;
     border: none;
     border-radius: 8px;
@@ -260,7 +260,7 @@
   .hide-btn {
   background-color: #e8f0fe;
   border: 1px solid #90caf9;
-  color: #0040ff;
+  color: #0b38a4;
   padding: 6px 12px;
   margin: 4px;
   border-radius: 6px;
@@ -481,7 +481,7 @@ function toggleColumnText(type) {
     document.getElementById('toggleJP').innerText = "Hide JP";
   }
 
-  showAllWords();
+  showAllWords(false);
 }
 
 
@@ -589,14 +589,20 @@ function handleQuizModeToggle() {
   const hideControls = document.getElementById("hideControls");
   if (hideControls) hideControls.style.display = quizMode ? "none" : (tableShown ? "block" : "none");
 
+  if (quizMode) {
+    startQuiz();
+  } else {
+    document.getElementById("quizContainer").style.display = "none";
+    document.getElementById("searchInput").style.display = tableShown ? "block" : "none";
 
-    if (quizMode) {
-  startQuiz();
-} else {
-  document.getElementById("quizContainer").style.display = "none";
-  document.getElementById("searchInput").style.display = tableShown ? "block" : "none"; 
+    createMenu();             
+    updateActiveCategory();     
+    usedWords = [];             
+    randomWord();              
+    if (tableShown) showAllWords(); 
+  }
 }
-}
+
 
 function startQuiz() {
   const selectedWords = shuffleArray(selectedCategories.flatMap(cat => vocabulary[cat] || []));
@@ -639,7 +645,7 @@ for (let item of shuffleArray(sameCategoryWords)) {
 
 const options = shuffleArray([...allOptions]);
 
-  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0040ff">Soal ${currentQuizIndex + 1} dari ${quizQuestions.length}</div>`;
+  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentQuizIndex + 1} dari ${quizQuestions.length}</div>`;
   html += `<div style="margin-bottom:10px;">${questionText}</div>`;
   options.forEach((opt, idx) => {
     html += `<label class="quiz-option"><input type="radio" name="quizOption" value="${opt}"/> ${String.fromCharCode(65 + idx)}. ${opt}</label>`;
@@ -967,90 +973,98 @@ function hideID(key, text) {
   }
 }
 
+let filteredList = [];
 
-function showAllWords() {
-  const container = document.getElementById("tableContainer");
+function showAllWords(forceNewFilter = true) {
   const input = document.getElementById("searchInput").value.toLowerCase();
   const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
-  let filteredList = list.filter(entry => {
-    const text = (entry.word + " " + entry.meaning).toLowerCase();
-    return text.includes(input);
-  });
 
+  if (forceNewFilter) {
+    filteredList = list.filter(entry => {
+      const text = (entry.word + " " + entry.meaning).toLowerCase();
+      return text.includes(input);
+    });
+    currentTablePage = 1;
+  }
+
+  window.renderTable(currentTablePage);
+}
+
+function sortEntries() {
+  if (!sortBy) return;
+  filteredList.sort((a, b) => {
+    const aVal = sortBy === "jp" ? (reverse ? a.meaning : a.word) : (reverse ? a.word : a.meaning);
+    const bVal = sortBy === "jp" ? (reverse ? b.meaning : b.word) : (reverse ? b.word : b.meaning);
+    return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+  });
+}
+
+function renderTable(page = 1) {
+  const container = document.getElementById("tableContainer");
   const chunkSize = 20;
   const totalPages = Math.ceil(filteredList.length / chunkSize);
-
-  function sortEntries() {
-    if (!sortBy) return;
-    filteredList.sort((a, b) => {
-      const aVal = sortBy === "jp" ? (reverse ? a.meaning : a.word) : (reverse ? a.word : a.meaning);
-      const bVal = sortBy === "jp" ? (reverse ? b.meaning : b.word) : (reverse ? b.word : b.meaning);
-      return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-    });
-  }
-
-  function renderTable(page = 1) {
   currentTablePage = page;
-    sortEntries();
-    const start = (page - 1) * chunkSize;
-    const chunk = filteredList.slice(start, start + chunkSize);
-    let html = `<table id="dataTable"><thead><tr><th>No</th>`;
 
-const jpArrow = sortBy === "jp" ? (sortAsc ? "↑" : "↓") : "↕";
-const idArrow = sortBy === "id" ? (sortAsc ? "↑" : "↓") : "↕";
+  sortEntries();
+  const start = (page - 1) * chunkSize;
+  const chunk = filteredList.slice(start, start + chunkSize);
 
-html += `<th onclick="toggleSort('jp')" style="cursor:pointer;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
-html += `<th onclick="toggleSort('id')" style="cursor:pointer;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
+  let html = `<table id="dataTable"><thead><tr><th>No</th>`;
 
-    html += `</tr></thead><tbody>`;
+  const jpArrow = sortBy === "jp" ? (sortAsc ? "↑" : "↓") : "↕";
+  const idArrow = sortBy === "id" ? (sortAsc ? "↑" : "↓") : "↕";
 
-    chunk.forEach((entry, index) => {
-      html += `<tr><td>${start + index + 1}</td>`;
+  html += `<th onclick="toggleSort('jp')" style="cursor:pointer;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
+  html += `<th onclick="toggleSort('id')" style="cursor:pointer;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
+  html += `</tr></thead><tbody>`;
 
-      const jpText = reverse ? entry.meaning : entry.word;
-      const idText = reverse ? entry.word : entry.meaning;
+  chunk.forEach((entry, index) => {
+    html += `<tr><td>${start + index + 1}</td>`;
 
-      const jpKey = entry.meaning + "_jp";
-      const idKey = entry.meaning + "_id";
+    const jpText = reverse ? entry.meaning : entry.word;
+    const idText = reverse ? entry.word : entry.meaning;
 
-      if (hideJPText) {
-  if (showIndividualJP.has(jpKey)) {
-    html += `<td><span id="${jpKey}">${jpText} <button onclick="hideJP('${jpKey}')">Hide</button></span></td>`;
-  } else {
-    html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
-  }
-} else {
-  html += `<td>${jpText}</td>`;
-}
+    const jpKey = entry.meaning + "_jp";
+    const idKey = entry.meaning + "_id";
 
-      if (hideIDText) {
-  if (showIndividualID.has(idKey)) {
-    html += `<td><span id="${idKey}">${idText} <button onclick="hideID('${idKey}')">Hide</button></span></td>`;
-  } else {
-    html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
-  }
-} else {
-  html += `<td>${idText}</td>`;
-}
-
-    });
-
-    html += `</tbody></table>`;
-
-    if (!input) {
-      html += `<div style="margin-top: 10px;">`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0040ff;color:white;' : ''}">${i}</button>`;
+    if (hideJPText) {
+      if (showIndividualJP.has(jpKey)) {
+        html += `<td><span id="${jpKey}">${jpText} <button onclick="hideJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Hide</button></span></td>`;
+      } else {
+        html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
       }
-      html += `</div>`;
+    } else {
+      html += `<td>${jpText}</td>`;
     }
 
-    container.innerHTML = html;
+    if (hideIDText) {
+      if (showIndividualID.has(idKey)) {
+        html += `<td><span id="${idKey}">${idText} <button onclick="hideID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Hide</button></span></td>`;
+      } else {
+        html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
+      }
+    } else {
+      html += `<td>${idText}</td>`;
+    }
+
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  if (!input) {
+    html += `<div style="margin-top: 10px;">`;
+    for (let i = 1; i <= totalPages; i++) {
+      html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0b38a4;color:white;' : ''}">${i}</button>`;
+    }
+    html += `</div>`;
   }
 
-  window.renderTable = renderTable;
-  renderTable(currentTablePage);
+  container.innerHTML = html;
 }
+
+window.renderTable = renderTable;
 
 function toggleSort(column) {
   if (sortBy === column) {
@@ -1080,11 +1094,9 @@ function toggleShowTable() {
   }
 }
 
-
-
     function filterTable() {
-      showAllWords();
-    }
+  showAllWords(true);
+}
 
     createMenu();
     randomWord();
