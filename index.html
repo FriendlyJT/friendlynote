@@ -915,10 +915,15 @@ function shuffleArray(arr) {
         }
       });
     }
+	
+	let meaningTimeout; 
 
     function randomWord() {
+	
+	clearTimeout(timer);          
+  clearTimeout(meaningTimeout); 
       let words = selectedCategories.flatMap(cat => vocabulary[cat] || []);
-      words = words.filter(entry => !usedWords.includes(entry.word));
+  words = words.filter(entry => !usedWords.includes(entry.word));
 
       if (pickUpMode && words.length === 0) {
   const wordDiv = document.getElementById("word");
@@ -968,10 +973,10 @@ function shuffleArray(arr) {
         let meaningDelay = Number(interval) / 2;
 
         if (autoShowMeaning) {
-          setTimeout(() => {
-            document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-          }, meaningDelay);
-        }
+  meaningTimeout = setTimeout(() => {
+    document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
+  }, meaningDelay);
+}
 
         if (pickUpMode) usedWords.push(entry.word);
       }
@@ -994,8 +999,11 @@ function shuffleArray(arr) {
   }
 
   if (autoTimeEnabled) {
-    timer = setInterval(randomWord, interval);
-  }
+  timer = setTimeout(() => {
+    randomWord();
+    setIntervalTime();
+  }, interval);
+}
 }
 
 function toggleAutoTime() {
