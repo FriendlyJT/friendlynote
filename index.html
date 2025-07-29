@@ -1082,18 +1082,20 @@ function hideID(key, text) {
 }
 
 let filteredList = [];
+let originalFilteredList = [];
 
 function showAllWords(forceNewFilter = true) {
   const input = document.getElementById("searchInput").value.toLowerCase();
   const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
 
-  if (forceNewFilter) {
-    filteredList = list.filter(entry => {
-      const text = (entry.word + " " + entry.meaning).toLowerCase();
-      return text.includes(input);
-    });
-    currentTablePage = 1;
-  }
+ if (forceNewFilter) {
+  filteredList = list.filter(entry => {
+    const text = (entry.word + " " + entry.meaning).toLowerCase();
+    return text.includes(input);
+  });
+  originalFilteredList = [...filteredList];
+  currentTablePage = 1;
+}
 
   window.renderTable(currentTablePage);
 }
@@ -1116,6 +1118,11 @@ function renderTable(page = 1) {
   sortEntries();
   const start = (page - 1) * chunkSize;
   const chunk = filteredList.slice(start, start + chunkSize);
+  
+  if (filteredList.length === 0) {
+  container.innerHTML = `<p style="margin-top:10px;">No results found.</p>`;
+  return;
+}
 
   let html = `<table id="dataTable"><thead><tr><th>No</th>`;
 
@@ -1176,12 +1183,21 @@ window.renderTable = renderTable;
 
 function toggleSort(column) {
   if (sortBy === column) {
+    if (sortAsc === false) {
+      sortBy = null;
+      filteredList = [...originalFilteredList];
+      currentTablePage = 1;
+      showAllWords(false);
+      return;
+    }
     sortAsc = !sortAsc;
   } else {
     sortBy = column;
     sortAsc = true;
   }
-  showAllWords();
+
+  currentTablePage = 1;
+  showAllWords(false);
 }
 
 function toggleShowTable() {
