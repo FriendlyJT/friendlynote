@@ -919,75 +919,75 @@ function shuffleArray(arr) {
 	let meaningTimeout; 
 
     function randomWord() {
-	
-	clearTimeout(timer);          
+  clearTimeout(timer);          
   clearTimeout(meaningTimeout); 
-      let words = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+
+  let words = selectedCategories.flatMap(cat => vocabulary[cat] || []);
   words = words.filter(entry => !usedWords.includes(entry.word));
 
-      if (pickUpMode && words.length === 0) {
-  const wordDiv = document.getElementById("word");
-  const meaningDiv = document.getElementById("meaning");
-  let countdown = 3;
+  if (pickUpMode && words.length === 0) {
+    const wordDiv = document.getElementById("word");
+    const meaningDiv = document.getElementById("meaning");
+    let countdown = 3;
 
-  clearInterval(timer);
+    document.getElementById("randomBtn").disabled = true;
+    document.getElementById("toggleAutoShowBtn").disabled = true;
+    document.getElementById("toggleLangBtn").disabled = true;
+    document.getElementById("meaning").style.visibility = "hidden";
 
-  document.getElementById("randomBtn").disabled = true;
-  document.getElementById("toggleAutoShowBtn").disabled = true;
-  document.getElementById("toggleLangBtn").disabled = true;
-  document.getElementById("meaning").style.visibility = "hidden";
-  
-  
-  
+    wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+    meaningDiv.innerText = "";
 
-  wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
-  meaningDiv.innerText = "";
-
-  const countdownInterval = setInterval(() => {
-    countdown--;
-    if (countdown > 0) {
-     wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
-    } else {
-      clearInterval(countdownInterval);
-
-      usedWords = [];
-      randomWord(); 
-      setIntervalTime();
-
-      document.getElementById("randomBtn").disabled = false;
-      document.getElementById("toggleAutoShowBtn").disabled = false;
-	  document.getElementById("toggleLangBtn").disabled = false;
-	  document.getElementById("meaning").style.visibility = "visible";
-    }
-  }, 1000);
-
-  return;
-}
-
-      const entry = words[Math.floor(Math.random() * words.length)];
-      if (entry) {
-        currentWord = reverse ? entry.meaning : entry.word;
-        currentMeaning = reverse ? entry.word : entry.meaning;
-        document.getElementById("word").innerHTML = currentWord;
-        document.getElementById("meaning").innerHTML = "";
-        let meaningDelay = Number(interval) / 2;
-
-        if (autoShowMeaning) {
-  meaningTimeout = setTimeout(() => {
-    document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-  }, meaningDelay);
-}
-
-        if (pickUpMode) usedWords.push(entry.word);
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      if (countdown > 0) {
+        wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+      } else {
+        clearInterval(countdownInterval);
+        usedWords = [];
+        randomWord(); 
+        setIntervalTime(); 
+        document.getElementById("randomBtn").disabled = false;
+        document.getElementById("toggleAutoShowBtn").disabled = false;
+        document.getElementById("toggleLangBtn").disabled = false;
+        document.getElementById("meaning").style.visibility = "visible";
       }
+    }, 1000);
+    return;
+  }
+
+  const entry = words[Math.floor(Math.random() * words.length)];
+  if (entry) {
+    currentWord = reverse ? entry.meaning : entry.word;
+    currentMeaning = reverse ? entry.word : entry.meaning;
+
+    document.getElementById("word").innerHTML = currentWord;
+    document.getElementById("meaning").innerHTML = "";
+
+    const meaningDelay = Number(interval) / 2;
+
+    if (autoShowMeaning) {
+      meaningTimeout = setTimeout(() => {
+        document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
+      }, meaningDelay);
     }
+
+    if (pickUpMode) usedWords.push(entry.word);
+  }
+
+  if (autoTimeEnabled) {
+    timer = setTimeout(() => {
+      randomWord();
+    }, interval); 
+  }
+}
 
     function showMeaning() {
       document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
     }
 
     function setIntervalTime() {
-  clearInterval(timer);
+  clearTimeout(timer);
   const inputVal = parseFloat(document.getElementById("intervalInput").value);
 
   if (isNaN(inputVal) || inputVal < 0.5) {
@@ -999,11 +999,10 @@ function shuffleArray(arr) {
   }
 
   if (autoTimeEnabled) {
-  timer = setTimeout(() => {
-    randomWord();
-    setIntervalTime();
-  }, interval);
-}
+    timer = setTimeout(() => {
+      randomWord();
+    }, interval);
+  }
 }
 
 function toggleAutoTime() {
