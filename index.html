@@ -967,9 +967,9 @@ function shuffleArray(arr) {
     const meaningDelay = Number(interval) / 2;
 
     if (autoShowMeaning) {
-      meaningTimeout = setTimeout(() => {
-        document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-      }, meaningDelay);
+     meaningTimeout = setTimeout(() => {
+  document.getElementById("meaning").innerHTML = currentMeaning || "Tidak diketahui";
+}, meaningDelay);
     }
 
     if (pickUpMode) usedWords.push(entry.word);
@@ -982,9 +982,9 @@ function shuffleArray(arr) {
   }
 }
 
-    function showMeaning() {
-      document.getElementById("meaning").innerText = currentMeaning || "Tidak diketahui";
-    }
+  function showMeaning() {
+  document.getElementById("meaning").innerHTML = currentMeaning || "Tidak diketahui";
+}
 
     function setIntervalTime() {
   clearTimeout(timer);
