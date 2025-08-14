@@ -1887,7 +1887,7 @@ const vocabulary = {
   { "word": "景色（けしき）", "meaning": "Pemandangan" },
   { "word": "山（やま）", "meaning": "Gunung" },
   { "word": "遊ぶ（あそぶ）", "meaning": "Bermain" },
-  { "word": "好き（な）", "meaning": "Favorit" },
+  { "word": "好き（すきな）", "meaning": "Favorit" },
   { "word": "苦手（な）（にがて）", "meaning": "Tidak suka" },
   { "word": "いちばん", "meaning": "Paling" },
   { "word": "どうして", "meaning": "Mengapa" },
