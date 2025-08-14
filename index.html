@@ -1120,9 +1120,9 @@ function renderTable(page = 1) {
   const chunk = filteredList.slice(start, start + chunkSize);
   
   if (filteredList.length === 0) {
-  container.innerHTML = `<p style="margin-top:10px;">No results found.</p>`;
-  return;
-}
+    container.innerHTML = `<p style="margin-top:10px;">No results found.</p>`;
+    return;
+  }
 
   let html = `<table id="dataTable"><thead><tr><th>No</th>`;
 
@@ -1139,8 +1139,9 @@ function renderTable(page = 1) {
     const jpText = reverse ? entry.meaning : entry.word;
     const idText = reverse ? entry.word : entry.meaning;
 
-    const jpKey = entry.meaning + "_jp";
-    const idKey = entry.meaning + "_id";
+    const uniqueKey = `${entry.word}_${entry.meaning}_${start + index}`;
+    const jpKey = uniqueKey + "_jp";
+    const idKey = uniqueKey + "_id";
 
     if (hideJPText) {
       if (showIndividualJP.has(jpKey)) {
