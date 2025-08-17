@@ -499,7 +499,6 @@ const vocabulary = {
 { "word": "[3] 集合する, しゅうごうする, しゅうごうします, しゅうごうして, しゅうごうしない", "meaning": "Berkumpul (bentuk sopan)" },
 { "word": "[1] 持って帰る, もってかえる, もってかえります, もってかえって, もってかえらない", "meaning": "Membawa pulang" },
 { "word": "[1] 飛ぶ, とぶ, とびます, とんで, とばない", "meaning": "Terbang" },
-{ "word": "[1] 歩く, あるく, あるきます, あるいて, あるかない", "meaning": "Berjalan kaki" },
 { "word": "[1] 休む, やすむ, やすみます, やすんで, やすまない", "meaning": "Istirahat" },
 { "word": "[1] お腹がすく, おなかがすく, おなかがすきます, おなかがすいて, おなかがすかない", "meaning": "Lapar" },
 { "word": "[1] 喉が渇く, のどがかわく, のどがかわきます, のどがかわいて, のどがかわかない", "meaning": "Haus" },
@@ -559,12 +558,21 @@ const vocabulary = {
 { "word": "[2] 落ちる, おちる, おちます, おちて, おちない", "meaning": "Jatuh" },
 { "word": "[2] 消える, きえる, きえます, きえて, きえない", "meaning": "Padam, hilang" },
 { "word": "[2] 壊れる, こわれる, こわれます, こわれて, こわれない", "meaning": "Rusak" },
-{ "word": "[2] 汚れる, よごれる, よごれます, よごれて, よごれない", "meaning": "Kotor" }
-
-
-
-
-
+{ "word": "[2] 汚れる, よごれる, よごれます, よごれて, よごれない", "meaning": "Kotor" },
+{ "word": "[2] 出かける, でかける, でかけます, でかけて, でかけない", "meaning": "Pergi" },
+{ "word": "[3] じめじめする, じめじめする, じめじめします, じめじめして, じめじめしない", "meaning": "Panas dan lembab" },
+{ "word": "[1] 咲く, さく, さきます, さいて, さかない", "meaning": "Mekar" },
+{ "word": "[1] 鳴く, なく, なきます, ないて, なかない", "meaning": "Bersuara (hewan; serangga)" },
+{ "word": "[1] なる, なる, なります, なって, ならない", "meaning": "Menjadi" },
+{ "word": "[2] 晴れる, はれる, はれます, はれて, はれない", "meaning": "Cerah; menjadi cerah" },
+{ "word": "[1] くもる, くもる, くもります, くもって, くもらない", "meaning": "Berawan; mendung" },
+{ "word": "[1] 吹く, ふく, ふきます, ふいて, ふかない", "meaning": "(Angin) bertiup; meniup" },
+{ "word": "[3] 嫌になる, いやになる, いやになります, いやになって, いやにならない", "meaning": "Mengganggu; mengesalkan" },
+{ "word": "[3] 行ってみる, いってみる, いってみます, いってみて, いってみない", "meaning": "Mencoba pergi" },
+{ "word": "[3] 知っている, しっている, しっています, しっていて, しっていない", "meaning": "Mengetahui" },
+{ "word": "[1] 知る, しる, しります, しって, しらない", "meaning": "Mengetahui" },
+{ "word": "[1] 見渡す, みわたす, みわたします, みわたして, みわたさない", "meaning": "Memandang / melihat ke sekeliling" },
+{ "word": "[1] 入る, はいる, はいります, はいって, はいらない", "meaning": "Masuk; berbelok" }
 
       ],
 	    "Kata Sifat-i": [
@@ -619,7 +627,12 @@ const vocabulary = {
   { "word": "黄色い（きいろい）", "meaning": "Kuning" },
   { "word": "怖い（こわい）", "meaning": "Menakutkan" },
   { "word": "うるさい（うるさい）", "meaning": "Berisik" },
-  { "word": "強い（つよい）", "meaning": "Kuat" }
+  { "word": "強い（つよい）", "meaning": "Kuat" },
+  { "word": "蒸し暑い（むしあつい）", "meaning": "Panas dan pengap / gerah" },
+  { "word": "安い（やすい）", "meaning": "Murah" },
+  { "word": "おもしろい", "meaning": "Menarik" },
+  { "word": "住みやすい（すみやすい）", "meaning": "Nyaman" },
+  { "word": "美しい（うつくしい）", "meaning": "Indah" }
 		  ],
 		    "Kata Sifat-na": [
 	    { "word": "静か（しずか）", "meaning": "Tenang" },
@@ -647,7 +660,12 @@ const vocabulary = {
   { "word": "自由（じゆう）", "meaning": "Bebas" },
   { "word": "不便（ふべん）", "meaning": "Tidak praktis / Tidak nyaman" },
   { "word": "心配（しんぱい）", "meaning": "Khawatir" },
-  { "word": "本当（ほんとう）", "meaning": "Benar-benar" }
+  { "word": "本当（ほんとう）", "meaning": "Benar-benar" },
+  { "word": "まあまあ", "meaning": "Lumayan" },
+  { "word": "同じ（おなじ）", "meaning": "Sama" },
+  { "word": "苦手（にがて）", "meaning": "Tidak suka; lemah dalam hal tertentu" },
+  { "word": "まっしろ", "meaning": "Putih bersih" },
+  { "word": "大きな（おおきな）", "meaning": "Besar" },
 		  ],
 	   "Lesson 1": [
 	   { word: "にほん (Nihon)", meaning: "Jepang" },
@@ -2026,7 +2044,7 @@ const vocabulary = {
   { "word": "ずっと", "meaning": "(lurus) terus" },
   { "word": "市立（しりつ）", "meaning": "(milik) kota" },
   { "word": "すぐ", "meaning": "langsung; tepat" },
-  { "word": "曲がったところ", "meaning": "setelah berbelok" },
+  { "word": "曲がったところ (まがったところ）  ", "meaning": "setelah berbelok" },
   { "word": "銀行（ぎんこう）", "meaning": "bank" },
   { "word": "神社（じんじゃ）", "meaning": "kuil Shinto" },
   { "word": "駐車場（ちゅうしゃじょう）", "meaning": "tempat parkir" },
