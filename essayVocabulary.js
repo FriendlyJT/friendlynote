@@ -2768,8 +2768,8 @@ const essayVocabulary = {
 		  
 		  
 		  
-    },
+    };
 
    essayVocabulary["All"] = Object.values(essayVocabulary).flat().filter((item, index, self) =>
     self.findIndex(i => i.kanji === item.kanji) === index
-  ),
+  );
