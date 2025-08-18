@@ -563,16 +563,23 @@ function showEssayQuestion() {
   container.innerHTML = html;
 
   const input = document.getElementById("essayAnswerInput");
-  input.focus();
 
-  ["keydown", "keyup"].forEach(eventType => {
-    input.addEventListener(eventType, function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        document.getElementById("essayAnswerBtn").click();
-      }
-    });
-  });
+  input.focus();
+  
+input.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const warningEl = document.getElementById("essayWarning");
+
+    if (input.value.trim() !== "") {
+      warningEl.textContent = ""; // reset warning
+      document.getElementById("essayAnswerBtn").click();
+    } else {
+      warningEl.textContent = "Answer cannot be blank!";
+      input.focus();
+    }
+  }
+});
 }
 
 function submitEssayAnswer() {
