@@ -580,18 +580,16 @@ function submitEssayAnswer() {
   }
 
   const q = essayQuestions[currentEssayIndex];
-  
-  // Filter tanda baca dari jawaban benar juga agar sesuai dengan jawaban user
-  const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei]
-    .filter(Boolean)
-    .map(a => a.replace(/[,\.;\/]/g, ''));
+const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
 
-  essayAnswers.push({
-    question: q.meaning,
-    correct: possibleAnswers.join(" / "),
-    answer,
-    isCorrect: possibleAnswers.includes(answer)
-  });
+const uniqueAnswers = possibleAnswers.filter((v, i, arr) => arr.indexOf(v) === i);
+
+essayAnswers.push({
+  question: q.meaning,
+  correct: uniqueAnswers.join(" / "),
+  answer,
+  isCorrect: possibleAnswers.includes(answer)
+});
 
   currentEssayIndex++;
   showEssayQuestion();
