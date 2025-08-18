@@ -609,10 +609,8 @@ function submitEssayAnswer() {
   currentEssayIndex++;
   showEssayQuestion();
 
-  setTimeout(() => {
-    const nextInput = document.getElementById("essayAnswerInput");
-    if (nextInput) nextInput.focus();
-  }, 50);
+  const nextInput = document.getElementById("essayAnswerInput");
+  if (nextInput) nextInput.focus();
 }
 
 function showEssayResult(page = 1) {
