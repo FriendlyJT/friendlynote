@@ -2374,7 +2374,7 @@ const vocabulary = {
 		  "Irodori 13": [
 			  
 	     { "word": "電気（でんき）", "meaning": "lampu; listrik" },
-  { "word": "つく（電気がつく）", "meaning": "menyala (lampu menyala)" },
+  { "word": "電気がつく （でんきがつく）", "meaning": "menyala (lampu menyala)" },
   { "word": "変（な）（へん）", "meaning": "aneh" },
   { "word": "音（おと）", "meaning": "bunyi" },
   { "word": "音がする（おとがする）", "meaning": "berbunyi" },

@@ -566,7 +566,10 @@ function showEssayQuestion() {
 
 function submitEssayAnswer() {
   const input = document.getElementById("essayAnswerInput");
-  const answer = input.value.trim();
+  let answer = input.value.trim();
+
+  answer = answer.replace(/[,\.;\/\s、\(\)\[\]]/g, '');
+
   if (!answer) {
     const warningDiv = document.getElementById("essayWarning");
     if (warningDiv) warningDiv.textContent = "Answer cannot be blank!";
@@ -577,7 +580,12 @@ function submitEssayAnswer() {
   }
 
   const q = essayQuestions[currentEssayIndex];
-  const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
+  
+  // Filter tanda baca dari jawaban benar juga agar sesuai dengan jawaban user
+  const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei]
+    .filter(Boolean)
+    .map(a => a.replace(/[,\.;\/]/g, ''));
+
   essayAnswers.push({
     question: q.meaning,
     correct: possibleAnswers.join(" / "),
