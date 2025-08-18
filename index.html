@@ -311,6 +311,8 @@
 
   </style>
   
+  
+    <script src="essayVocabulary.js"></script>
   <script src="vocabulary.js"></script>
   
 </head>
@@ -322,13 +324,23 @@
     Select Multi Category
   </label>
 </div>
-
 <div style="margin-bottom: 10px;">
   <label>
     <input type="checkbox" id="quizModeToggle" onchange="handleQuizModeToggle()" />
     Quiz Mode
+  </label>
+  <label>
+    <input type="checkbox" id="essayModeToggle" onchange="handleEssayModeToggle()" />
+    Essay Mode
+  </label>
 </div>
   <div class="menu" id="menu"></div>
+  <div id="essayLengthOptions" style="margin: 10px 0; display: none;">
+  <strong>Jumlah Soal:</strong><br />
+  <label><input type="radio" name="essayLength" value="10" checked /> 10 Soal</label>
+  <label><input type="radio" name="essayLength" value="20" /> 20 Soal</label>
+  <label><input type="radio" name="essayLength" value="30" /> 30 Soal</label>
+</div>
 <div id="quizLengthOptions" style="margin: 10px 0; display: none;">
   <strong>Jumlah Soal:</strong><br />
   <label><input type="radio" name="quizLength" value="10" checked /> 10 Soal</label>
@@ -435,13 +447,194 @@
 	
 	function handleMultiSelectToggle() {
   multiSelectMode = document.getElementById("multiSelectToggle").checked;
+
   if (!multiSelectMode && selectedCategories.length > 1) {
     selectedCategories = [selectedCategories[0] || "All"];
+    usedWords = [];
+
+    if (quizMode) {
+      startQuiz();
+    } else if (essayMode) {
+      startEssay();
+    } else {
+      randomWord();
+      if (tableShown) showAllWords();
+    }
+  }
+
+  updateActiveCategory();
+}
+
+let essayMode = false;
+let essayQuestions = [];
+let essayAnswers = [];
+let currentEssayIndex = 0;
+let currentEssayResultPage = 1;
+
+function updateHideButtons() {
+  const hideButtons = ['toggleJP', 'toggleID', 'shuffleTableBtn'];
+  hideButtons.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = (quizMode || essayMode) ? 'none' : 'inline-block';
+    }
+  });
+}
+
+function handleEssayModeToggle() {
+  essayMode = document.getElementById("essayModeToggle").checked;
+
+  if (essayMode && quizMode) {
+    quizMode = false;
+    document.getElementById("quizModeToggle").checked = false;
+    document.getElementById("quizLengthOptions").style.display = "none";
+  }
+
+  const mainElements = [
+    "word", "meaning", "randomBtn", "intervalInput", "applyBtn",
+    "toggleLangBtn", "togglePickBtn", "toggleShowBtn",
+    "toggleAutoShowBtn", "searchInput", "tableContainer", "autoTimeToggle"
+  ];
+  mainElements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = essayMode ? "none" : "";
+  });
+
+  const secondsLabel = document.querySelector(".controls span");
+  if (secondsLabel) secondsLabel.style.display = essayMode ? "none" : "inline";
+
+  document.getElementById("menu").style.display = "flex";
+  document.getElementById("essayLengthOptions").style.display = essayMode ? "block" : "none";
+  document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
+
+ updateHideButtons();
+  if (essayMode) {
+    startEssay();
+  } else {
+    document.getElementById("quizContainer").style.display = "none";
+    createMenu();
+    updateActiveCategory();
     usedWords = [];
     randomWord();
     if (tableShown) showAllWords();
   }
-  updateActiveCategory();
+}
+
+
+function startEssay() {
+  const selectedWords = shuffleArray(
+    selectedCategories.includes("All")
+      ? Object.values(essayVocabulary).flat()
+      : selectedCategories.flatMap(cat => essayVocabulary[cat] || [])
+  );
+
+  const essayLengthInput = document.querySelector('input[name="essayLength"]:checked');
+  const totalQuestions = essayLengthInput ? parseInt(essayLengthInput.value) : 20;
+
+  essayQuestions = selectedWords.slice(0, totalQuestions);
+  essayAnswers = [];
+  currentEssayIndex = 0;
+
+  document.getElementById("quizContainer").style.display = "block";
+  document.getElementById("essayLengthOptions").style.display = "block";
+
+  showEssayQuestion();
+}
+
+document.querySelectorAll('input[name="essayLength"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (essayMode) startEssay();
+  });
+});
+
+function showEssayQuestion() {
+  const container = document.getElementById("quizContainer");
+  if (currentEssayIndex >= essayQuestions.length) return showEssayResult();
+
+  const q = essayQuestions[currentEssayIndex];
+  const questionText = `Apa bahasa Jepangnya "<strong>${q.meaning}</strong>"? `;
+
+  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentEssayIndex + 1} dari ${essayQuestions.length}</div>`;
+ html += `<div style="margin-bottom:10px; width:100%; box-sizing:border-box;">${questionText}</div>`;
+ html += `<input type="text" id="essayAnswerInput" style="width:100%; padding:8px; font-size:1rem; margin-bottom:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;" />`;
+  html += `<div id="essayWarning" style="color:red; margin-top:10px;"></div>`;
+  html += `<button onclick="submitEssayAnswer()">Answer</button>`;
+  container.innerHTML = html;
+}
+
+function submitEssayAnswer() {
+  const input = document.getElementById("essayAnswerInput");
+  const answer = input.value.trim();
+  if (!answer) {
+    const warningDiv = document.getElementById("essayWarning");
+    if (warningDiv) warningDiv.textContent = "Answer cannot be blank!";
+    return;
+  } else {
+    const warningDiv = document.getElementById("essayWarning");
+    if (warningDiv) warningDiv.textContent = "";
+  }
+
+  const q = essayQuestions[currentEssayIndex];
+  const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
+  essayAnswers.push({
+    question: q.meaning,
+    correct: possibleAnswers.join(" / "),
+    answer,
+    isCorrect: possibleAnswers.includes(answer)
+  });
+
+  currentEssayIndex++;
+  showEssayQuestion();
+}
+
+function showEssayResult(page = 1) {
+  currentEssayResultPage = page;
+  const start = (page - 1) * resultsPerPage;
+  const end = start + resultsPerPage;
+  const visibleAnswers = essayAnswers.slice(start, end);
+
+  let score = essayAnswers.filter(q => q.isCorrect).length;
+
+  let html = `<h3>Essay Results :</h3><ol start="${start + 1}">`;
+  visibleAnswers.forEach((q, i) => {
+    html += `<li style="margin-bottom:8px;">${q.question}<br />
+      Jawaban kamu: <strong>${q.answer}</strong> ${q.isCorrect ? "✅" : "❌"}<br />
+      Jawaban benar: <strong>${q.correct}</strong>
+    </li>`;
+  });
+  html += `</ol><h4>Jawaban Benar: ${score} dari ${essayAnswers.length}</h4>`;
+  const nilai = Math.round((score / essayAnswers.length) * 100);
+  let warna = nilai >= 80 ? "green" : nilai >= 60 ? "orange" : "red";
+  html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</span></div>`;
+
+  const totalPages = Math.ceil(essayAnswers.length / resultsPerPage);
+  if (totalPages > 1) {
+    html += `<div style="margin:10px 0;">`;
+    if (page > 1) {
+      html += `<button onclick="showEssayResult(${page - 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Prev</button> `;
+    }
+
+    for (let p = 1; p <= totalPages; p++) {
+      const isActive = p === page;
+      html += `<button onclick="showEssayResult(${p})" style="
+        margin:2px;
+        padding:4px 8px;
+        font-size:0.85rem;
+        border-radius:5px;
+        ${isActive ? 'background-color:#d40000; color:white; font-weight:bold;' : ''}
+      ">${p}</button>`;
+    }
+
+    if (page < totalPages) {
+      html += `<button onclick="showEssayResult(${page + 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Next</button>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<button onclick="startEssay()">Try again</button> `;
+  html += `<button onclick="document.getElementById('essayModeToggle').click()">Exit</button>`;
+
+  document.getElementById("quizContainer").innerHTML = html;
 }
 
 let quizMode = false;
@@ -674,33 +867,35 @@ function clearCanvas() {
 
 function handleQuizModeToggle() {
   quizMode = document.getElementById("quizModeToggle").checked;
+
+  if (quizMode && essayMode) {
+    essayMode = false;
+    document.getElementById("essayModeToggle").checked = false;
+    document.getElementById("essayLengthOptions").style.display = "none";
+  }
+
   const mainElements = [
     "word", "meaning", "randomBtn", "intervalInput", "applyBtn",
     "toggleLangBtn", "togglePickBtn", "toggleShowBtn",
     "toggleAutoShowBtn", "searchInput", "tableContainer", "autoTimeToggle"
   ];
+  mainElements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = quizMode ? "none" : "";
+  });
 
-  mainElements.forEach(id => document.getElementById(id).style.display = quizMode ? "none" : "");
   document.getElementById("menu").style.display = "flex";
   document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
-
-  const timeLabel = document.querySelector(".controls span");
-  if (timeLabel) timeLabel.style.display = quizMode ? "none" : "inline";
-  
-  const hideControls = document.getElementById("hideControls");
-  if (hideControls) hideControls.style.display = quizMode ? "none" : (tableShown ? "block" : "none");
-
+ updateHideButtons();
   if (quizMode) {
     startQuiz();
   } else {
     document.getElementById("quizContainer").style.display = "none";
-    document.getElementById("searchInput").style.display = tableShown ? "block" : "none";
-
-    createMenu();             
-    updateActiveCategory();     
-    usedWords = [];             
-    randomWord();              
-    if (tableShown) showAllWords(); 
+    createMenu();
+    updateActiveCategory();
+    usedWords = [];
+    randomWord();
+    if (tableShown) showAllWords();
   }
 }
 
@@ -886,11 +1081,13 @@ function shuffleArray(arr) {
   usedWords = [];
 
   if (quizMode) {
-    startQuiz(); 
-  } else {
+    startQuiz();
+} else if (essayMode) {
+    startEssay();
+} else {
     randomWord();
     if (tableShown) showAllWords();
-  }
+}
 };
         menuDiv.appendChild(btn);
       });

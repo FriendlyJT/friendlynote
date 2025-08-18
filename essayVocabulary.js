@@ -1,5 +1,4 @@
 const essayVocabulary = {
-      const vocabulary = {
       "Salam": [
 		 { "kanji": "", "romaji": "おはようございます", "meaning": "Selamat pagi" },
   { "kanji": "", "romaji": "こんにちは", "meaning": "Selamat siang" },
@@ -2607,10 +2606,8 @@ const essayVocabulary = {
   { "kanji": "受ける", "romaji": "うける", "meaning": "menerima" },
   { "kanji": "予約", "romaji": "よやく", "meaning": "memesan" },
   { "kanji": "受付中", "romaji": "うけつけちゅう", "meaning": "sedang menerima; melayani" },
-  { "kanji": "クリニック", "romaji": "クリニック", "meaning": "klinik" 
-  
- 
-		  ],
+  { "kanji": "クリニック", "romaji": "クリニック", "meaning": "klinik"}
+   ],
 		  
 		  "Irodori 17": [
 			  
@@ -2773,6 +2770,6 @@ const essayVocabulary = {
 		  
     };
 
-    vocabulary["All"] = Object.values(vocabulary).flat().filter((item, index, self) =>
-      self.findIndex(i => i.word === item.word) === index
-    );
+   essayVocabulary["All"] = Object.values(essayVocabulary).flat().filter((item, index, self) =>
+    self.findIndex(i => i.kanji === item.kanji) === index
+  );
