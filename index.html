@@ -581,7 +581,6 @@ function submitEssayAnswer() {
 
   const q = essayQuestions[currentEssayIndex];
 const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
-
 const uniqueAnswers = possibleAnswers.filter((v, i, arr) => arr.indexOf(v) === i);
 
 essayAnswers.push({
