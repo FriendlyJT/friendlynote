@@ -564,22 +564,20 @@ function showEssayQuestion() {
 
   const input = document.getElementById("essayAnswerInput");
 
-  input.focus();
-  
-input.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    const warningEl = document.getElementById("essayWarning");
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const warningEl = document.getElementById("essayWarning");
 
-    if (input.value.trim() !== "") {
-      warningEl.textContent = ""; // reset warning
-      document.getElementById("essayAnswerBtn").click();
-    } else {
-      warningEl.textContent = "Answer cannot be blank!";
-      input.focus();
+      if (input.value.trim() !== "") {
+        warningEl.textContent = "";
+        document.getElementById("essayAnswerBtn").click();
+      } else {
+        warningEl.textContent = "Answer cannot be blank!";
+        input.focus();
+      }
     }
-  }
-});
+  });
 }
 
 function submitEssayAnswer() {
@@ -598,18 +596,23 @@ function submitEssayAnswer() {
   }
 
   const q = essayQuestions[currentEssayIndex];
-const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
-const uniqueAnswers = possibleAnswers.filter((v, i, arr) => arr.indexOf(v) === i);
+  const possibleAnswers = [q.kanji, q.romaji, q.masu, q.tekei, q.naikei].filter(Boolean);
+  const uniqueAnswers = possibleAnswers.filter((v, i, arr) => arr.indexOf(v) === i);
 
-essayAnswers.push({
-  question: q.meaning,
-  correct: uniqueAnswers.join(" / "),
-  answer,
-  isCorrect: possibleAnswers.includes(answer)
-});
+  essayAnswers.push({
+    question: q.meaning,
+    correct: uniqueAnswers.join(" / "),
+    answer,
+    isCorrect: possibleAnswers.includes(answer)
+  });
 
   currentEssayIndex++;
   showEssayQuestion();
+
+  setTimeout(() => {
+    const nextInput = document.getElementById("essayAnswerInput");
+    if (nextInput) nextInput.focus();
+  }, 50);
 }
 
 function showEssayResult(page = 1) {
