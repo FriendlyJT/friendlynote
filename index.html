@@ -556,11 +556,23 @@ function showEssayQuestion() {
   const questionText = `Apa bahasa Jepangnya "<strong>${q.meaning}</strong>"? `;
 
   let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentEssayIndex + 1} dari ${essayQuestions.length}</div>`;
- html += `<div style="margin-bottom:10px; width:100%; box-sizing:border-box;">${questionText}</div>`;
- html += `<input type="text" id="essayAnswerInput" style="width:100%; padding:8px; font-size:1rem; margin-bottom:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;" />`;
+  html += `<div style="margin-bottom:10px; width:100%; box-sizing:border-box;">${questionText}</div>`;
+  html += `<input type="text" id="essayAnswerInput" style="width:100%; padding:8px; font-size:1rem; margin-bottom:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;" />`;
   html += `<div id="essayWarning" style="color:red; margin-top:10px;"></div>`;
-  html += `<button onclick="submitEssayAnswer()">Answer</button>`;
+  html += `<button id="essayAnswerBtn" onclick="submitEssayAnswer()">Answer</button>`;
   container.innerHTML = html;
+
+  const input = document.getElementById("essayAnswerInput");
+  input.focus();
+
+  ["keydown", "keyup"].forEach(eventType => {
+    input.addEventListener(eventType, function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("essayAnswerBtn").click();
+      }
+    });
+  });
 }
 
 function submitEssayAnswer() {
