@@ -118,13 +118,34 @@
     }
 
     #applyBtn, #toggleLangBtn, #togglePickBtn, #toggleShowBtn, #toggleAutoShowBtn {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: black;
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
+  width: 120px;            
+  height: 40px;           
+  padding: 0 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#applyBtn span,
+#toggleLangBtn span,
+#togglePickBtn span,
+#toggleShowBtn span,
+#toggleAutoShowBtn span {
+  display: block;
+  font-size: 1rem;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+  font-size: clamp(0.6rem, 2vw, 1rem); 
+}
 
     #applyBtn {
       background-color: #c21111;
@@ -368,7 +389,7 @@
     <button id="toggleLangBtn" onclick="toggleLanguageMode()">Reverse: OFF</button>
     <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Spoiler: ON</button>
     <button id="togglePickBtn" onclick="togglePickUp()">Looping: OFF</button>
-    <button id="toggleShowBtn" onclick="toggleShowTable()">Table: OFF</button>
+    <button id="toggleShowBtn" onclick="toggleShowTable()">Vocabulary: OFF</button>
   </div>
   <input type="text" id="searchInput" placeholder="Cari kata..." oninput="filterTable()" />
   <div id="hideControls" style="margin-top: 10px; display: none;">
@@ -912,6 +933,9 @@ function handleQuizModeToggle() {
     const el = document.getElementById(id);
     if (el) el.style.display = quizMode ? "none" : "";
   });
+  
+  const secondsLabel = document.querySelector(".controls span");
+  if (secondsLabel) secondsLabel.style.display = quizMode ? "none" : "inline";
 
   document.getElementById("menu").style.display = "flex";
   document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
@@ -1272,7 +1296,10 @@ function showJP(key, text) {
   if (span) {
     span.innerHTML = `
       <span id="${key}_text">${text}</span>
-      <button onclick="hideJP('${key}', \`${text.replace(/`/g, '\\`')}\`)">Hide</button>
+      <button onclick="hideJP('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">
+        Hide
+      </button>
     `;
   }
 }
@@ -1282,7 +1309,10 @@ function hideJP(key, text) {
   const span = document.getElementById(key);
   if (span) {
     span.innerHTML = `
-      <button onclick="showJP('${key}', \`${text.replace(/`/g, '\\`')}\`)">Show</button>
+      <button onclick="showJP('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Show
+      </button>
     `;
   }
 }
@@ -1293,7 +1323,10 @@ function showID(key, text) {
   if (span) {
     span.innerHTML = `
       <span id="${key}_text">${text}</span>
-      <button onclick="hideID('${key}', \`${text.replace(/`/g, '\\`')}\`)">Hide</button>
+      <button onclick="hideID('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">
+        Hide
+      </button>
     `;
   }
 }
@@ -1303,7 +1336,10 @@ function hideID(key, text) {
   const span = document.getElementById(key);
   if (span) {
     span.innerHTML = `
-      <button onclick="showID('${key}', \`${text.replace(/`/g, '\\`')}\`)">Show</button>
+      <button onclick="showID('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Show
+      </button>
     `;
   }
 }
@@ -1351,17 +1387,40 @@ function renderTable(page = 1) {
     return;
   }
 
-  let html = `<table id="dataTable"><thead><tr><th>No</th>`;
+  let html = "";
+
+  if (totalPages > 1) {
+    html += `<div style="margin-bottom:12px; text-align:center;">`;
+    if (page > 1) {
+      html += `<button onclick="renderTable(${page - 1})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        ⬅ Prev
+      </button>`;
+    }
+    html += `<span style="margin:0 12px; font-weight:bold; color:#333;">Page ${page} of ${totalPages}</span>`;
+    if (page < totalPages) {
+      html += `<button onclick="renderTable(${page + 1})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Next ➡
+      </button>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<table id="dataTable" style="width:100%; border-collapse:collapse; text-align:left; border:1px solid #ccc;">
+    <thead style="background:#02768f; color:white;">
+      <tr>
+        <th style="padding:8px; width:50px; border:1px solid #ccc;">No</th>`;
 
   const jpArrow = sortBy === "jp" ? (sortAsc ? "↑" : "↓") : "↕";
   const idArrow = sortBy === "id" ? (sortAsc ? "↑" : "↓") : "↕";
 
-  html += `<th onclick="toggleSort('jp')" style="cursor:pointer;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
-  html += `<th onclick="toggleSort('id')" style="cursor:pointer;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
+  html += `<th onclick="toggleSort('jp')" style="cursor:pointer; padding:8px; border:1px solid #ccc;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
+  html += `<th onclick="toggleSort('id')" style="cursor:pointer; padding:8px; border:1px solid #ccc;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
   html += `</tr></thead><tbody>`;
 
   chunk.forEach((entry, index) => {
-    html += `<tr><td>${start + index + 1}</td>`;
+    html += `<tr style="border-bottom:1px solid #ddd;"><td style="padding:6px; border:1px solid #ccc;">${start + index + 1}</td>`;
 
     const jpText = reverse ? entry.meaning : entry.word;
     const idText = reverse ? entry.word : entry.meaning;
@@ -1372,22 +1431,30 @@ function renderTable(page = 1) {
 
     if (hideJPText) {
       if (showIndividualJP.has(jpKey)) {
-        html += `<td><span id="${jpKey}">${jpText} <button onclick="hideJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Hide</button></span></td>`;
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">${jpText} 
+          <button onclick="hideJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
+          style="margin-left:6px; padding:4px 8px; border:1px solid #aaa; background:#f5f5f5; cursor:pointer;">Hide</button></span></td>`;
       } else {
-        html += `<td><span id="${jpKey}"><button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">
+          <button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
+          style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">Show</button></span></td>`;
       }
     } else {
-      html += `<td>${jpText}</td>`;
+      html += `<td style="padding:6px; border:1px solid #ccc;">${jpText}</td>`;
     }
 
     if (hideIDText) {
       if (showIndividualID.has(idKey)) {
-        html += `<td><span id="${idKey}">${idText} <button onclick="hideID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Hide</button></span></td>`;
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">${idText} 
+          <button onclick="hideID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
+          style="margin-left:6px; padding:4px 8px; border:1px solid #aaa; background:#f5f5f5; cursor:pointer;">Hide</button></span></td>`;
       } else {
-        html += `<td><span id="${idKey}"><button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)">Show</button></span></td>`;
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">
+          <button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
+          style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">Show</button></span></td>`;
       }
     } else {
-      html += `<td>${idText}</td>`;
+      html += `<td style="padding:6px; border:1px solid #ccc;">${idText}</td>`;
     }
 
     html += `</tr>`;
@@ -1396,10 +1463,14 @@ function renderTable(page = 1) {
   html += `</tbody></table>`;
 
   const input = document.getElementById("searchInput").value.toLowerCase();
-  if (!input) {
-    html += `<div style="margin-top: 10px;">`;
+  if (!input && totalPages > 1) {
+    html += `<div style="margin-top: 12px; text-align:center;">`;
     for (let i = 1; i <= totalPages; i++) {
-      html += `<button onclick="renderTable(${i})" style="margin: 2px; padding: 6px 10px; border-radius: 4px; ${i === page ? 'background:#0b38a4;color:white;' : ''}">${i}</button>`;
+      html += `<button onclick="renderTable(${i})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; 
+        ${i === page ? 'background:#02768f;color:white;' : 'background:#fff;color:#0b38a4;'} cursor:pointer;">
+        ${i}
+      </button>`;
     }
     html += `</div>`;
   }
@@ -1430,17 +1501,16 @@ function toggleSort(column) {
 
 function toggleShowTable() {
   tableShown = !tableShown;
-  document.getElementById("toggleShowBtn").innerText = `Table: ${tableShown ? "ON" : "OFF"}`;
+  document.getElementById("toggleShowBtn").innerText = `Vocabulary: ${tableShown ? "ON" : "OFF"}`;
   const searchInput = document.getElementById("searchInput");
   const hideControls = document.getElementById("hideControls");
 
   if (tableShown) {
     showAllWords();
-    searchInput.style.display = "block";
+    searchInput.style.display = "inline-block"; 
     if (hideControls) hideControls.style.display = "block"; 
   } else {
     document.getElementById("tableContainer").innerHTML = "";
-    searchInput.style.display = "none";
     searchInput.value = "";
     if (hideControls) hideControls.style.display = "none"; 
   }
