@@ -2078,7 +2078,7 @@ const vocabulary = {
   { "word": "ホール", "meaning": "aula" },
   { "word": "会社（かいしゃ）", "meaning": "perusahaan" },
   { "word": "門（もん）", "meaning": "gerbang" },
-  { "word": "集合（する）（しゅうごうする）", "meaning": "berkumpul" },
+  { "word": "集合する（しゅうごうする）", "meaning": "berkumpul" },
   { "word": "では", "meaning": "jadi" },
   { "word": "案内する（あんないする）", "meaning": "memandu" },
   { "word": "待ち合わせ（まちあわせ）", "meaning": "janjian bertemu" },
@@ -2135,7 +2135,7 @@ const vocabulary = {
   { "word": "作品（さくひん）", "meaning": "karya seni" },
   { "word": "ホラー映画（ホラーえいが）", "meaning": "film horor" },
   { "word": "つまらない", "meaning": "membosankan" },
-  { "word": "退屈（な）（たいくつ（な））", "meaning": "bosan; membosankan" },
+  { "word": "退屈（たいくつ（な））", "meaning": "bosan; membosankan" },
   { "word": "いまいち（な）", "meaning": "tidak cukup bagus" }
 			  
 	     
