@@ -361,7 +361,6 @@
   <label><input type="radio" name="essayLength" value="20" /> 20 Soal</label>
   <label><input type="radio" name="essayLength" value="30" /> 30 Soal</label>
     <label><input type="radio" name="essayLength" value="50" /> 50 Soal</label>
-	    <label><input type="radio" name="essayLength" value="100" /> 100 Soal</label>
 </div>
 <div id="quizLengthOptions" style="margin: 10px 0; display: none;">
   <strong>Jumlah Soal:</strong><br />
@@ -369,7 +368,6 @@
   <label><input type="radio" name="quizLength" value="20" /> 20 Soal</label>
   <label><input type="radio" name="quizLength" value="30" /> 30 Soal</label>
     <label><input type="radio" name="quizLength" value="50" /> 50 Soal</label>
-	    <label><input type="radio" name="quizLength" value="100" /> 100 Soal</label>
 </div>
   <div id="quizContainer" style="display:none; max-width:600px; margin:20px auto; padding:20px; background:#ffffff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); font-size:1rem;"></div>
   
@@ -1512,6 +1510,7 @@ function toggleShowTable() {
   } else {
     document.getElementById("tableContainer").innerHTML = "";
     searchInput.value = "";
+	searchInput.style.display = "none"; 
     if (hideControls) hideControls.style.display = "none"; 
   }
 }
