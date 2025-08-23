@@ -1431,7 +1431,7 @@ function renderTable(page = 1) {
       if (showIndividualJP.has(jpKey)) {
         html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">${jpText} 
           <button onclick="hideJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
-          style="margin-left:6px; padding:4px 8px; border:1px solid #aaa; background:#f5f5f5; cursor:pointer;">Hide</button></span></td>`;
+          style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">Hide</button></span></td>`;
       } else {
         html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">
           <button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
@@ -1445,7 +1445,7 @@ function renderTable(page = 1) {
       if (showIndividualID.has(idKey)) {
         html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">${idText} 
           <button onclick="hideID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
-          style="margin-left:6px; padding:4px 8px; border:1px solid #aaa; background:#f5f5f5; cursor:pointer;">Hide</button></span></td>`;
+          style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">Hide</button></span></td>`;
       } else {
         html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">
           <button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
