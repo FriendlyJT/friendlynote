@@ -1043,7 +1043,7 @@ function showEssayQuestion() {
   if (currentEssayIndex >= essayQuestions.length) return showEssayResult();
 
   const q = essayQuestions[currentEssayIndex];
-  const questionText = `Tuliskan hiragana dari "<strong>${q.kanji}</strong>"? `;
+  const questionText = `Tuliskan Hiragana dari Kanji "<strong>${q.kanji}</strong>"? `;
 
   let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentEssayIndex + 1} dari ${essayQuestions.length}</div>`;
   html += `<div style="margin-bottom:10px; width:100%; box-sizing:border-box;">${questionText}</div>`;
