@@ -484,7 +484,7 @@ const vocabulary = {
 { "word": "[2] 降りる, おりる, おります, おりて, おりない", "meaning": "Turun dari〜" },
 { "word": "[2] 見せる, みせる, みせます, みせて, みせない", "meaning": "Memperlihatkan" },
 { "word": "[3] 予約する, よやくする, よやくします, よやくして, よやくしない", "meaning": "Memesan / Reservasi" },
-{ "word": "[3] 運転する, うんてんする, うんてんします, うんてんして, うんてんしない", "meaning": "Berkendara, Mengemud" },
+{ "word": "[3] 運転する, うんてんする, うんてんします, うんてんして, うんてんしない", "meaning": "Berkendara, Mengemudi" },
 { "word": "[2] 集める, あつめる, あつめます, あつめて, あつめない", "meaning": "Mengumpulkan" },
 { "word": "[1] 探す, さがす, さがします, さがして, さがさない", "meaning": "Mencari" },
 { "word": "[2] 見える, みえる, みえます, みえて, みえない", "meaning": "Terlihat" },
