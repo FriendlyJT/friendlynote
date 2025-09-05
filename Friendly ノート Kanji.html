@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Friendly ノート]</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .menu-info {
+      font-size: 0.9rem;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .category-btn {
+      background-color: #02768f;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      min-width: 70px;
+    }
+
+    .category-btn.active {
+      background-color: #c21111;
+      color: white;
+    }
+
+    .category-btn.nav-arrow {
+      background-color: #0b38a4;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+      transition: background-color 0.3s;
+      border: none;
+    }
+
+    .category-btn.nav-arrow:hover {
+      background-color: #002a99;
+    }
+
+    #word {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #333;
+      margin: 30px 0 10px;
+      min-height: 60px;
+      cursor: pointer;
+    }
+
+    #meaning {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 30px;
+      min-height: 1.5em;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #randomBtn {
+      background-color: #087445;
+      color: white;
+      font-size: 1.1rem;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    #intervalInput {
+      padding: 10px;
+      width: 100px;
+      text-align: center;
+      font-size: 1rem;
+      border: 2px solid #0040ff;
+      border-radius: 6px;
+    }
+
+    #applyBtn, #toggleLangBtn, #togglePickBtn, #toggleShowBtn, #toggleAutoShowBtn {
+  width: 120px;            
+  height: 40px;           
+  padding: 0 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#applyBtn span,
+#toggleLangBtn span,
+#togglePickBtn span,
+#toggleShowBtn span,
+#toggleAutoShowBtn span {
+  display: block;
+  font-size: 1rem;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+  font-size: clamp(0.6rem, 2vw, 1rem); 
+}
+
+    #applyBtn {
+      background-color: #c21111;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    table, th, td {
+      border: 1px solid #999;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    #searchInput {
+      margin: 10px auto;
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 1rem;
+      border: 2px solid #0040ff;
+      border-radius: 6px;
+      display: none;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #000000;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      #word {
+        font-size: 2rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      table, th, td {
+        font-size: 0.9rem;
+      }
+
+      #searchInput {
+        width: 95%;
+      }
+    }
+	  #quizContainer {
+    background: #f9fafe;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 64, 255, 0.1);
+    padding: 25px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 1rem;
+    color: #222;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  #quizContainer h3 {
+    text-align: center;
+    color: #0b38a4;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+  }
+
+  #quizContainer ol {
+    padding-left: 20px;
+  }
+
+  #quizContainer li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    background: #f0f4ff;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .quiz-option {
+    background: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 6px 0;
+    transition: 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .quiz-option:hover {
+    background: #e6f0ff;
+    border-color: #0b38a4;
+  }
+
+  .quiz-option input[type="radio"] {
+    margin-right: 10px;
+  }
+
+  #quizContainer button {
+    background-color: #0b38a4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin: 12px 6px 0 0;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  #quizContainer button:hover {
+    background-color: #002a99;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .hide-btn {
+  background-color: #e8f0fe;
+  border: 1px solid #90caf9;
+  color: #0b38a4;
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hide-btn:hover {
+  background-color: #d2e3fc;
+}
+
+.mini-show-btn {
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #e8f0fe;
+  border: 1px solid #90caf9;
+  cursor: pointer;
+}
+.mini-show-btn:hover {
+  background: #d2e3fc;
+}
+
+#resizeHandle {
+  height: 18px;
+  background: transparent;
+  cursor: ns-resize;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+#resizeHandle::before {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background-color: #999;
+  border-radius: 2px;
+}
+
+  </style>
+  
+</head>
+<body>
+  <h1>[Friendly ノート]</h1>
+  <div style="margin-bottom: 10px;">
+  <label>
+    <input type="checkbox" id="multiSelectToggle" onchange="handleMultiSelectToggle()" />
+    Select Multi Category
+  </label>
+</div>
+<div style="margin-bottom: 10px;">
+  <label>
+    <input type="checkbox" id="quizModeToggle" onchange="handleQuizModeToggle()" />
+    Quiz Mode
+  </label>
+   <label>
+    <input type="checkbox" id="essayModeToggle" onchange="handleEssayModeToggle()" />
+    Essay Mode
+  </label>
+</div>
+  <div class="menu" id="menu"></div>
+  <div id="essayLengthOptions" style="margin: 10px 0; display: none;">
+  <strong>Jumlah Soal:</strong><br />
+  <label><input type="radio" name="essayLength" value="10" checked /> 10 Soal</label>
+  <label><input type="radio" name="essayLength" value="20" /> 20 Soal</label>
+  <label><input type="radio" name="essayLength" value="30" /> 30 Soal</label>
+    <label><input type="radio" name="essayLength" value="50" /> 50 Soal</label>
+</div>
+<div id="quizLengthOptions" style="margin: 10px 0; display: none;">
+  <strong>Jumlah Soal:</strong><br />
+  <label><input type="radio" name="quizLength" value="10" checked /> 10 Soal</label>
+  <label><input type="radio" name="quizLength" value="20" /> 20 Soal</label>
+  <label><input type="radio" name="quizLength" value="30" /> 30 Soal</label>
+    <label><input type="radio" name="quizLength" value="50" /> 50 Soal</label>
+</div>
+  <div id="quizContainer" style="display:none; max-width:600px; margin:20px auto; padding:20px; background:#ffffff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); font-size:1rem;"></div>
+  
+
+
+  <div id="word" onclick="showMeaning()"></div>
+  <div id="meaning"></div>
+  <button id="randomBtn" onclick="randomWord()">NEXT</button>
+  <div class="controls">
+    <span>Seconds:</span>
+    <input type="number" id="intervalInput" value="6.5" />
+	<label style="margin-top:10px;">
+  <input type="checkbox" id="autoTimeToggle" onchange="toggleAutoTime()" checked />
+</label>
+    <button id="applyBtn" onclick="setIntervalTime()">Apply</button>
+	
+    <button id="toggleLangBtn" onclick="toggleLanguageMode()">Reverse: OFF</button>
+    <button id="toggleAutoShowBtn" onclick="toggleAutoShow()">Spoiler: ON</button>
+    <button id="togglePickBtn" onclick="togglePickUp()">Looping: OFF</button>
+    <button id="toggleShowBtn" onclick="toggleShowTable()">Vocabulary: OFF</button>
+  </div>
+  <input type="text" id="searchInput" placeholder="Cari kata..." oninput="filterTable()" />
+  <div id="hideControls" style="margin-top: 10px; display: none;">
+  <button id="toggleJP" onclick="toggleColumnText('jp')" class="hide-btn">Hide JP</button>
+  <button id="toggleID" onclick="toggleColumnText('id')" class="hide-btn">Hide ID</button>
+  <button id="shuffleTableBtn" onclick="shuffleTable()" class="hide-btn">Random</button>
+</div>
+
+ <button id="toggleDrawBtn" onclick="toggleDrawingPad()" style="
+  display: none;
+  position: fixed;
+  bottom: 8px;
+  right: 10px;
+  z-index: 10000;
+  padding: 10px 14px;
+  background-color: #0b38a4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">
+✏️ Draw
+</button>
+
+<div id="drawingContainer" style="
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 200px;
+  background: white;
+  z-index: 9999;
+  touch-action: none;
+  border-top: 1px solid #ccc;
+">
+<div id="resizeHandle"></div>
+  <canvas id="drawingCanvas" width="1000" height="200" style="width: 100vw; height: 100%;"></canvas>
+
+  <button onclick="clearCanvas()" style="
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    background: #c21111;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+  ">🗑️</button>
+</div>
+
+</div>
+
+</div>
+  <div id="tableContainer"></div>
+  <footer style="margin-top:26%">App platform by Friendly Jihad Taqwana®<br>©2025 FriendlyApp.</footer>
+  <script>
+  const essayVocabulary = {
+      
+		 "IA2-1 Kanji 1": [
+  { "kanji": "学生", "romaji": "がくせい", "meaning": "Siswa/Pelajar" },
+  { "kanji": "学校", "romaji": "がっこう", "meaning": "Sekolah" },
+  { "kanji": "生活", "romaji": "せいかつ", "meaning": "Kehidupan/Hidup Sehari-hari" },
+  { "kanji": "去年", "romaji": "きょねん", "meaning": "Tahun lalu" },
+  { "kanji": "先週", "romaji": "せんしゅう", "meaning": "Minggu lalu" },
+  { "kanji": "仕事", "romaji": "しごと", "meaning": "Pekerjaan" },
+  { "kanji": "元気", "romaji": "げんき", "meaning": "Sehat/Ceria" },
+  { "kanji": "忙しい", "romaji": "いそがしい", "meaning": "Sibuk" },
+  { "kanji": "働く", "romaji": "はたらく", "meaning": "Bekerja" },
+  { "kanji": "作る", "romaji": "つくる", "meaning": "Membuat" }
+],
+"IA2-1 Kanji 2": [
+  { "kanji": "～人", "romaji": "ひと／にん／じん", "meaning": "Orang" },
+  { "kanji": "犬", "romaji": "いぬ", "meaning": "Anjing" },
+  { "kanji": "家族", "romaji": "かぞく", "meaning": "Keluarga" },
+  { "kanji": "夕方", "romaji": "ゆうがた", "meaning": "Sore" },
+  { "kanji": "英語", "romaji": "えいご", "meaning": "Bahasa Inggris" },
+  { "kanji": "音楽", "romaji": "おんがく", "meaning": "Musik" },
+  { "kanji": "習う", "romaji": "ならう", "meaning": "Mempelajari" },
+  { "kanji": "話す", "romaji": "はなす", "meaning": "Berbicara" },
+  { "kanji": "出かける", "romaji": "でかける", "meaning": "Keluar (rumah)" }
+],
+ 
+"IA2-1 Kanji 3": [
+  { "kanji": "季節", "romaji": "きせつ", "meaning": "Musim" },
+  { "kanji": "春", "romaji": "はる", "meaning": "Musim Semi" },
+  { "kanji": "夏", "romaji": "なつ", "meaning": "Musim Panas" },
+  { "kanji": "秋", "romaji": "あき", "meaning": "Musim Gugur" },
+  { "kanji": "花", "romaji": "はな", "meaning": "Bunga" },
+  { "kanji": "同じ", "romaji": "おなじ", "meaning": "Sama / Serupa" },
+  { "kanji": "冬", "romaji": "ふゆ", "meaning": "Musim Dingin" },
+  { "kanji": "暑い", "romaji": "あつい", "meaning": "Panas [Cuaca]" },
+  { "kanji": "寒い", "romaji": "さむい", "meaning": "Dingin [Cuaca]" }
+],
+
+"IA2-1 Kanji 4": [
+  { "kanji": "天気", "romaji": "てんき", "meaning": "Cuaca" },
+  { "kanji": "晴れ", "romaji": "はれ", "meaning": "Cerah [Cuaca]" },
+  { "kanji": "雨", "romaji": "あめ", "meaning": "Hujan" },
+  { "kanji": "雪", "romaji": "ゆき", "meaning": "Salju" },
+  { "kanji": "風", "romaji": "かぜ", "meaning": "Angin" },
+  { "kanji": "今", "romaji": "いま", "meaning": "Sekarang" },
+  { "kanji": "昨日", "romaji": "きのう", "meaning": "Kemarin" },
+  { "kanji": "明日", "romaji": "あした", "meaning": "Besok" },
+  { "kanji": "毎日", "romaji": "まいにち", "meaning": "Setiap Hari" },
+  { "kanji": "強い", "romaji": "つよい", "meaning": "Kuat" }
+],
+
+"IA2-1 Kanji 5": [
+  { "kanji": "町", "romaji": "まち", "meaning": "Kota / Kota kecil" },
+  { "kanji": "店", "romaji": "みせ", "meaning": "Toko" },
+  { "kanji": "食堂", "romaji": "しょくどう", "meaning": "Rumah makan" },
+  { "kanji": "便利", "romaji": "べんり", "meaning": "Praktis / Nyaman" },
+  { "kanji": "不便", "romaji": "ふべん", "meaning": "Tidak praktis / Tidak nyaman" },
+  { "kanji": "静か", "romaji": "しずか", "meaning": "Tenang / Sunyi" },
+  { "kanji": "有名", "romaji": "ゆうめい", "meaning": "Terkenal" },
+  { "kanji": "多い", "romaji": "おおい", "meaning": "Banyak" },
+  { "kanji": "少ない", "romaji": "すくない", "meaning": "Sedikit" },
+  { "kanji": "遠い", "romaji": "とおい", "meaning": "Jauh" }
+],
+
+"IA2-1 Kanji 6": [
+  { "kanji": "道", "romaji": "みち", "meaning": "Jalan" },
+  { "kanji": "公園", "romaji": "こうえん", "meaning": "Taman" },
+  { "kanji": "銀行", "romaji": "ぎんこう", "meaning": "Bank" },
+  { "kanji": "お寺", "romaji": "おてら", "meaning": "Kuil Buddha" },
+  { "kanji": "神社", "romaji": "じんじゃ", "meaning": "Kuil Shinto" },
+  { "kanji": "右", "romaji": "みぎ", "meaning": "Kanan" },
+  { "kanji": "左", "romaji": "ひだり", "meaning": "Kiri" },
+  { "kanji": "近く", "romaji": "ちかく", "meaning": "Dekat" },
+  { "kanji": "車", "romaji": "くるま", "meaning": "Mobil / Kendaraan" },
+  { "kanji": "送る", "romaji": "おくる", "meaning": "Mengirim / Mengantarkan" }
+],
+"IA2-1 Kanji 7": [
+  { "kanji": "時間", "romaji": "じかん", "meaning": "Waktu" },
+  { "kanji": "場所", "romaji": "ばしょ", "meaning": "Tempat" },
+  { "kanji": "駅", "romaji": "えき", "meaning": "Stasiun" },
+  { "kanji": "受付", "romaji": "うけつけ", "meaning": "Resepsionis" },
+  { "kanji": "門", "romaji": "もん", "meaning": "Gerbang" },
+  { "kanji": "電車", "romaji": "でんしゃ", "meaning": "Kereta listrik" },
+  { "kanji": "待つ", "romaji": "まつ", "meaning": "Menunggu" },
+  { "kanji": "止まる", "romaji": "とまる", "meaning": "Berhenti" },
+  { "kanji": "着く", "romaji": "つく", "meaning": "Tiba / Sampai" },
+  { "kanji": "急ぐ", "romaji": "いそぐ", "meaning": "Bergegas / Cepat-cepat" }
+],
+
+"IA2-1 Kanji 8": [
+  { "kanji": "お金", "romaji": "おかね", "meaning": "Uang" },
+  { "kanji": "食事", "romaji": "しょくじ", "meaning": "Makan / Santapan" },
+  { "kanji": "〜店", "romaji": "〜てん", "meaning": "Toko ~" },
+  { "kanji": "博物館", "romaji": "はくぶつかん", "meaning": "Museum" },
+  { "kanji": "動物園", "romaji": "どうぶつえん", "meaning": "Kebun binatang" },
+  { "kanji": "試合", "romaji": "しあい", "meaning": "Pertandingan" },
+  { "kanji": "楽しい", "romaji": "たのしい", "meaning": "Menyenangkan" },
+  { "kanji": "難しい", "romaji": "むずかしい", "meaning": "Sulit / Susah" },
+  { "kanji": "登る", "romaji": "のぼる", "meaning": "Mendaki / Memanjat" }
+],
+
+"IA2-1 Kanji 9": [
+  { "kanji": "高校", "romaji": "こうこう", "meaning": "SMA" },
+  { "kanji": "大学", "romaji": "だいがく", "meaning": "Universitas" },
+  { "kanji": "練習", "romaji": "れんしゅう", "meaning": "Latihan" },
+  { "kanji": "漢字", "romaji": "かんじ", "meaning": "Kanji" },
+  { "kanji": "無料", "romaji": "むりょう", "meaning": "Gratis" },
+  { "kanji": "言う", "romaji": "いう", "meaning": "Mengatakan / Berkata" },
+  { "kanji": "書く", "romaji": "かく", "meaning": "Menulis" },
+  { "kanji": "貸す", "romaji": "かす", "meaning": "Meminjamkan" },
+  { "kanji": "教える", "romaji": "おしえる", "meaning": "Mengajar / Memberi tahu" },
+  { "kanji": "説明する", "romaji": "せつめいする", "meaning": "Menjelaskan" }
+],
+
+"IA2-1 Kanji 10": [
+  { "kanji": "午前", "romaji": "ごぜん", "meaning": "Pagi / A.M." },
+  { "kanji": "午後", "romaji": "ごご", "meaning": "Siang / P.M." },
+  { "kanji": "教科書", "romaji": "きょうかしょ", "meaning": "Buku pelajaran" },
+  { "kanji": "教室", "romaji": "きょうしつ", "meaning": "Kelas / Ruang kelas" },
+  { "kanji": "先生", "romaji": "せんせい", "meaning": "Guru / Sensei" },
+  { "kanji": "全部", "romaji": "ぜんぶ", "meaning": "Semua / Seluruhnya" },
+  { "kanji": "〜回", "romaji": "〜かい", "meaning": "~ kali" },
+  { "kanji": "参加する", "romaji": "さんかする", "meaning": "Ikut serta / Berpartisipasi" },
+  { "kanji": "用意する", "romaji": "よういする", "meaning": "Mempersiapkan" }
+],
+"IA2-1 Kanji 11": [
+  { "kanji": "飲み物", "romaji": "のみもの", "meaning": "Minuman" },
+  { "kanji": "お茶", "romaji": "おちゃ", "meaning": "Teh" },
+  { "kanji": "お酒", "romaji": "おさけ", "meaning": "Alkohol / Sake" },
+  { "kanji": "材料", "romaji": "ざいりょう", "meaning": "Bahan" },
+  { "kanji": "野菜", "romaji": "やさい", "meaning": "Sayuran" },
+  { "kanji": "牛肉", "romaji": "ぎゅうにく", "meaning": "Daging sapi" },
+  { "kanji": "豚肉", "romaji": "ぶたにく", "meaning": "Daging babi" },
+  { "kanji": "皿", "romaji": "さら", "meaning": "Piring" },
+  { "kanji": "売る", "romaji": "うる", "meaning": "Menjual" },
+  { "kanji": "持って行く", "romaji": "もっていく", "meaning": "Membawa (pergi)" }
+],
+
+"IA2-1 Kanji 12": [
+  { "kanji": "卵", "romaji": "たまご", "meaning": "Telur" },
+  { "kanji": "料理", "romaji": "りょうり", "meaning": "Masakan; Memasak" },
+  { "kanji": "お湯", "romaji": "おゆ", "meaning": "Air panas" },
+  { "kanji": "調理方法", "romaji": "ちょうりほうほう", "meaning": "Cara memasak" },
+  { "kanji": "少し", "romaji": "すこし", "meaning": "Sedikit" },
+  { "kanji": "味", "romaji": "あじ", "meaning": "Rasa" },
+  { "kanji": "甘い", "romaji": "あまい", "meaning": "Manis" },
+  { "kanji": "辛い", "romaji": "からい", "meaning": "Pedas" },
+  { "kanji": "苦手（な）", "romaji": "にがて", "meaning": "Tidak suka" }
+],
+
+"IA2-1 Kanji 13": [
+  { "kanji": "コピー機", "romaji": "コピーき", "meaning": "Mesin fotokopi" },
+  { "kanji": "数字", "romaji": "すうじ", "meaning": "Angka; Bilangan" },
+  { "kanji": "電気", "romaji": "でんき", "meaning": "Listrik" },
+  { "kanji": "音", "romaji": "おと", "meaning": "Suara" },
+  { "kanji": "机", "romaji": "つくえ", "meaning": "Meja" },
+  { "kanji": "都合", "romaji": "つごう", "meaning": "Keadaan; Situasi; Kesempatan" },
+  { "kanji": "悪い", "romaji": "わるい", "meaning": "Buruk; Jelek" },
+  { "kanji": "動く", "romaji": "うごく", "meaning": "Bergerak" },
+  { "kanji": "使う", "romaji": "つかう", "meaning": "Menggunakan" },
+  { "kanji": "終わる", "romaji": "おわる", "meaning": "Selesai" },
+  { "kanji": "お願いします", "romaji": "おねがいします", "meaning": "Tolong; Mohon" }
+],
+
+"IA2-1 Kanji 14": [
+  { "kanji": "用事", "romaji": "ようじ", "meaning": "Urusan" },
+  { "kanji": "氏名", "romaji": "しめい", "meaning": "Nama lengkap" },
+  { "kanji": "理由", "romaji": "りゆう", "meaning": "Alasan" },
+  { "kanji": "連絡先", "romaji": "れんらくさき", "meaning": "Kontak; Alamat yang bisa dihubungi" },
+  { "kanji": "別に", "romaji": "べつに", "meaning": "Tidak terlalu; Khususnya" },
+  { "kanji": "早く", "romaji": "はやく", "meaning": "Cepat; Segera" },
+  { "kanji": "吸う", "romaji": "すう", "meaning": "Mengisap; Merokok" },
+  { "kanji": "取る", "romaji": "とる", "meaning": "Mengambil" },
+  { "kanji": "帰る", "romaji": "かえる", "meaning": "Pulang" },
+  { "kanji": "伝える", "romaji": "つたえる", "meaning": "Menyampaikan; Memberitahu" }
+],
+"IA2-1 Kanji 15": [
+  { "kanji": "熱", "romaji": "ねつ", "meaning": "demam; panas" },
+  { "kanji": "薬", "romaji": "くすり", "meaning": "obat" },
+  { "kanji": "病気", "romaji": "びょうき", "meaning": "penyakit; sakit" },
+  { "kanji": "病院", "romaji": "びょういん", "meaning": "rumah sakit" },
+  { "kanji": "医者", "romaji": "いしゃ", "meaning": "dokter" },
+  { "kanji": "住所", "romaji": "じゅうしょ", "meaning": "alamat" },
+  { "kanji": "〜才", "romaji": "〜さい", "meaning": "usia; umur" },
+  { "kanji": "痛い", "romaji": "いたい", "meaning": "sakit; terasa sakit" },
+  { "kanji": "眠い", "romaji": "ねむい", "meaning": "ngantuk" },
+  { "kanji": "寝る", "romaji": "ねる", "meaning": "tidur" },
+  { "kanji": "記入する", "romaji": "きにゅうする", "meaning": "mengisi (formulir, data)" }
+],
+"IA2-1 Kanji 16": [
+  { "kanji": "体", "romaji": "からだ", "meaning": "tubuh; badan" },
+  { "kanji": "顔", "romaji": "かお", "meaning": "wajah" },
+  { "kanji": "目", "romaji": "め", "meaning": "mata" },
+  { "kanji": "耳", "romaji": "みみ", "meaning": "telinga" },
+  { "kanji": "口", "romaji": "くち", "meaning": "mulut" },
+  { "kanji": "頭", "romaji": "あたま", "meaning": "kepala" },
+  { "kanji": "足", "romaji": "あし", "meaning": "kaki" },
+  { "kanji": "手", "romaji": "て", "meaning": "tangan" },
+  { "kanji": "起きる", "romaji": "おきる", "meaning": "bangun" },
+  { "kanji": "歩く", "romaji": "あるく", "meaning": "berjalan" },
+  { "kanji": "走る", "romaji": "はしる", "meaning": "berlari" },
+  { "kanji": "運動する", "romaji": "うんどうする", "meaning": "berolahraga" }
+],
+"IA2-1 Kanji 17": [
+  { "kanji": "お父さん", "romaji": "おとうさん", "meaning": "ayah" },
+  { "kanji": "お母さん", "romaji": "おかあさん", "meaning": "ibu" },
+  { "kanji": "兄", "romaji": "あに", "meaning": "kakak laki-laki" },
+  { "kanji": "お兄さん", "romaji": "おにいさん", "meaning": "kakak laki-laki (sapaan hormat)" },
+  { "kanji": "姉", "romaji": "あね", "meaning": "kakak perempuan" },
+  { "kanji": "お姉さん", "romaji": "おねえさん", "meaning": "kakak perempuan (sapaan hormat)" },
+  { "kanji": "弟", "romaji": "おとうと", "meaning": "adik laki-laki" },
+  { "kanji": "妹", "romaji": "いもうと", "meaning": "adik perempuan" },
+  { "kanji": "夫", "romaji": "おっと", "meaning": "suami" },
+  { "kanji": "妻", "romaji": "つま", "meaning": "istri" },
+  { "kanji": "両親", "romaji": "りょうしん", "meaning": "orang tua" }
+],
+"IA2-1 Kanji 18": [
+  { "kanji": "男の子", "romaji": "おとこのこ", "meaning": "anak laki-laki" },
+  { "kanji": "女の子", "romaji": "おんなのこ", "meaning": "anak perempuan" },
+  { "kanji": "お祝い", "romaji": "おいわい", "meaning": "perayaan; ucapan selamat" },
+  { "kanji": "誕生日", "romaji": "たんじょうび", "meaning": "hari ulang tahun" },
+  { "kanji": "結婚", "romaji": "けっこん", "meaning": "pernikahan" },
+  { "kanji": "時計", "romaji": "とけい", "meaning": "jam" },
+  { "kanji": "幸せ（な）", "romaji": "しあわせ", "meaning": "bahagia" },
+  { "kanji": "生まれる", "romaji": "うまれる", "meaning": "lahir" },
+  { "kanji": "思う", "romaji": "おもう", "meaning": "berpikir; mengira; merasa" },
+  { "kanji": "選ぶ", "romaji": "えらぶ", "meaning": "memilih" },
+  { "kanji": "合格する", "romaji": "ごうかくする", "meaning": "lulus (ujian, seleksi)" }
+]
+
+
+		    
+		  
+    };
+
+   essayVocabulary["All"] = Object.values(essayVocabulary).flat().filter((item, index, self) =>
+    self.findIndex(i => i.kanji === item.kanji) === index
+  );
+  
+   const vocabulary = {
+      "IA2-1 Kanji 1": [
+	   { word: "学生", meaning: "Siswa/Pelajar (がくせい)" },
+	   { word: "学校", meaning: "Sekolah (がっこう)" },
+	   { word: "生活", meaning: "Kehidupan/Hidup Sehari-hari (せいかつ) " },
+	   { word: "去年", meaning: "Tahun lalu (きょねん)" },
+	   { word: "先週", meaning: "Minggu lalu (せんしゅう)" },
+	   { word: "仕事", meaning: "Pekerjaan (しごと)" },
+	   { word: "元気", meaning: "Sehat/Ceria (げんき)" },
+	   { word: "忙しい", meaning: "Sibuk (いそがしい)" },
+	   { word: "働く", meaning: "Bekerja (はたらく)" },
+	   { word: "作る", meaning: "Membuat (つくる)" },
+	   ],
+		    
+		  "IA2-1 Kanji 2": [
+	   { word: "～人", meaning: "Hito(ひと、にん、じん)" },
+	   { word: "犬", meaning: "Anjing(いぬ)" },
+	   { word: "家族", meaning: "Keluarga(かぞく)" },
+	   { word: "夕方", meaning: "Sore(ゆうがた)" },
+	   { word: "英語", meaning: "Bahasa Inggris(えいご)" },
+	   { word: "音楽", meaning: "Musik(おんがく)" },
+	   { word: "習う", meaning: "Memperlajari(ならう)" },
+	   { word: "話す", meaning: "Berbicara(はなす)" },
+	   { word: "出かける", meaning: "Keluar [Rumah](でかける)" },
+		  ],
+		  
+		  		  "IA2-1 Kanji 3": [
+	　　{ word: "季節", meaning: "Musim(きせつ)" },
+	   { word: "春", meaning: "Musim Semi(はる)" },
+	   { word: "夏", meaning: "Musim Panas(なつ)" },
+	   { word: "秋", meaning: "Musim Gugur(あき)" },
+	   { word: "花", meaning: "Bunga(はな)" },
+	   { word: "同じ", meaning: "Sama / Serupa (おなじ)" },
+	   { word: "冬", meaning: "Musim Dingin (ふゆ)" },
+	   { word: "暑い", meaning: "Panas [Cuaca](あつい)" },
+	   { word: "寒い", meaning: "Dingin [cuaca](さむい)" },
+		  ],
+		  
+		"IA2-1 Kanji 4": [
+		{ word: "天気", meaning: "Cuaca(てんき)" },
+	   { word: "晴れ", meaning: "Cerah [Cuaca](はれ)" },
+	   { word: "雨", meaning: "Hujan(あめ)" },
+	   { word: "雪", meaning: "Salju(ゆき)" },
+	   { word: "風", meaning: "Angin(かぜ)" },
+	   { word: "今", meaning: "Sekarang(いま)" },
+	  　{ word: "昨日", meaning: "Kemarin(きのう)" },
+	   { word: "明日", meaning: "Besok(あした)" },
+	    { word: "毎日", meaning: "Setiap Hari(まいにち)" },
+	   { word: "強い", meaning: "Kuat(つよい)" },
+	   
+		  ],
+		  
+		  "IA2-1 Kanji 5": [
+		   { word: "町", meaning: "Kota / Kota kecil (まち)" },
+			{ word: "店", meaning: "Toko (みせ)" },
+			{ word: "食堂", meaning: "Rumah makan (しょくどう)" },
+			{ word: "便利", meaning: "Praktis / Nyaman (べんり)" },
+			{ word: "不便", meaning: "Tidak praktis / Tidak nyaman (ふべん)" },
+			{ word: "静か", meaning: "Tenang / Sunyi (しずか)" },
+			{ word: "有名", meaning: "Terkenal (ゆうめい)" },
+			{ word: "多い", meaning: "Banyak (おおい)" },
+			{ word: "少ない", meaning: "Sedikit (すくない)" },
+			{ word: "遠い", meaning: "Jauh (とおい)" },
+		  ],
+		  
+		  "IA2-1 Kanji 6": [
+	   { word: "道", meaning: "Jalan (みち)" },
+{ word: "公園", meaning: "Taman (こうえん)" },
+{ word: "銀行", meaning: "Bank (ぎんこう)" },
+{ word: "お寺", meaning: "Kuil Buddha (おてら)" },
+{ word: "神社", meaning: "Kuil Shinto (じんじゃ)" },
+{ word: "右", meaning: "Kanan (みぎ)" },
+{ word: "左", meaning: "Kiri (ひだり)" },
+{ word: "近く", meaning: "Dekat (ちかく)" },
+{ word: "車", meaning: "Mobil / Kendaraan (くるま)" },
+{ word: "送る", meaning: "Mengirim / Mengantarkan (おくる)" },
+		  ],
+		  
+		   "IA2-1 Kanji 7": [
+	  { word: "時間", meaning: "Waktu (じかん)" },
+{ word: "場所", meaning: "Tempat (ばしょ)" },
+{ word: "駅", meaning: "Stasiun (えき)" },
+{ word: "受付", meaning: "Resepsionis (うけつけ)" },
+{ word: "門", meaning: "Gerbang (もん)" },
+{ word: "電車", meaning: "Kereta listrik (でんしゃ)" },
+{ word: "待つ", meaning: "Menunggu (まつ)" },
+{ word: "止まる", meaning: "Berhenti (とまる)" },
+{ word: "着く", meaning: "Tiba / Sampai (つく)" },
+{ word: "急ぐ", meaning: "Bergegas / Cepat-cepat (いそぐ)" },
+		  ],
+		   "IA2-1 Kanji 8": [
+	  { word: "お金", meaning: "Uang (おかね)" },
+{ word: "食事", meaning: "Makan / Santapan (しょくじ)" },
+{ word: "〜店", meaning: "Toko ~ (〜てん)" },
+{ word: "博物館", meaning: "Museum (はくぶつかん)" },
+{ word: "動物園", meaning: "Kebun binatang (どうぶつえん)" },
+{ word: "試合", meaning: "Pertandingan (しあい)" },
+{ word: "楽しい", meaning: "Menyenangkan (たのしい)" },
+{ word: "難しい", meaning: "Sulit / Susah (むずかしい)" },
+{ word: "登る", meaning: "Mendaki / Memanjat (のぼる)" },
+		  ],
+		   "IA2-1 Kanji 9": [
+	{ word: "高校", meaning: "SMA (こうこう)" },
+{ word: "大学", meaning: "Universitas (だいがく)" },
+{ word: "練習", meaning: "Latihan (れんしゅう)" },
+{ word: "漢字", meaning: "Kanji (かんじ)" },
+{ word: "無料", meaning: "Gratis (むりょう)" },
+{ word: "言う", meaning: "Mengatakan / Berkata (いう)" },
+{ word: "書く", meaning: "Menulis (かく)" },
+{ word: "貸す", meaning: "Meminjamkan (かす)" },
+{ word: "教える", meaning: "Mengajar / Memberi tahu (おしえる)" },
+{ word: "説明する", meaning: "Menjelaskan (せつめいする)" },
+		  ],
+		   "IA2-1 Kanji 10": [
+	  { word: "午前", meaning: "Pagi / A.M. (ごぜん)" },
+{ word: "午後", meaning: "Siang / P.M. (ごご)" },
+{ word: "教科書", meaning: "Buku pelajaran (きょうかしょ)" },
+{ word: "教室", meaning: "Kelas / Ruang kelas (きょうしつ)" },
+{ word: "先生", meaning: "Guru / Sensei (せんせい)" },
+{ word: "全部", meaning: "Semua / Seluruhnya (ぜんぶ)" },
+{ word: "〜回", meaning: "~ kali (〜かい)" },
+{ word: "参加する", meaning: "Ikut serta / Berpartisipasi (さんかする)" },
+{ word: "用意する", meaning: "Mempersiapkan (よういする)" },
+		  ],
+		   "IA2-1 Kanji 11": [
+	  { word: "飲み物", meaning: "Minuman (のみもの)" },
+{ word: "お茶", meaning: "Teh (おちゃ)" },
+{ word: "お酒", meaning: "Alkohol / Sake (おさけ)" },
+{ word: "材料", meaning: "Bahan (ざいりょう)" },
+{ word: "野菜", meaning: "Sayuran (やさい)" },
+{ word: "牛肉", meaning: "Daging sapi (ぎゅうにく)" },
+{ word: "豚肉", meaning: "Daging babi (ぶたにく)" },
+{ word: "皿", meaning: "Piring (さら)" },
+{ word: "売る", meaning: "Menjual (うる)" },
+{ word: "持って行く", meaning: "Membawa (pergi) (もっていく)" },
+		  ],
+		   "IA2-1 Kanji 12": [
+	  { word: "卵", meaning: "telur (たまご)" },
+{ word: "料理", meaning: "masakan; memasak (りょうり)" },
+{ word: "お湯", meaning: "air panas (おゆ)" },
+{ word: "調理方法", meaning: "cara memasak (ちょうりほうほう)" },
+{ word: "少し", meaning: "sedikit (すこし)" },
+{ word: "味", meaning: "rasa (あじ)" },
+{ word: "甘い", meaning: "manis (あまい)" },
+{ word: "辛い", meaning: "pedas (からい)" },
+{ word: "苦手（な）", meaning: "Tidak Suka(にがて)" }
+		  ],
+		   "IA2-1 Kanji 13": [
+	   { word: "コピー機", meaning: "mesin fotokopi (コピーき)" },
+{ word: "数字", meaning: "angka; bilangan (すうじ)" },
+{ word: "電気", meaning: "listrik (でんき)" },
+{ word: "音", meaning: "suara (おと)" },
+{ word: "机", meaning: "meja (つくえ)" },
+{ word: "都合", meaning: "keadaan; situasi; kesempatan (つごう)" },
+{ word: "悪い", meaning: "buruk; jelek (わるい)" },
+{ word: "動く", meaning: "bergerak (うごく)" },
+{ word: "使う", meaning: "menggunakan (つかう)" },
+{ word: "終わる", meaning: "selesai (おわる)" },
+{ word: "お願いします", meaning: "tolong; mohon (おねがいします)" }
+		  ],
+		   "IA2-1 Kanji 14": [
+	  { word: "用事", meaning: "urusan (ようじ)" },
+{ word: "氏名", meaning: "nama lengkap (しめい)" },
+{ word: "理由", meaning: "alasan (りゆう)" },
+{ word: "連絡先", meaning: "kontak; alamat yang bisa dihubungi (れんらくさき)" },
+{ word: "別に", meaning: "tidak terlalu; khususnya (べつに)" },
+{ word: "早く", meaning: "cepat; segera (はやく)" },
+{ word: "吸う", meaning: "mengisap; merokok (すう)" },
+{ word: "取る", meaning: "mengambil (とる)" },
+{ word: "帰る", meaning: "pulang (かえる)" },
+{ word: "伝える", meaning: "menyampaikan; memberitahu (つたえる)" }
+		  ],
+		   "IA2-1 Kanji 15": [
+	  { word: "熱", meaning: "demam; panas (ねつ)" },
+{ word: "薬", meaning: "obat (くすり)" },
+{ word: "病気", meaning: "penyakit; sakit (びょうき)" },
+{ word: "病院", meaning: "rumah sakit (びょういん)" },
+{ word: "医者", meaning: "dokter (いしゃ)" },
+{ word: "住所", meaning: "alamat (じゅうしょ)" },
+{ word: "〜才", meaning: "usia; umur (〜さい)" },
+{ word: "痛い", meaning: "sakit; terasa sakit (いたい)" },
+{ word: "眠い", meaning: "ngantuk (ねむい)" },
+{ word: "寝る", meaning: "tidur (ねる)" },
+{ word: "記入する", meaning: "mengisi (formulir, data) (きにゅうする)" }
+		  ],
+		   "IA2-1 Kanji 16": [
+	   { word: "体", meaning: "tubuh; badan (からだ)" },
+{ word: "顔", meaning: "wajah (かお)" },
+{ word: "目", meaning: "mata (め)" },
+{ word: "耳", meaning: "telinga (みみ)" },
+{ word: "口", meaning: "mulut (くち)" },
+{ word: "頭", meaning: "kepala (あたま)" },
+{ word: "足", meaning: "kaki (あし)" },
+{ word: "手", meaning: "tangan (て)" },
+{ word: "起きる", meaning: "bangun (おきる)" },
+{ word: "歩く", meaning: "berjalan (あるく)" },
+{ word: "走る", meaning: "berlari (はしる)" },
+{ word: "運動する", meaning: "berolahraga (うんどうする)" }
+		  ],
+		   "IA2-1 Kanji 17": [
+	   { word: "お父さん", meaning: "ayah (おとうさん)" },
+{ word: "お母さん", meaning: "ibu (おかあさん)" },
+{ word: "兄", meaning: "kakak laki-laki (あに)" },
+{ word: "お兄さん", meaning: "kakak laki-laki (sapaan hormat) (おにいさん)" },
+{ word: "姉", meaning: "kakak perempuan (あね)" },
+{ word: "お姉さん", meaning: "kakak perempuan (sapaan hormat) (おねえさん)" },
+{ word: "弟", meaning: "adik laki-laki (おとうと)" },
+{ word: "妹", meaning: "adik perempuan (いもうと)" },
+{ word: "夫", meaning: "suami (おっと)" },
+{ word: "妻", meaning: "istri (つま)" },
+{ word: "両親", meaning: "orang tua (りょうしん)" }
+		  ],
+		   "IA2-1 Kanji 18": [
+	  { word: "男の子", meaning: "anak laki-laki (おとこのこ)" },
+{ word: "女の子", meaning: "anak perempuan (おんなのこ)" },
+{ word: "お祝い", meaning: "perayaan; ucapan selamat (おいわい)" },
+{ word: "誕生日", meaning: "hari ulang tahun (たんじょうび)" },
+{ word: "結婚", meaning: "pernikahan (けっこん)" },
+{ word: "時計", meaning: "jam (とけい)" },
+{ word: "幸せ（な）", meaning: "bahagia (しあわせ)" },
+{ word: "生まれる", meaning: "lahir (うまれる)" },
+{ word: "思う", meaning: "berpikir; mengira; merasa (おもう)" },
+{ word: "選ぶ", meaning: "memilih (えらぶ)" },
+{ word: "合格する", meaning: "lulus (ujian, seleksi) (ごうかくする)" }
+		  ],
+		   "IA2-2 Kanji 1": [
+	 { "word": "山", "meaning": "gunung (やま)" },
+  { "word": "川", "meaning": "sungai (かわ)" },
+  { "word": "海", "meaning": "laut (うみ)" },
+  { "word": "島", "meaning": "pulau (しま)" },
+  { "word": "森", "meaning": "hutan (もり)" },
+  { "word": "客", "meaning": "tamu; pengunjung (きゃく)" },
+  { "word": "観光地", "meaning": "tempat wisata (かんこうち)" },
+  { "word": "意味", "meaning": "arti; makna (いみ)" },
+  { "word": "経験", "meaning": "pengalaman (けいけん)" }
+		  ],
+		  
+		   "IA2-2 Kanji 2": [
+	  { "word": "写真", "meaning": "foto (しゃしん)" },
+  { "word": "歌", "meaning": "lagu (うた)" },
+  { "word": "歌手", "meaning": "penyanyi (かしゅ)" },
+  { "word": "上手（な）", "meaning": "pandai; mahir (じょうず)" },
+  { "word": "明るい", "meaning": "cerah; terang; ceria (あかるい)" },
+  { "word": "長い", "meaning": "panjang (ながい)" },
+  { "word": "短い", "meaning": "pendek (みじかい)" },
+  { "word": "着る", "meaning": "memakai (きる)" },
+  { "word": "立つ", "meaning": "berdiri (たつ)" },
+  { "word": "泣く", "meaning": "menangis (なく)" }
+		  ],
+		   "IA2-2 Kanji 3": [
+	  { "word": "注文", "meaning": "pesanan (ちゅうもん)" },
+  { "word": "会計", "meaning": "pembayaran (かいけい)" },
+  { "word": "予約", "meaning": "reservasi; pemesanan (よやく)" },
+  { "word": "電話番号", "meaning": "nomor telepon (でんわばんごう)" },
+  { "word": "～様", "meaning": "tuan; nyonya (～さま)" },
+  { "word": "ご飯", "meaning": "nasi; makan (ごはん)" },
+  { "word": "牛乳", "meaning": "susu (ぎゅうにゅう)" },
+  { "word": "生", "meaning": "mentah; segar (なま)" },
+  { "word": "禁煙", "meaning": "dilarang merokok (きんえん)" },
+  { "word": "自由", "meaning": "bebas (じゆう)" }
+		  ],
+		   "IA2-2 Kanji 4": [
+	 { "word": "塩", "meaning": "garam (しお)" },
+  { "word": "油", "meaning": "minyak (あぶら)" },
+  { "word": "量", "meaning": "jumlah; takaran (りょう)" },
+  { "word": "～方", "meaning": "cara ～ (～かた)" },
+  { "word": "～屋", "meaning": "toko ～; penjual ～ (～や)" },
+  { "word": "満足（な）", "meaning": "puas (まんぞく)" },
+  { "word": "切る", "meaning": "memotong (きる)" },
+  { "word": "焼く", "meaning": "membakar; memanggang (やく)" },
+  { "word": "入れる", "meaning": "memasukkan (いれる)" }
+		  ],
+		   "IA2-2 Kanji 5": [
+	    { "word": "自然", "meaning": "alam (しぜん)" },
+  { "word": "交通", "meaning": "lalu lintas; transportasi (こうつう)" },
+  { "word": "船", "meaning": "kapal (ふね)" },
+  { "word": "自転車", "meaning": "sepeda (じてんしゃ)" },
+  { "word": "旅館", "meaning": "penginapan bergaya Jepang (りょかん)" },
+  { "word": "東京", "meaning": "Tokyo (とうきょう)" },
+  { "word": "計画", "meaning": "rencana (けいかく)" },
+  { "word": "遊ぶ", "meaning": "bermain (あそぶ)" },
+  { "word": "調べる", "meaning": "menyelidiki; mencari tahu (しらべる)" },
+  { "word": "出発する", "meaning": "berangkat (しゅっぱつする)" }
+		  ],
+		    "IA2-2 Kanji 6": [
+	      { "word": "運転", "meaning": "menyetir; mengemudi (うんてん)" },
+  { "word": "事故", "meaning": "kecelakaan (じこ)" },
+  { "word": "故障", "meaning": "kerusakan (こしょう)" },
+  { "word": "指定席", "meaning": "kursi reservasi; kursi yang ditentukan (していせき)" },
+  { "word": "週末", "meaning": "akhir pekan (しゅうまつ)" },
+  { "word": "絵", "meaning": "gambar; lukisan (え)" },
+  { "word": "空", "meaning": "langit (そら)" },
+  { "word": "泳ぐ", "meaning": "berenang (およぐ)" },
+  { "word": "光る", "meaning": "bersinar; berkilau (ひかる)" },
+  { "word": "到着する", "meaning": "tiba; sampai (とうちゃくする)" }
+		  ],
+		    "IA2-2 Kanji 7": [
+	    { "word": "お知らせ", "meaning": "pengumuman (おしらせ)" },
+  { "word": "今月", "meaning": "bulan ini (こんげつ)" },
+  { "word": "水道", "meaning": "air ledeng; saluran air (すいどう)" },
+  { "word": "工事", "meaning": "konstruksi; pekerjaan (こうじ)" },
+  { "word": "広場", "meaning": "alun-alun; lapangan (ひろば)" },
+  { "word": "場合", "meaning": "kasus; situasi (ばあい)" },
+  { "word": "中止", "meaning": "pembatalan; penghentian (ちゅうし)" },
+  { "word": "条件", "meaning": "syarat; kondisi (じょうけん)" },
+  { "word": "～以上", "meaning": "lebih dari ～ (～いじょう)" },
+  { "word": "開く", "meaning": "membuka (ひらく)" },
+  { "word": "生産する", "meaning": "memproduksi (せいさんする)" }
+		  ],
+		    "IA2-2 Kanji 8": [
+	     { "word": "来年", "meaning": "tahun depan (らいねん)" },
+  { "word": "会場", "meaning": "tempat acara (かいじょう)" },
+  { "word": "世界", "meaning": "dunia (せかい)" },
+  { "word": "体験", "meaning": "pengalaman langsung (たいけん)" },
+  { "word": "国際交流", "meaning": "pertukaran internasional (こくさいこうりゅう)" },
+  { "word": "禁止", "meaning": "larangan (きんし)" },
+  { "word": "紙", "meaning": "kertas (かみ)" },
+  { "word": "始まる", "meaning": "mulai (はじまる)" },
+  { "word": "申し込む", "meaning": "mendaftar; mengajukan permohonan (もうしこむ)" }
+		  ],
+		    "IA2-2 Kanji 9": [
+	     { "word": "今年", "meaning": "tahun ini (ことし)" },
+  { "word": "昨年", "meaning": "tahun lalu (さくねん)" },
+  { "word": "毎年", "meaning": "setiap tahun (まいとし)" },
+  { "word": "文化", "meaning": "budaya (ぶんか)" },
+  { "word": "祭り", "meaning": "festival; perayaan (まつり)" },
+  { "word": "正月", "meaning": "tahun baru; bulan pertama (しょうがつ)" },
+  { "word": "～式", "meaning": "upacara ～ (～しき)" },
+  { "word": "大人", "meaning": "orang dewasa (おとな)" },
+  { "word": "米", "meaning": "beras (こめ)" },
+  { "word": "特別（な）", "meaning": "istimewa; khusus (とくべつ)" }
+		  ],
+		    "IA2-2 Kanji 10": [
+	      { "word": "服", "meaning": "baju (ふく)" },
+  { "word": "袋", "meaning": "kantong (ふくろ)" },
+  { "word": "自分", "meaning": "diri sendiri (じぶん)" },
+  { "word": "店長", "meaning": "kepala toko (てんちょう)" },
+  { "word": "全員", "meaning": "semua orang/anggota (ぜんいん)" },
+  { "word": "習慣", "meaning": "kebiasaan (しゅうかん)" },
+  { "word": "普通", "meaning": "biasa/umum (ふつう)" },
+  { "word": "暗い", "meaning": "gelap (くらい)" },
+  { "word": "怒る", "meaning": "marah (おこる)" },
+  { "word": "入院する", "meaning": "dirawat di rumah sakit (にゅういんする)" }
+		  ],
+		  		    "IA2-2 Kanji 11": [
+	      { "word": "色", "meaning": "warna (いろ)" },
+  { "word": "赤", "meaning": "merah (あか)" },
+  { "word": "青", "meaning": "biru (あお)" },
+  { "word": "黒", "meaning": "hitam (くろ)" },
+  { "word": "白", "meaning": "putih (しろ)" },
+  { "word": "女性", "meaning": "wanita (じょせい)" },
+  { "word": "男性", "meaning": "pria/laki-laki (だんせい)" },
+  { "word": "急に", "meaning": "tiba-tiba (きゅうに)" },
+  { "word": "営業する", "meaning": "beroperasi (えいぎょうする)" },
+  { "word": "案内する", "meaning": "menunjukkan/memandu (あんないする)" }
+		  ],
+		  		    "IA2-2 Kanji 12": [
+	       { "word": "商品", "meaning": "barang dagangan (しょうひん)" },
+  { "word": "値段", "meaning": "harga (ねだん)" },
+  { "word": "価格", "meaning": "harga (かかく)" },
+  { "word": "消費税", "meaning": "pajak konsumsi (しょうひぜい)" },
+  { "word": "税別", "meaning": "belum termasuk pajak (ぜいべつ)" },
+  { "word": "店員", "meaning": "pegawai toko (てんいん)" },
+  { "word": "親切(な)", "meaning": "baik hati (しんせつな)" },
+  { "word": "重い", "meaning": "berat (おもい)" },
+  { "word": "軽い", "meaning": "ringan (かるい)" },
+  { "word": "変わる", "meaning": "berubah (かわる)" }
+		  ],
+		  		    "IA2-2 Kanji 13": [
+	     { "word": "市", "meaning": "kota (し)" },
+  { "word": "料金", "meaning": "biaya/tarif (りょうきん)" },
+  { "word": "図書館", "meaning": "perpustakaan (としょかん)" },
+  { "word": "道具", "meaning": "alat (どうぐ)" },
+  { "word": "〜点", "meaning": "nilai/poin (〜てん)" },
+  { "word": "必要(な)", "meaning": "perlu/penting (ひつような)" },
+  { "word": "借りる", "meaning": "meminjam (かりる)" },
+  { "word": "返す", "meaning": "mengembalikan (かえす)" },
+  { "word": "開く", "meaning": "membuka (ひらく)" },
+  { "word": "閉まる", "meaning": "tertutup (しまる)" },
+  { "word": "利用する", "meaning": "menggunakan/memanfaatkan (りようする)" }
+		  ],
+		  		    "IA2-2 Kanji 14": [
+	       { "word": "外国", "meaning": "luar negeri (がいこく)" },
+  { "word": "情報", "meaning": "informasi (じょうほう)" },
+  { "word": "相談", "meaning": "konsultasi (そうだん)" },
+  { "word": "質問", "meaning": "pertanyaan (しつもん)" },
+  { "word": "窓口", "meaning": "loket/jendela layanan (まどぐち)" },
+  { "word": "郵便局", "meaning": "kantor pos (ゆうびんきょく)" },
+  { "word": "近所", "meaning": "tetangga/daerah sekitar (きんじょ)" },
+  { "word": "自動", "meaning": "otomatis (じどう)" },
+  { "word": "洗う", "meaning": "mencuci (あらう)" },
+  { "word": "入力する", "meaning": "memasukkan data/input (にゅうりょくする)" }
+		  ],
+		  		    "IA2-2 Kanji 15": [
+	     { "word": "温度", "meaning": "suhu (おんど)" },
+  { "word": "危険", "meaning": "bahaya (きけん)" },
+  { "word": "〜種類", "meaning": "jenis (〜しゅるい)" },
+  { "word": "消す", "meaning": "mematikan/menghapus (けす)" },
+  { "word": "捨てる", "meaning": "membuang (すてる)" },
+  { "word": "出す", "meaning": "mengeluarkan/menyerahkan (だす)" },
+  { "word": "分ける", "meaning": "membagi/memisahkan (わける)" },
+  { "word": "燃える", "meaning": "terbakar (もえる)" },
+  { "word": "決める", "meaning": "memutuskan (きめる)" },
+  { "word": "設定する", "meaning": "mengatur/menset (せっていする)" }
+		  ],
+		  		    "IA2-2 Kanji 16": [
+	     { "word": "地震", "meaning": "gempa bumi (じしん)" },
+  { "word": "台風", "meaning": "topan/taifun (たいふう)" },
+  { "word": "外", "meaning": "luar (そと)" },
+  { "word": "声", "meaning": "suara (こえ)" },
+  { "word": "危ない", "meaning": "berbahaya (あぶない)" },
+  { "word": "大切(な)", "meaning": "penting (たいせつな)" },
+  { "word": "心配(な)", "meaning": "khawatir (しんぱいな)" },
+  { "word": "集まる", "meaning": "berkumpul (あつまる)" },
+  { "word": "進む", "meaning": "maju/berlanjut (すすむ)" }
+		  ],
+		  		    "IA2-2 Kanji 17": [
+	      { "word": "最近", "meaning": "akhir-akhir ini (さいきん)" },
+  { "word": "授業", "meaning": "pelajaran/kuliah (じゅぎょう)" },
+  { "word": "問題", "meaning": "masalah/soal (もんだい)" },
+  { "word": "大変(な)", "meaning": "sulit/berat (たいへんな)" },
+  { "word": "困る", "meaning": "kesulitan (こまる)" },
+  { "word": "違う", "meaning": "berbeda/salah (ちがう)" },
+  { "word": "慣れる", "meaning": "terbiasa (なれる)" },
+  { "word": "増える", "meaning": "bertambah (ふえる)" },
+  { "word": "笑う", "meaning": "tertawa (わらう)" },
+  { "word": "苦労する", "meaning": "bersusah payah (くろうする)" }
+		  ],
+		  		    "IA2-2 Kanji 18": [
+	      { "word": "希望", "meaning": "harapan (きぼう)" },
+  { "word": "募集", "meaning": "rekrutmen/penerimaan (ぼしゅう)" },
+  { "word": "特に", "meaning": "terutama/khususnya (とくに)" },
+  { "word": "住む", "meaning": "tinggal (すむ)" },
+  { "word": "建てる", "meaning": "membangun (たてる)" },
+  { "word": "続ける", "meaning": "melanjutkan (つづける)" },
+  { "word": "考える", "meaning": "memikirkan (かんがえる)" },
+  { "word": "役に立つ", "meaning": "bermanfaat (やくにたつ)" },
+  { "word": "卒業する", "meaning": "lulus (そつぎょうする)" },
+  { "word": "留学する", "meaning": "belajar di luar negeri (りゅうがくする)" }
+		  ],
+    };
+
+    vocabulary["All"] = Object.values(vocabulary).flat().filter((item, index, self) =>
+      self.findIndex(i => i.word === item.word) === index
+    );
+
+
+	let multiSelectMode = false;
+    let categories = Object.keys(vocabulary).filter(c => c !== "All");
+    categories.unshift("All");
+
+    let selectedCategories = ["All"];
+    let timer;
+    let interval = "6.5";
+    let currentWord = "";
+    let currentMeaning = "";
+    let reverse = false;
+    let pickUpMode = true;
+    let usedWords = [];
+    let tableShown = false;
+    let autoShowMeaning = true;
+    let menuPage = 0;
+    const menuPerPage = 13;
+	let autoTimeEnabled = true;
+	
+	function handleMultiSelectToggle() {
+  multiSelectMode = document.getElementById("multiSelectToggle").checked;
+
+  if (!multiSelectMode && selectedCategories.length > 1) {
+    selectedCategories = [selectedCategories[0] || "All"];
+    usedWords = [];
+
+    if (quizMode) {
+      startQuiz();
+    } else if (essayMode) {
+      startEssay();
+    } else {
+      randomWord();
+      if (tableShown) showAllWords();
+    }
+  }
+
+  updateActiveCategory();
+}
+
+let essayMode = false;
+let essayQuestions = [];
+let essayAnswers = [];
+let currentEssayIndex = 0;
+let currentEssayResultPage = 1;
+
+function updateHideButtons() {
+  const hideButtons = ['toggleJP', 'toggleID', 'shuffleTableBtn'];
+  hideButtons.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = (quizMode || essayMode) ? 'none' : 'inline-block';
+    }
+  });
+}
+
+function handleEssayModeToggle() {
+  essayMode = document.getElementById("essayModeToggle").checked;
+
+  if (essayMode && quizMode) {
+    quizMode = false;
+    document.getElementById("quizModeToggle").checked = false;
+    document.getElementById("quizLengthOptions").style.display = "none";
+  }
+
+  const mainElements = [
+    "word", "meaning", "randomBtn", "intervalInput", "applyBtn",
+    "toggleLangBtn", "togglePickBtn", "toggleShowBtn",
+    "toggleAutoShowBtn", "searchInput", "tableContainer", "autoTimeToggle"
+  ];
+  mainElements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = essayMode ? "none" : "";
+  });
+
+  const secondsLabel = document.querySelector(".controls span");
+  if (secondsLabel) secondsLabel.style.display = essayMode ? "none" : "inline";
+
+  document.getElementById("menu").style.display = "flex";
+  document.getElementById("essayLengthOptions").style.display = essayMode ? "block" : "none";
+  document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
+
+ updateHideButtons();
+ clearCanvas();
+ 
+  if (essayMode) {
+    startEssay();
+  } else {
+    document.getElementById("quizContainer").style.display = "none";
+    createMenu();
+    updateActiveCategory();
+    usedWords = [];
+    randomWord();
+    if (tableShown) showAllWords();
+  }
+}
+
+
+function startEssay() {
+  const selectedWords = shuffleArray(
+    selectedCategories.includes("All")
+      ? Object.values(essayVocabulary).flat()
+      : selectedCategories.flatMap(cat => essayVocabulary[cat] || [])
+  );
+
+  const essayLengthInput = document.querySelector('input[name="essayLength"]:checked');
+  const totalQuestions = essayLengthInput ? parseInt(essayLengthInput.value) : 20;
+
+  essayQuestions = selectedWords.slice(0, totalQuestions);
+  essayAnswers = [];
+  currentEssayIndex = 0;
+
+  document.getElementById("quizContainer").style.display = "block";
+  document.getElementById("essayLengthOptions").style.display = "block";
+
+  showEssayQuestion();
+}
+
+document.querySelectorAll('input[name="essayLength"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (essayMode) startEssay();
+  });
+});
+
+function showEssayQuestion() {
+  const container = document.getElementById("quizContainer");
+  if (currentEssayIndex >= essayQuestions.length) return showEssayResult();
+
+  const q = essayQuestions[currentEssayIndex];
+  const questionText = `Tuliskan Hiragana dari Kanji "<strong>${q.kanji}</strong>"? `;
+
+  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentEssayIndex + 1} dari ${essayQuestions.length}</div>`;
+  html += `<div style="margin-bottom:10px; width:100%; box-sizing:border-box;">${questionText}</div>`;
+  html += `<input type="text" id="essayAnswerInput" style="width:100%; padding:8px; font-size:1rem; margin-bottom:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;" />`;
+  html += `<div id="essayWarning" style="color:red; margin-top:10px;"></div>`;
+  html += `<button id="essayAnswerBtn" onclick="submitEssayAnswer()">Answer</button>`;
+  container.innerHTML = html;
+
+  const input = document.getElementById("essayAnswerInput");
+
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const warningEl = document.getElementById("essayWarning");
+
+      if (input.value.trim() !== "") {
+        warningEl.textContent = "";
+        document.getElementById("essayAnswerBtn").click();
+      } else {
+        warningEl.textContent = "Answer cannot be blank!";
+        input.focus();
+      }
+    }
+  });
+}
+
+function submitEssayAnswer() {
+  const input = document.getElementById("essayAnswerInput");
+  let answer = input.value.trim().toLowerCase();
+
+  answer = answer.replace(/[,\.;\/\s\(\)\[\]]/g, '');
+
+  if (!answer) {
+    const warningDiv = document.getElementById("essayWarning");
+    if (warningDiv) warningDiv.textContent = "Answer cannot be blank!";
+    return;
+  } else {
+    const warningDiv = document.getElementById("essayWarning");
+    if (warningDiv) warningDiv.textContent = "";
+  }
+
+  const q = essayQuestions[currentEssayIndex];
+  const possibleAnswers = [q.romaji].filter(Boolean);
+
+  essayAnswers.push({
+    question: q.kanji,
+    correct: q.romaji,
+    answer,
+    isCorrect: possibleAnswers.includes(answer)
+  });
+
+  currentEssayIndex++;
+  showEssayQuestion();
+
+  const nextInput = document.getElementById("essayAnswerInput");
+  if (nextInput) nextInput.focus();
+}
+
+function showEssayResult(page = 1) {
+  currentEssayResultPage = page;
+  const start = (page - 1) * resultsPerPage;
+  const end = start + resultsPerPage;
+  const visibleAnswers = essayAnswers.slice(start, end);
+
+  let score = essayAnswers.filter(q => q.isCorrect).length;
+
+  let html = `<h3>Essay Results :</h3><ol start="${start + 1}">`;
+  visibleAnswers.forEach((q, i) => {
+    html += `<li style="margin-bottom:8px;">${q.question}<br />
+      Jawaban kamu: <strong>${q.answer}</strong> ${q.isCorrect ? "✅" : "❌"}<br />
+      Jawaban benar: <strong>${q.correct}</strong>
+    </li>`;
+  });
+  html += `</ol><h4>Jawaban Benar: ${score} dari ${essayAnswers.length}</h4>`;
+  const nilai = Math.round((score / essayAnswers.length) * 100);
+  let warna = nilai >= 80 ? "green" : nilai >= 60 ? "orange" : "red";
+  html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</span></div>`;
+
+  const totalPages = Math.ceil(essayAnswers.length / resultsPerPage);
+  if (totalPages > 1) {
+    html += `<div style="margin:10px 0;">`;
+    if (page > 1) {
+      html += `<button onclick="showEssayResult(${page - 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Prev</button> `;
+    }
+
+    for (let p = 1; p <= totalPages; p++) {
+      const isActive = p === page;
+      html += `<button onclick="showEssayResult(${p})" style="
+        margin:2px;
+        padding:4px 8px;
+        font-size:0.85rem;
+        border-radius:5px;
+        ${isActive ? 'background-color:#d40000; color:white; font-weight:bold;' : ''}
+      ">${p}</button>`;
+    }
+
+    if (page < totalPages) {
+      html += `<button onclick="showEssayResult(${page + 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Next</button>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<button onclick="startEssay()">Try again</button> `;
+  html += `<button onclick="document.getElementById('essayModeToggle').click()">Exit</button>`;
+
+  document.getElementById("quizContainer").innerHTML = html;
+}
+
+let quizMode = false;
+let quizQuestions = [];
+let quizAnswers = [];
+let currentQuizIndex = 0;
+let currentResultPage = 1;
+const resultsPerPage = 10;
+
+let hideJPText = false;
+let hideIDText = false;
+let showIndividualJP = new Set();
+let showIndividualID = new Set();
+let currentTablePage = 1;
+
+function showJP(key, text) {
+  showIndividualJP.add(key);
+  const span = document.getElementById(key);
+  if (span) span.innerHTML = text;
+}
+
+function showID(key, text) {
+  showIndividualID.add(key);
+  const span = document.getElementById(key);
+  if (span) span.innerHTML = text;
+}
+
+function shuffleTable() {
+  const table = document.getElementById("dataTable");
+  if (!table) return;
+
+  const tbody = table.querySelector("tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const shuffled = shuffleArray(rows);
+
+  tbody.innerHTML = "";
+  shuffled.forEach((row, index) => {
+    row.querySelector("td").innerText = index + 1;
+    tbody.appendChild(row);
+  });
+}
+
+function toggleColumnText(type) {
+  if (type === 'jp') {
+    hideJPText = !hideJPText;
+
+    if (hideJPText) hideIDText = false;
+
+    showIndividualJP.clear();
+    showIndividualID.clear(); 
+
+    document.getElementById('toggleJP').innerText = hideJPText ? "Unhide JP" : "Hide JP";
+    document.getElementById('toggleID').innerText = "Hide ID";
+  } else if (type === 'id') {
+    hideIDText = !hideIDText;
+
+    if (hideIDText) hideJPText = false;
+
+    showIndividualID.clear();
+    showIndividualJP.clear();
+
+    document.getElementById('toggleID').innerText = hideIDText ? "Unhide ID" : "Hide ID";
+    document.getElementById('toggleJP').innerText = "Hide JP";
+  }
+
+  showAllWords(false);
+}
+
+
+function showOneJP(key) {
+  showIndividualJP.add(key);
+  showAllWords();
+}
+
+function showOneID(key) {
+  showIndividualID.add(key);
+  showAllWords();
+}
+
+function isMobileDevice() {
+  return window.innerWidth <= 768;
+}
+
+function showDrawingPadToggleButton() {
+  const toggleBtn = document.getElementById("toggleDrawBtn");
+  if (isMobileDevice()) {
+    toggleBtn.style.display = "block";
+  } else {
+    toggleBtn.style.display = "none";
+    document.getElementById("drawingContainer").style.display = "none";
+  }
+}
+
+showDrawingPadToggleButton();
+
+let savedDrawing = null;
+
+function toggleDrawingPad() {
+  const drawDiv = document.getElementById("drawingContainer");
+  const toggleBtn = document.getElementById("toggleDrawBtn");
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+
+  if (drawDiv.style.display === "none") {
+    drawDiv.style.display = "block";
+    toggleBtn.innerText = "Hide";
+
+    if (savedDrawing) {
+      const img = new Image();
+      img.onload = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = savedDrawing;
+    }
+
+    initDrawingCanvas(); 
+  } else {
+    savedDrawing = canvas.toDataURL();
+    drawDiv.style.display = "none";
+    toggleBtn.innerText = "✏️ Draw";
+  }
+}
+
+(function enableResizableDrawingPad() {
+  const handle = document.getElementById("resizeHandle");
+  const container = document.getElementById("drawingContainer");
+  const canvas = document.getElementById("drawingCanvas");
+
+  let isResizing = false;
+  let startY = 0;
+  let startHeight = 0;
+
+  function startResize(y) {
+    isResizing = true;
+    startY = y;
+    startHeight = container.offsetHeight;
+  }
+
+function doResize(y) {
+  if (!isResizing) return;
+
+  const delta = startY - y;
+  const newHeight = startHeight + delta;
+
+  if (newHeight > 100 && newHeight < window.innerHeight * 0.9) {
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const backupCanvas = document.createElement("canvas");
+    backupCanvas.width = canvas.width;
+    backupCanvas.height = canvas.height;
+    const backupCtx = backupCanvas.getContext("2d");
+    backupCtx.drawImage(canvas, 0, 0);
+
+    container.style.height = newHeight + "px";
+    canvas.height = newHeight;
+    canvas.width = backupCanvas.width;
+
+    const ctxNew = canvas.getContext("2d");
+    ctxNew.drawImage(backupCanvas, 0, 0);
+  }
+}
+
+  function stopResize() {
+    isResizing = false;
+  }
+
+  handle.addEventListener("mousedown", (e) => {
+    startResize(e.clientY);
+  });
+  window.addEventListener("mousemove", (e) => doResize(e.clientY));
+  window.addEventListener("mouseup", stopResize);
+
+  handle.addEventListener("touchstart", (e) => {
+    startResize(e.touches[0].clientY);
+  });
+  window.addEventListener("touchmove", (e) => {
+    doResize(e.touches[0].clientY);
+  });
+  window.addEventListener("touchend", stopResize);
+})();
+
+
+function initDrawingCanvas() {
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  let isDrawing = false;
+
+  function getTouchPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    return {
+      x: t.clientX - rect.left,
+      y: t.clientY - rect.top
+    };
+  }
+
+  canvas.addEventListener("touchstart", function (e) {
+    e.preventDefault();
+    const pos = getTouchPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    isDrawing = true;
+  });
+
+  canvas.addEventListener("touchmove", function (e) {
+    if (!isDrawing) return;
+    const pos = getTouchPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  });
+
+  canvas.addEventListener("touchend", function () {
+    isDrawing = false;
+  });
+}
+
+
+
+function clearCanvas() {
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function handleQuizModeToggle() {
+  quizMode = document.getElementById("quizModeToggle").checked;
+
+  if (quizMode && essayMode) {
+    essayMode = false;
+    document.getElementById("essayModeToggle").checked = false;
+    document.getElementById("essayLengthOptions").style.display = "none";
+  }
+
+  const mainElements = [
+    "word", "meaning", "randomBtn", "intervalInput", "applyBtn",
+    "toggleLangBtn", "togglePickBtn", "toggleShowBtn",
+    "toggleAutoShowBtn", "searchInput", "tableContainer", "autoTimeToggle"
+  ];
+  mainElements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = quizMode ? "none" : "";
+  });
+  
+  const secondsLabel = document.querySelector(".controls span");
+  if (secondsLabel) secondsLabel.style.display = quizMode ? "none" : "inline";
+
+  document.getElementById("menu").style.display = "flex";
+  document.getElementById("quizLengthOptions").style.display = quizMode ? "block" : "none";
+ updateHideButtons();
+ clearCanvas();
+  if (quizMode) {
+    startQuiz();
+  } else {
+    document.getElementById("quizContainer").style.display = "none";
+    createMenu();
+    updateActiveCategory();
+    usedWords = [];
+    randomWord();
+    if (tableShown) showAllWords();
+  }
+}
+
+
+function startQuiz() {
+  const selectedWords = shuffleArray(selectedCategories.flatMap(cat => vocabulary[cat] || []));
+  const quizLengthInput = document.querySelector('input[name="quizLength"]:checked');
+  const totalQuestions = quizLengthInput ? parseInt(quizLengthInput.value) : 20;
+
+  const half = Math.floor(totalQuestions / 2);
+  const questionsIDtoJP = selectedWords.slice(0, half).map(q => ({ ...q, reverse: true })); 
+  const questionsJPtoID = selectedWords.slice(half, half * 2).map(q => ({ ...q, reverse: false }));
+
+  quizQuestions = shuffleArray([...questionsIDtoJP, ...questionsJPtoID]);
+  quizAnswers = [];
+  currentQuizIndex = 0;
+
+  document.getElementById("quizContainer").style.display = "block";
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  const container = document.getElementById("quizContainer");
+  if (currentQuizIndex >= quizQuestions.length) return showQuizResult();
+
+  const q = quizQuestions[currentQuizIndex];
+  const correct = q.reverse ? q.word : q.meaning;
+  const questionText = `Apa kosakata dari "<strong>${q.reverse ? q.meaning : q.word}</strong>" dalam bahasa ${q.reverse ? "Jepang" : "Indonesia"}?`;
+
+  const sameCategoryWords = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+const correctAnswer = q.reverse ? q.word : q.meaning;
+
+const allOptions = new Set();
+allOptions.add(correctAnswer);
+
+for (let item of shuffleArray(sameCategoryWords)) {
+  const opt = q.reverse ? item.word : item.meaning;
+  if (!allOptions.has(opt)) {
+    allOptions.add(opt);
+    if (allOptions.size >= 4) break;
+  }
+}
+
+const options = shuffleArray([...allOptions]);
+
+  let html = `<div style="margin-bottom:10px; font-weight:bold; color:#0b38a4">Soal ${currentQuizIndex + 1} dari ${quizQuestions.length}</div>`;
+  html += `<div style="margin-bottom:10px;">${questionText}</div>`;
+  options.forEach((opt, idx) => {
+    html += `<label class="quiz-option"><input type="radio" name="quizOption" value="${opt}"/> ${String.fromCharCode(65 + idx)}. ${opt}</label>`;
+  });
+  html += `<div id="quizWarning" style="color:red; margin-top:10px;"></div>`;
+  html += `<button onclick="submitQuizAnswer()">Answer</button>`;
+  container.innerHTML = html;
+}
+
+function submitQuizAnswer() {
+  const selected = document.querySelector("input[name='quizOption']:checked");
+  if (!selected) {
+  const warningDiv = document.getElementById("quizWarning");
+  if (warningDiv) warningDiv.textContent = "Answers cannot be blank!";
+  return;
+} else {
+  const warningDiv = document.getElementById("quizWarning");
+  if (warningDiv) warningDiv.textContent = "";
+}
+  const answer = selected.value;
+  const q = quizQuestions[currentQuizIndex];
+  const correct = q.reverse ? q.word : q.meaning;
+  quizAnswers.push({
+    question: q.reverse ? q.meaning : q.word,
+    correct,
+    answer
+  });
+  currentQuizIndex++;
+  showQuizQuestion();
+}
+
+function showQuizResult(page = 1) {
+  currentResultPage = page;
+  const start = (page - 1) * resultsPerPage;
+  const end = start + resultsPerPage;
+  const visibleAnswers = quizAnswers.slice(start, end);
+
+  let score = quizAnswers.filter(q => q.answer === q.correct).length;
+
+  let html = `<h3>Quiz Results :</h3><ol start="${start + 1}">`;
+  visibleAnswers.forEach((q, i) => {
+    const isCorrect = q.answer === q.correct;
+    html += `<li style="margin-bottom:8px;">${q.question}<br />
+      Jawaban kamu: <strong>${q.answer}</strong> ${isCorrect ? "✅" : "❌"}<br />
+      Jawaban benar: <strong>${q.correct}</strong>
+    </li>`;
+  });
+  html += `</ol><h4>Jawaban Benar: ${score} dari ${quizAnswers.length}</h4>`;
+const nilai = Math.round((score / quizAnswers.length) * 100);
+let warna = nilai >= 80 ? "green" : nilai >= 60 ? "orange" : "red";
+html += `<div><strong>Nilai:</strong> <span style="color:${warna}"> ${nilai}</span></div>`;
+
+  const totalPages = Math.ceil(quizAnswers.length / resultsPerPage);
+  if (totalPages > 1) {
+    html += `<div style="margin:10px 0;">`;
+    if (page > 1) {
+      html += `<button onclick="showQuizResult(${page - 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Prev</button> `;
+
+    }
+
+     for (let p = 1; p <= totalPages; p++) {
+      const isActive = p === page;
+      html += `<button onclick="showQuizResult(${p})" style="
+        margin:2px;
+        padding:4px 8px;
+        font-size:0.85rem;
+        border-radius:5px;
+        ${isActive ? 'background-color:#d40000; color:white; font-weight:bold;' : ''}
+      ">${p}</button>`;
+    }
+
+    if (page < totalPages) {
+      html += `<button onclick="showQuizResult(${page + 1})" style="margin:2px; padding:4px 8px; font-size:0.85rem;">Next</button>`;
+
+    }
+    html += `</div>`;
+  }
+
+  html += `<button onclick="startQuiz()">Try again</button> `;
+  html += `<button onclick="document.getElementById('quizModeToggle').click()">Exit</button>`;
+
+  document.getElementById("quizContainer").innerHTML = html;
+}
+
+document.querySelectorAll('input[name="quizLength"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (quizMode) startQuiz();
+  });
+});
+
+function shuffleArray(arr) {
+  return arr.map(v => [Math.random(), v]).sort().map(v => v[1]);
+}
+
+    function createMenu() {
+      const menuDiv = document.getElementById("menu");
+      menuDiv.innerHTML = "";
+
+      const start = menuPage * menuPerPage;
+      const end = start + menuPerPage;
+      const visibleCategories = categories.slice(start, end);
+
+      if (menuPage > 0) {
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = "&larr;";
+        prevBtn.classList.add("category-btn", "nav-arrow");
+        prevBtn.onclick = () => {
+          menuPage--;
+          createMenu();
+        };
+        menuDiv.appendChild(prevBtn);
+      }
+
+      visibleCategories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.innerText = cat;
+        btn.classList.add("category-btn");
+        if (selectedCategories.includes(cat)) btn.classList.add("active");
+        btn.onclick = () => {
+  if (!multiSelectMode) {
+    selectedCategories = [cat];
+  } else {
+    if (cat === "All") {
+      selectedCategories = ["All"];
+    } else {
+      if (selectedCategories.includes("All")) selectedCategories = [];
+      if (selectedCategories.includes(cat)) {
+        selectedCategories = selectedCategories.filter(c => c !== cat);
+      } else {
+        selectedCategories.push(cat);
+      }
+      if (selectedCategories.length === 0) selectedCategories = ["All"];
+    }
+  }
+
+  updateActiveCategory();
+  usedWords = [];
+
+  if (quizMode) {
+    startQuiz();
+} else if (essayMode) {
+    startEssay();
+} else {
+    randomWord();
+    if (tableShown) showAllWords();
+}
+};
+        menuDiv.appendChild(btn);
+      });
+
+      if (end < categories.length) {
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = "&rarr;";
+        nextBtn.classList.add("category-btn", "nav-arrow");
+        nextBtn.onclick = () => {
+          menuPage++;
+          createMenu();
+        };
+        menuDiv.appendChild(nextBtn);
+      }
+    }
+
+    function updateActiveCategory() {
+      document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.remove("active");
+        if (selectedCategories.includes(btn.innerText)) {
+          btn.classList.add("active");
+        }
+      });
+    }
+	
+	let meaningTimeout; 
+
+    function randomWord() {
+  clearTimeout(timer);          
+  clearTimeout(meaningTimeout); 
+
+  let words = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+  words = words.filter(entry => !usedWords.includes(entry.word));
+
+  if (pickUpMode && words.length === 0) {
+    const wordDiv = document.getElementById("word");
+    const meaningDiv = document.getElementById("meaning");
+    let countdown = 3;
+
+    document.getElementById("randomBtn").disabled = true;
+    document.getElementById("toggleAutoShowBtn").disabled = true;
+    document.getElementById("toggleLangBtn").disabled = true;
+    document.getElementById("meaning").style.visibility = "hidden";
+
+    wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+    meaningDiv.innerText = "";
+
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      if (countdown > 0) {
+        wordDiv.innerText = `Semua sudah tampil... (${countdown})`;
+      } else {
+        clearInterval(countdownInterval);
+        usedWords = [];
+        randomWord(); 
+        setIntervalTime(); 
+        document.getElementById("randomBtn").disabled = false;
+        document.getElementById("toggleAutoShowBtn").disabled = false;
+        document.getElementById("toggleLangBtn").disabled = false;
+        document.getElementById("meaning").style.visibility = "visible";
+      }
+    }, 1000);
+    return;
+  }
+
+  const entry = words[Math.floor(Math.random() * words.length)];
+  if (entry) {
+    currentWord = reverse ? entry.meaning : entry.word;
+    currentMeaning = reverse ? entry.word : entry.meaning;
+
+    document.getElementById("word").innerHTML = currentWord;
+    document.getElementById("meaning").innerHTML = "";
+
+    const meaningDelay = Number(interval) / 2;
+
+    if (autoShowMeaning) {
+     meaningTimeout = setTimeout(() => {
+  document.getElementById("meaning").innerHTML = currentMeaning || "Tidak diketahui";
+}, meaningDelay);
+    }
+
+    if (pickUpMode) usedWords.push(entry.word);
+  }
+
+  if (autoTimeEnabled) {
+    timer = setTimeout(() => {
+      randomWord();
+    }, interval); 
+  }
+}
+
+  function showMeaning() {
+  document.getElementById("meaning").innerHTML = currentMeaning || "Tidak diketahui";
+}
+
+    function setIntervalTime() {
+  clearTimeout(timer);
+  const inputVal = parseFloat(document.getElementById("intervalInput").value);
+
+  if (isNaN(inputVal) || inputVal < 0.5) {
+    alert("Minimum 0.5 seconds!");
+    document.getElementById("intervalInput").value = 0.5;
+    interval = 500;
+  } else {
+    interval = inputVal * 1000;
+  }
+
+  if (autoTimeEnabled) {
+    timer = setTimeout(() => {
+      randomWord();
+    }, interval);
+  }
+}
+
+function toggleAutoTime() {
+  autoTimeEnabled = document.getElementById("autoTimeToggle").checked;
+
+  if (autoTimeEnabled) {
+    setIntervalTime(); 
+  } else {
+    clearInterval(timer);
+  }
+}
+
+    function toggleLanguageMode() {
+      reverse = !reverse;
+      document.getElementById("toggleLangBtn").innerText = `Reverse: ${reverse ? "ON" : "OFF"}`;
+      randomWord();
+      if (tableShown) showAllWords();
+    }
+
+    function togglePickUp() {
+      pickUpMode = !pickUpMode;
+      usedWords = [];
+      document.getElementById("togglePickBtn").innerText = `Looping: ${pickUpMode ? "OFF" : "ON"}`;
+      randomWord();
+    }
+
+    function toggleAutoShow() {
+      autoShowMeaning = !autoShowMeaning;
+      document.getElementById("toggleAutoShowBtn").innerText = `Spoiler: ${autoShowMeaning ? "ON" : "OFF"}`;
+      randomWord();
+    }
+
+    let sortBy = null;
+let sortAsc = true;
+
+
+function showJP(key, text) {
+  showIndividualJP.add(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <span id="${key}_text">${text}</span>
+      <button onclick="hideJP('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">
+        Hide
+      </button>
+    `;
+  }
+}
+
+function hideJP(key, text) {
+  showIndividualJP.delete(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <button onclick="showJP('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Show
+      </button>
+    `;
+  }
+}
+
+function showID(key, text) {
+  showIndividualID.add(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <span id="${key}_text">${text}</span>
+      <button onclick="hideID('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">
+        Hide
+      </button>
+    `;
+  }
+}
+
+function hideID(key, text) {
+  showIndividualID.delete(key);
+  const span = document.getElementById(key);
+  if (span) {
+    span.innerHTML = `
+      <button onclick="showID('${key}', \`${text.replace(/`/g, '\\`')}\`)" 
+        style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Show
+      </button>
+    `;
+  }
+}
+
+let filteredList = [];
+let originalFilteredList = [];
+
+function showAllWords(forceNewFilter = true) {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const list = selectedCategories.flatMap(cat => vocabulary[cat] || []);
+
+ if (forceNewFilter) {
+  filteredList = list.filter(entry => {
+    const text = (entry.word + " " + entry.meaning).toLowerCase();
+    return text.includes(input);
+  });
+  originalFilteredList = [...filteredList];
+  currentTablePage = 1;
+}
+
+  window.renderTable(currentTablePage);
+}
+
+function sortEntries() {
+  if (!sortBy) return;
+  filteredList.sort((a, b) => {
+    const aVal = sortBy === "jp" ? (reverse ? a.meaning : a.word) : (reverse ? a.word : a.meaning);
+    const bVal = sortBy === "jp" ? (reverse ? b.meaning : b.word) : (reverse ? b.word : b.meaning);
+    return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+  });
+}
+
+function renderTable(page = 1) {
+  const container = document.getElementById("tableContainer");
+  const chunkSize = 20;
+  const totalPages = Math.ceil(filteredList.length / chunkSize);
+  currentTablePage = page;
+
+  sortEntries();
+  const start = (page - 1) * chunkSize;
+  const chunk = filteredList.slice(start, start + chunkSize);
+  
+  if (filteredList.length === 0) {
+    container.innerHTML = `<p style="margin-top:10px;">No results found.</p>`;
+    return;
+  }
+
+  let html = "";
+
+  if (totalPages > 1) {
+    html += `<div style="margin-bottom:12px; text-align:center;">`;
+    if (page > 1) {
+      html += `<button onclick="renderTable(${page - 1})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        ⬅ Prev
+      </button>`;
+    }
+    html += `<span style="margin:0 12px; font-weight:bold; color:#333;">Page ${page} of ${totalPages}</span>`;
+    if (page < totalPages) {
+      html += `<button onclick="renderTable(${page + 1})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">
+        Next ➡
+      </button>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<table id="dataTable" style="width:100%; border-collapse:collapse; text-align:left; border:1px solid #ccc;">
+    <thead style="background:#02768f; color:white;">
+      <tr>
+        <th style="padding:8px; width:50px; border:1px solid #ccc;">No</th>`;
+
+  const jpArrow = sortBy === "jp" ? (sortAsc ? "↑" : "↓") : "↕";
+  const idArrow = sortBy === "id" ? (sortAsc ? "↑" : "↓") : "↕";
+
+  html += `<th onclick="toggleSort('jp')" style="cursor:pointer; padding:8px; border:1px solid #ccc;">${reverse ? "Indonesia" : "Jepang"} ${jpArrow}</th>`;
+  html += `<th onclick="toggleSort('id')" style="cursor:pointer; padding:8px; border:1px solid #ccc;">${reverse ? "Jepang" : "Indonesia"} ${idArrow}</th>`;
+  html += `</tr></thead><tbody>`;
+
+  chunk.forEach((entry, index) => {
+    html += `<tr style="border-bottom:1px solid #ddd;"><td style="padding:6px; border:1px solid #ccc;">${start + index + 1}</td>`;
+
+    const jpText = reverse ? entry.meaning : entry.word;
+    const idText = reverse ? entry.word : entry.meaning;
+
+    const uniqueKey = `${entry.word}_${entry.meaning}_${start + index}`;
+    const jpKey = uniqueKey + "_jp";
+    const idKey = uniqueKey + "_id";
+
+    if (hideJPText) {
+      if (showIndividualJP.has(jpKey)) {
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">${jpText} 
+          <button onclick="hideJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
+          style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">Hide</button></span></td>`;
+      } else {
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${jpKey}">
+          <button onclick="showJP('${jpKey}', \`${jpText.replace(/`/g, '\\`')}\`)" 
+          style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">Show</button></span></td>`;
+      }
+    } else {
+      html += `<td style="padding:6px; border:1px solid #ccc;">${jpText}</td>`;
+    }
+
+    if (hideIDText) {
+      if (showIndividualID.has(idKey)) {
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">${idText} 
+          <button onclick="hideID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
+          style="margin-left:6px; padding:4px 8px; border:1px solid #d9534f; background:#f8d7da; color:#d9534f; cursor:pointer;">Hide</button></span></td>`;
+      } else {
+        html += `<td style="padding:6px; border:1px solid #ccc;"><span id="${idKey}">
+          <button onclick="showID('${idKey}', \`${idText.replace(/`/g, '\\`')}\`)" 
+          style="padding:4px 8px; border:1px solid #0b38a4; background:#fff; color:#0b38a4; cursor:pointer;">Show</button></span></td>`;
+      }
+    } else {
+      html += `<td style="padding:6px; border:1px solid #ccc;">${idText}</td>`;
+    }
+
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  if (!input && totalPages > 1) {
+    html += `<div style="margin-top: 12px; text-align:center;">`;
+    for (let i = 1; i <= totalPages; i++) {
+      html += `<button onclick="renderTable(${i})" 
+        style="margin: 2px; padding: 6px 12px; border:1px solid #0b38a4; 
+        ${i === page ? 'background:#02768f;color:white;' : 'background:#fff;color:#0b38a4;'} cursor:pointer;">
+        ${i}
+      </button>`;
+    }
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+window.renderTable = renderTable;
+
+function toggleSort(column) {
+  if (sortBy === column) {
+    if (sortAsc === false) {
+      sortBy = null;
+      filteredList = [...originalFilteredList];
+      currentTablePage = 1;
+      showAllWords(false);
+      return;
+    }
+    sortAsc = !sortAsc;
+  } else {
+    sortBy = column;
+    sortAsc = true;
+  }
+
+  currentTablePage = 1;
+  showAllWords(false);
+}
+
+function toggleShowTable() {
+  tableShown = !tableShown;
+  document.getElementById("toggleShowBtn").innerText = `Vocabulary: ${tableShown ? "ON" : "OFF"}`;
+  const searchInput = document.getElementById("searchInput");
+  const hideControls = document.getElementById("hideControls");
+
+  if (tableShown) {
+    showAllWords();
+    searchInput.style.display = "inline-block"; 
+    if (hideControls) hideControls.style.display = "block"; 
+  } else {
+    document.getElementById("tableContainer").innerHTML = "";
+    searchInput.value = "";
+	searchInput.style.display = "none"; 
+    if (hideControls) hideControls.style.display = "none"; 
+  }
+}
+
+    function filterTable() {
+  showAllWords(true);
+}
+
+    createMenu();
+    randomWord();
+    setIntervalTime();
+  </script>
+</body>
+</html>
