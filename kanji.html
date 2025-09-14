@@ -2327,7 +2327,7 @@ function showQuizQuestion() {
 
   const q = quizQuestions[currentQuizIndex];
   const correct = q.reverse ? q.word : q.meaning;
-  const questionText = `Apa kosakata dari "<strong>${q.reverse ? q.meaning : q.word}</strong>" dalam bahasa ${q.reverse ? "Jepang" : "Indonesia"}?`;
+  const questionText = `Apa kanji dari "<strong>${q.reverse ? q.meaning : q.word}</strong>" dalam bahasa ${q.reverse ? "Jepang" : "Indonesia"}?`;
 
   const sameCategoryWords = selectedCategories.flatMap(cat => vocabulary[cat] || []);
 const correctAnswer = q.reverse ? q.word : q.meaning;
