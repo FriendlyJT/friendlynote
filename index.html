@@ -378,7 +378,7 @@
   <button id="randomBtn" onclick="randomWord()">NEXT</button>
   <div class="controls">
     <span>Seconds:</span>
-    <input type="number" id="intervalInput" value="6.5" />
+    <input type="number" id="intervalInput" value="10" />
 	<label style="margin-top:10px;">
   <input type="checkbox" id="autoTimeToggle" onchange="toggleAutoTime()" checked />
 </label>
@@ -454,7 +454,7 @@
 
     let selectedCategories = ["All"];
     let timer;
-    let interval = "6.5";
+    let interval = "10";
     let currentWord = "";
     let currentMeaning = "";
     let reverse = false;
@@ -1372,7 +1372,7 @@ function sortEntries() {
 
 function renderTable(page = 1) {
   const container = document.getElementById("tableContainer");
-  const chunkSize = 20;
+  const chunkSize = 10;
   const totalPages = Math.ceil(filteredList.length / chunkSize);
   currentTablePage = page;
 
