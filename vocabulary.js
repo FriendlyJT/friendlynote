@@ -393,7 +393,7 @@ const vocabulary = {
 		  { word: "あちら ", meaning: "disana" },
 		  { "word": "夕方（ゆうがた）", "meaning": "Sore hari" },
 		  { word: "[1] 撮る, とる, とります, とって, とらない", meaning: "Mengambil (foto)" },
-	  
+	  ],
       "Dapur": [
         { word: "だいどころ", meaning: "Dapur" },
 		{ word: "キッチン", meaning: "Dapur" },
