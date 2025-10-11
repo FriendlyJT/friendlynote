@@ -47,7 +47,7 @@ const vocabulary = {
   { "word": "[1] 笑う, わらう, わらいます, わらって, わらわない", "meaning": "Tertawa" },
   { "word": "[3] 勉強する, べんきょうする, べんきょうします, べんきょうして, べんきょうしない", "meaning": "Belajar" },
   { "word": "[3] 仕事する, しごとする, しごとします, しごとして, しごとしない", "meaning": "Bekerja" },
-  { "word": "[3] 結婚する, けっこんする, けっこんします, けっこんして, けっこんしない", "meaning": "Menikah" }
+  { "word": "[3] 結婚する, けっこんする, けっこんします, けっこんして, けっこんしない", "meaning": "Menikah" },
    { "word": "[3] 散歩する, さんぽする, さんぽします, さんぽして, さんぽしない", "meaning": "Jalan-jalan" },
   { "word": "[3] 旅行する, りょこうする, りょこうします, りょこうして, りょこうしない", "meaning": "Bepergian" },
   { "word": "[3] 掃除する, そうじする, そうじします, そうじして, そうじしない", "meaning": "Membersihkan" },
@@ -118,6 +118,7 @@ const vocabulary = {
   { "word": "[1] 噛む, かむ, かみます, かんで, かまない", "meaning": "Menggigit / Mengunyah" },
   { "word": "[2] 信じる, しんじる, しんじます, しんじて, しんじない", "meaning": "Percaya" }
 	  ],
+	  
 	   "Benda JFT": [
 	    { "word": "先生（せんせい）", "meaning": "guru" },
   { "word": "学生（がくせい）", "meaning": "murid, pelajar" },
