@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Telah Pindah</title>
+  <meta http-equiv="refresh" content="5;url=https://friendlynote.diskon.com">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      padding: 30px 50px;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Website Telah Pindah</h1>
+    <p>Ke alamat baru:</p>
+    <p><a href="https://friendlynote.diskon.com">https://friendlynote.diskon.com</a></p>
+    <p>Anda akan diarahkan dalam <span id="count">5</span> detik...</p>
+  </div>
+
+  <script>
+    let waktu = 5;
+    const el = document.getElementById("count");
+    const timer = setInterval(() => {
+      waktu--;
+      el.textContent = waktu;
+      if (waktu <= 0) clearInterval(timer);
+    }, 1000);
+  </script>
+</body>
+</html>
